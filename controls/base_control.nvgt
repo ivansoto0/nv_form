@@ -22,8 +22,13 @@ namespace nv_form {
 			this.id = id;
 			@this.parent = parent;
 		}
-	string get_control_info() {
-		return "";
+		bool monitor() { return false;}
+		void on_fire() {
+			string i = this.get_control_info();
+			if(!i.empty()) speak(i);
+		}
+		string get_control_info() {
+			return "";
 	}
 	}
 }

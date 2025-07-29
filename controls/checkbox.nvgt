@@ -5,8 +5,12 @@ namespace nv_form {
 			super(caption, id, ct_checkbox, parent);
 			this.state = initial_state;
 		}
-	string get_control_info() {
-		return (this.state?"checked":"unchecked");
+		void on_fire() {
+			this.toggle();
+			nv_form_control::on_fire();
+		}
+		string get_control_info() {
+			return (this.state?"checked":"unchecked");
 	}
 		void toggle() {
 			this.state = (this.state?false:true);
