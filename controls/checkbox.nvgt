@@ -1,0 +1,25 @@
+namespace nv_form {
+	class nv_form_checkbox: nv_form_control {
+		bool state;
+		nv_form_checkbox(nv_form@parent, string caption, string id = "", bool initial_state = false) {
+			super(caption, id, ct_checkbox, parent);
+			this.state = initial_state;
+		}
+	string get_control_info() {
+		return (this.state?"checked":"unchecked");
+	}
+		void toggle() {
+			this.state = (this.state?false:true);
+		}
+		bool check() {
+			if(this.state) return false;
+			this.state = true;
+			return true;
+		}
+		bool uncheck() {
+			if(!this.state) return false;
+			this.state = false;
+			return true;
+		}
+	}
+}

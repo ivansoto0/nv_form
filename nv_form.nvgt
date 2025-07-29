@@ -1,0 +1,104 @@
+/* nv_form.nvgt - audio form rewrite(with some code taken from the original form)
+ *
+ * NVGT - NonVisual Gaming Toolkit
+ * Copyright (c) 2022-2024 Sam Tupy
+ * https://nvgt.gg
+ * form2.nvgt - Copyright (C) 2025 Ivan Soto
+ * This software is provided "as-is", without any express or implied warranty. In no event will the authors be held liable for any damages arising from the use of this software.
+ * Permission is granted to anyone to use this software for any purpose, including commercial applications, and to alter it and redistribute it freely, subject to the following restrictions:
+ * 1. The origin of this software must not be misrepresented; you must not claim that you wrote the original software. If you use this software in a product, an acknowledgment in the product documentation would be appreciated but is not required.
+ * 2. Altered source versions must be plainly marked as such, and must not be misrepresented as being the original software.
+ * 3. This notice may not be removed or altered from any source distribution.
+*/
+#include"enums.nvgt"
+#include"controls/*.nvgt"
+#include"speech.nvgt"
+namespace nv_form {
+	//characters that should be considered word boundaries.
+	string audioform_word_separators = "_ .,!\\\"/[{()}]=\n";
+	//prespeech callback, if set the given function will be called right before the form speaks.
+	funcdef void form_prespeech_callback(nv_form@ f);
+	// Background callback, this method is fired at the top of the monitor function and can return false to abort the forms monitor logic during that iteration. It can be useful when creating UI extension libraries that need to insert logic into any form in an application without modifying every loop that invoques form.monitor in the target application.
+	funcdef bool form_update_callback(nv_form@ f);
+	//control event callback
+	funcdef int on_form_control_event_callback(nv_form@ f, int c, control_event_type event, dictionary@ args);
+	funcdef bool form_kb_echo_update_callback(nv_form@ f, int echo);
+
+	//can make this a member of the audio form class as soon as even one person suggests seriously wanting to change on a form by form basis I guess
+	bool audioform2_input_disable_ralt = true;
+	int audioform2_keyboard_echo = textflag_characters;
+	form_update_callback@ audioform_default_background_callback = null;
+	//main window class
+	class nv_form {
+		nv_form_control@[]controls;
+		int control_index = -1;
+		string window_title;
+		bool speak_control_attributes_separately = false;
+		bool active = false;
+		private nv_form_errorcodes[] errors;
+		nv_form() {
+			this.controls.resize(0);
+		}
+		nv_form_control@get_control_by_id(const string&in id) {
+			if(this.controls.length()<=0) return null;
+			for(uint i = 0; i<this.controls.length(); i+=1) {
+				if(this.controls[i].id == id) return this.controls[i];
+			}
+			return null;
+		}
+		bool create_window(string title, bool change_screen_title = true, bool say_dialog = true, bool silent = false) {
+			if(this.active) return this.error(form_error_already_active);
+			if(title.empty()) return this.error(form_error_invalid_operation);
+			this.window_title = title;
+			this.active = true;
+			if(change_screen_title) show_window(this.window_title);
+			if(!silent) {
+				speak(window_title+(say_dialog?" dialog":""), false);
+			}
+			return true;
+		}
+		private bool error(nv_form_errorcodes error) {
+			this.errors.insert_last(error);
+			return true;
+		}
+		nv_form_errorcodes get_last_error() const property {
+			if(this.errors.length()<=0) return form_error_none;
+			return this.errors[this.errors.length()-1];
+		}
+		bool navigate_form(bool next = true) {
+			int index = this.control_index;
+			if(next) index += 1;
+			else index -= 1;
+			if(index<0) index = this.controls.length()-1;
+			if(index>=this.controls.length()) index = 0;
+			return this.set_focus(index);
+		}
+		bool focus_control(nv_form_control@ctrl, bool quiet = false) {
+			if(@ctrl == null) return false;
+			int index = this.controls.find_by_ref(ctrl);
+			if(index == -1) return false;
+			return this.set_focus(index, quiet);
+		}
+		private bool set_focus(int control_index, bool quiet = false) {
+			if(control_index<0 or control_index>=this.controls.length()) return false;
+			this.control_index = control_index;
+			if(!quiet) return this.speak_current_control();
+			else return true;
+		}
+		bool speak_current_control() {
+			if(this.control_index == -1) return false;
+			nv_form_control@ctrl = this.controls[this.control_index];
+			if(@ctrl == null) return false;
+			string text = ctrl.caption+" "+get_control_type_string(ctrl.type);
+			if(!this.speak_control_attributes_separately) {
+				text += " "+ctrl.get_control_info();
+				return speak(text);
+			}
+			else {
+				speak(text);
+				speak(ctrl.get_control_info(), false);
+				return true;
+			}
+		}
+	}
+}

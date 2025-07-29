@@ -1,0 +1,17 @@
+namespace nv_form {
+	string get_control_type_string(control_types ct) {
+		switch(ct) {
+			case ct_button: return "button";
+			case ct_input: return "input";
+			case ct_checkbox: return "checkbox";
+			case ct_progress: return "progress bar";
+			case ct_status_bar: return "status bar";
+			case ct_list: return "list";
+			case ct_slider: return "slider";
+			case ct_form: return "form";
+			case ct_keyboard_area: return "keyboard area";
+			case ct_link: return "link";
+			default: return "unknown";
+		}
+	}
+}

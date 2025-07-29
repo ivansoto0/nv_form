@@ -1,0 +1,48 @@
+namespace nv_form {
+	shared enum clipboard_flags
+		{
+		clipboard_flag_copy = 1 << 0,
+		clipboard_flag_cut = 1 << 1,
+		clipboard_flag_paste = 1 << 2
+	}
+	//form_errors
+	shared enum nv_form_errorcodes {
+		form_error_none = 0,
+		form_error_invalid_index,
+		form_error_invalid_control,
+		form_error_invalid_value,
+		form_error_invalid_operation,
+		form_error_no_window,
+		form_error_window_full,
+		form_error_text_too_long,
+		form_error_list_empty,
+		form_error_list_full,
+		form_error_invalid_list_index,
+		form_error_control_invisible,
+		form_error_no_controls_visible,
+		form_error_already_active
+	}
+	//text entry speech flags
+	shared enum text_entry_speech_flags {
+		textflag_none = 0,
+		textflag_characters,
+		textflag_words,
+		textflag_characters_words
+	}
+	//Text edit modes
+	shared enum text_edit_mode_constants {
+		edit_mode_replace = 0,
+		edit_mode_trim_to_length,
+		edit_mode_append_to_end
+	}
+	//types of update events that can be received by controls
+	shared enum control_event_type {
+		event_none = 0,
+		event_focus,
+		event_list_cursor,
+		event_text_cursor,
+		event_button,
+		event_checkbox,
+		event_slider
+	}
+}
