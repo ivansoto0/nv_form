@@ -1,4 +1,4 @@
-namespace nv_form {
+namespace nvform {
 	shared enum clipboard_flags
 		{
 		clipboard_flag_copy = 1 << 0,

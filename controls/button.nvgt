@@ -1,7 +1,7 @@
-namespace nv_form {
-	class nv_button: nv_form_control {
+namespace nvform {
+	class nv_form_button: nv_form_control {
 		bool pressed;
-		nv_button(nv_form@parent, string caption, string id = "", bool pressed = false) {
+		nv_form_button(nv_form@parent, string caption, string id = "", bool pressed = false) {
 			super(caption, id, ct_button, @parent);
 			this.pressed = pressed;
 		}

@@ -1,4 +1,4 @@
-namespace nv_form {
+namespace nvform {
 	string get_control_type_string(control_types ct) {
 		switch(ct) {
 			case ct_button: return "button";

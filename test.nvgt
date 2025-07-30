@@ -1,6 +1,27 @@
-#include"nv_form.nvgt"
+#include"form.nvgt"
+namespace nvform {
+	class custom_button: nv_form_button {
+		custom_button(nv_form@parent) {
+			super(@parent, "press this now", "click");
+		}
+		void on_fire() {
+			alert("ok", "it works");
+		}
+	}
+
+}
 void main() {
-	nv_form::nv_form form;
+	nvform::nv_form f;
 	speak("It works");
-	exit();
+	nvform::custom_button my_button(f);
+	f.create_window("Test", say_dialog = true);
+	f.add_control(my_button);
+	f.add_checkbox("Uncheck this", "box", true);
+	while(true) {
+		wait(5);
+		if(!f.monitor()) {
+			alert("ok", "time to exit this application");
+			break;
+		}
+	}
 }

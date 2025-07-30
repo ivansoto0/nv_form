@@ -1,9 +1,9 @@
-namespace nv_form {
-	class nv_list_box: nv_form_control {
+namespace nvform {
+	class nv_form_list_box: nv_form_control {
 		nv_list_item@[]items;
 		bool multiselect;
 		int max_items = -1;
-		nv_list_box(nv_form@parent, string caption, string id = "", nv_list_item@[] items = {}, int max_items = -1) {
+		nv_form_list_box(nv_form@parent, string caption, string id = "", nv_list_item@[] items = {}, int max_items = -1) {
 			super(caption, id, ct_list, @parent);
 			this.max_items = max_items;
 			if(items.length()>0) this.items.extend(items);

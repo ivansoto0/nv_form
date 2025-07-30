@@ -1,8 +1,8 @@
-namespace nv_form {
+namespace nvform {
 	class nv_form_checkbox: nv_form_control {
-		bool state;
+		bool state = false;
 		nv_form_checkbox(nv_form@parent, string caption, string id = "", bool initial_state = false) {
-			super(caption, id, ct_checkbox, parent);
+			super(caption, id, ct_checkbox, @parent);
 			this.state = initial_state;
 		}
 		void on_fire() {
