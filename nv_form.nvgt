@@ -31,13 +31,22 @@ namespace nv_form {
 	//main window class
 	class nv_form {
 		nv_form_control@[]controls;
+		int max_controls = 0;
 		int control_index = -1;
 		string window_title;
 		bool speak_control_attributes_separately = false;
 		bool active = false;
 		private nv_form_errorcodes[] errors;
+		nv_form_control@primary_control = null, cancel_control = null;
 		nv_form() {
+			this.reset();
+		}
+		void reset() {
+			this.window_title = "";
+			this.active = false;
 			this.controls.resize(0);
+			@this.primary_control = null;
+			@this.cancel_control = null;
 		}
 		nv_form_control@get_control_by_id(const string&in id) {
 			if(this.controls.length()<=0) return null;
@@ -45,6 +54,10 @@ namespace nv_form {
 				if(this.controls[i].id == id) return this.controls[i];
 			}
 			return null;
+		}
+		nv_form_control@get_current_control() const property {
+			if(this.controls.length()<=0 or this.control_index < 0) return null;
+			return @this.controls[this.control_index];
 		}
 		bool create_window(string title, bool change_screen_title = true, bool say_dialog = true, bool silent = false) {
 			if(this.active) return this.error(form_error_already_active);
@@ -77,7 +90,11 @@ namespace nv_form {
 			return true;
 		}
 		void handle_input() {
-			if(key_pressed(KEY_TAB)) {
+			if(key_pressed(KEY_SPACE)) {
+				nv_form_control@ctrl = this.current_control;
+				if(@ctrl != null) ctrl.on_fire();
+			}
+			if(key_repeating(KEY_TAB)) {
 				bool next_control = true;
 				if(key_down(KEY_LSHIFT) or key_down(KEY_RSHIFT)) next_control = false;
 				this.navigate_form(next_control);
@@ -90,6 +107,16 @@ namespace nv_form {
 		nv_form_errorcodes get_last_error() const property {
 			if(this.errors.length()<=0) return form_error_none;
 			return this.errors[this.errors.length()-1];
+		}
+		bool add_control(nv_form_control@ctrl, int position = -1, bool primary = false, bool cancel = false) {
+			if(!this.active) return this.error(form_error_no_window);
+			if(this.max_controls>0 and this.controls.length()>=this.max_controls) return this.error(form_error_window_full);
+			if(@ctrl == null) return this.error(form_error_invalid_control);
+			if(position <0) this.controls.insert_last(ctrl);
+			else this.controls.insert_at(position, ctrl);
+			if(primary) @this.primary_control = @ctrl;
+			if(cancel) @this.cancel_control = @ctrl;
+			return true;
 		}
 		bool navigate_form(bool next = true) {
 			int index = this.control_index;
