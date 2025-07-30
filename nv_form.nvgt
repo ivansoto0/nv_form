@@ -83,7 +83,7 @@ namespace nv_form {
 				this.navigate_form(next_control);
 			}
 		}
-		private bool error(nv_form_errorcodes error) {
+		bool error(nv_form_errorcodes error) {
 			this.errors.insert_last(error);
 			return true;
 		}

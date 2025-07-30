@@ -1,6 +1,6 @@
 #include"nv_form.nvgt"
 void main() {
 	nv_form::nv_form form;
-	alert("ha", "It works");
+	speak("It works");
 	exit();
 }
