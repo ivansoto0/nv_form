@@ -16,17 +16,34 @@ namespace nvform {
 		string caption;
 		string id;
 		nv_form@parent;
+		bool hidden = false;
+		nv_form_control_callback@callback = null;
 		nv_form_control(string caption, string id, control_types type, nv_form@parent) {
 			this.caption = caption;
 			this.type = type;
 			this.id = id;
 			@this.parent = parent;
 		}
+		bool hide() {
+			if(this.hidden) return false;
+			this.hidden = true;
+			return true;
+		}
+		bool unhide() {
+			if(!this.hidden) return false;
+			this.hidden = false;
+			return true;
+		}
 		bool monitor() { return false;}
-		void on_fire() {
+		void fire() {
+			bool ok = true;
+			if(@this.callback != null) ok = this.callback(this);
+			if(!ok) return;
 			string i = this.get_control_info();
 			if(!i.empty()) speak(i);
+			this.on_fire();
 		}
+		void on_fire() { }
 		string get_control_info() {
 			return "";
 	}

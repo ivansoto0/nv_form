@@ -1,16 +1,18 @@
 namespace nvform {
 	class nv_form_list_box: nv_form_control {
-		nv_list_item@[]items;
+		nv_form_list_item@[]items;
 		bool multiselect;
 		int max_items = -1;
-		nv_form_list_box(nv_form@parent, string caption, string id = "", nv_list_item@[] items = {}, int max_items = -1) {
+		int list_position = 0;
+		nv_form_list_box(nv_form@parent, string caption, string id = "", bool allow_multiselect = false, nv_form_list_item@[] items = {}, int max_items = -1) {
 			super(caption, id, ct_list, @parent);
+			this.multiselect = allow_multiselect;
 			this.max_items = max_items;
 			if(items.length()>0) this.items.extend(items);
 		}
 		bool add(string item, string id = "", bool selected = false) {
 			if(this.max_items>0 and this.items.length()>=this.max_items) return this.parent.error(form_error_list_full);
-			this.items.insert_last(nv_list_item(item, id, selected));
+			this.items.insert_last(nv_form_list_item(item, id, selected));
 			return true;
 		}
 		int[]@get_list_selections() {
@@ -23,10 +25,10 @@ namespace nvform {
 		}
 	}
 
-	class nv_list_item {
+	class nv_form_list_item {
 		bool selected;
 		string text, id;
-		nv_list_item(string text, string id, bool selected = false) {
+		nv_form_list_item(string text, string id, bool selected = false) {
 			this.text = text;
 			this.id = id;
 			this.selected = selected;

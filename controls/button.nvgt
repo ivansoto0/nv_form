@@ -6,9 +6,9 @@ namespace nvform {
 			this.pressed = pressed;
 		}
 		bool monitor() { return this.pressed; }
-		void on_fire() {
+		void fire() {
 			this.pressed = true;
-			nv_form_control::on_fire();
+			nv_form_control::fire();
 		}
 	}
 }

@@ -11,23 +11,10 @@
  * 3. This notice may not be removed or altered from any source distribution.
 */
 #include"enums.nvgt"
+#include"nv_form_funcdefs.nvgt"
 #include"speech.nvgt"
 #include"controls/*"
 namespace nvform {
-	//characters that should be considered word boundaries.
-	string audioform_word_separators = "_ .,!\\\"/[{()}]=\n";
-	//prespeech callback, if set the given function will be called right before the form speaks.
-	funcdef void form_prespeech_callback(nv_form@ f);
-	// Background callback, this method is fired at the top of the monitor function and can return false to abort the forms monitor logic during that iteration. It can be useful when creating UI extension libraries that need to insert logic into any form in an application without modifying every loop that invoques form.monitor in the target application.
-	funcdef bool form_update_callback(nv_form@ f);
-	//control event callback
-	funcdef int on_form_control_event_callback(nv_form@ f, int c, control_event_type event, dictionary@ args);
-	funcdef bool form_kb_echo_update_callback(nv_form@ f, int echo);
-
-	//can make this a member of the audio form class as soon as even one person suggests seriously wanting to change on a form by form basis I guess
-	bool audioform2_input_disable_ralt = true;
-	int audioform2_keyboard_echo = textflag_characters;
-	form_update_callback@ audioform_default_background_callback = null;
 	//main window class
 	class nv_form {
 		nv_form_control@[]controls;
@@ -38,6 +25,7 @@ namespace nvform {
 		bool active = false;
 		private nv_form_errorcodes[] errors;
 		nv_form_control@primary_control = null, cancel_control = null;
+		nv_form_callback@background_callback = null;
 		nv_form() {
 			this.reset();
 		}
@@ -59,6 +47,18 @@ namespace nvform {
 			if(this.controls.length()<=0 or this.control_index < 0) return null;
 			return @this.controls[this.control_index];
 		}
+		nv_form_control@find_next_control(bool next = true) {
+			if(this.controls.length() == 0) return null;
+			int index = this.control_index;
+			while(true) {
+				index += (next ? 1 : -1);
+				if(index < 0 or index >= this.controls.length())
+					index = (index>=this.controls.length()?0:this.controls.length()-1);
+				if(@this.controls[index] != null and !this.controls[index].hidden)
+					return this.controls[index];
+			}
+			return null;
+		}
 		bool create_window(string title, bool change_screen_title = true, bool say_dialog = true, bool silent = false) {
 			if(this.active) return this.error(form_error_already_active);
 			if(title.empty()) return this.error(form_error_invalid_operation);
@@ -70,12 +70,13 @@ namespace nvform {
 			}
 			return true;
 		}
-		bool check_controls() {
+		bool check_controls(nv_form_control@&out ctrl = void) {
 			if(this.controls.length()<=0) return false;
 			bool result = false;
 			for(uint i = 0; i<this.controls.length(); i+=1) {
 				if(this.controls[i].monitor()) {
-					result = false;
+					result = true;
+					@ctrl = this.controls[i];
 					break;
 				}
 			}
@@ -84,15 +85,17 @@ namespace nvform {
 		bool monitor() {
 			if(!this.active) return false;
 			this.handle_input();
-			bool result = this.check_controls();
-			if(result) return false;
+			nv_form_control@ctrl;
+			bool result = this.check_controls(ctrl);
+			if(result and @ctrl != null and (@this.cancel_control != null and @ctrl == this.cancel_control)) return false;
 			return true;
 		}
 		void handle_input() {
 			if(key_pressed(KEY_SPACE)) {
 				nv_form_control@ctrl = this.current_control;
-				if(@ctrl != null) ctrl.on_fire();
+				if(@ctrl != null) ctrl.fire();
 			}
+			if(key_pressed(KEY_ESCAPE) and @this.cancel_control != null) this.cancel_control.fire();
 			if(key_repeating(KEY_TAB)) {
 				bool next_control = true;
 				if(key_down(KEY_LSHIFT) or key_down(KEY_RSHIFT)) next_control = false;
@@ -107,9 +110,9 @@ namespace nvform {
 			if(this.errors.length()<=0) return form_error_none;
 			return this.errors[this.errors.length()-1];
 		}
-		nv_form_button@add_button(string caption, string id = "", bool primary = false, bool cancel = false, int position = -1) {
+		nv_form_button@add_button(string caption, string id = "", bool primary = false, bool cancel = false, int position = -1, nv_form_control_callback@callback = null) {
 			nv_form_button@btn = nv_form_button(this, caption, id);
-			bool added = this.add_control(btn, primary, cancel, position);
+			bool added = this.add_control(btn, primary, cancel, position, @callback);
 			if(added) return btn;
 			return null;
 		}
@@ -119,10 +122,17 @@ namespace nvform {
 			if(added) return checkbox;
 			return null;
 		}
-		bool add_control(nv_form_control@ctrl, bool primary = false, bool cancel = false, int position = -1) {
+		nv_form_list_box@add_list(string caption, string id = "", bool allow_multiselect = false, nv_form_list_item@[] items = {}, int max_items = 0, int position = -1) {
+			nv_form_list_box@lst = nv_form_list_box(this, caption, id, allow_multiselect, items, max_items);
+			bool added = this.add_control(lst, position = position);
+			if(added) return lst;
+			return null;
+		}
+		bool add_control(nv_form_control@ctrl, bool primary = false, bool cancel = false, int position = -1, nv_form_control_callback@callback = null) {
 			if(!this.active) return this.error(form_error_no_window);
 			if(this.max_controls>0 and this.controls.length()>=this.max_controls) return this.error(form_error_window_full);
 			if(@ctrl == null) return this.error(form_error_invalid_control);
+			if(@callback != null) @ctrl.callback = callback;
 			if(position <0) this.controls.insert_last(ctrl);
 			else this.controls.insert_at(position, ctrl);
 			if(primary) @this.primary_control = @ctrl;
@@ -130,12 +140,8 @@ namespace nvform {
 			return true;
 		}
 		bool navigate_form(bool next = true) {
-			int index = this.control_index;
-			if(next) index += 1;
-			else index -= 1;
-			if(index<0) index = this.controls.length()-1;
-			if(index>=this.controls.length()) index = 0;
-			return this.set_focus(index);
+			nv_form_control@ctrl = this.find_next_control(next);
+			return this.focus_control(ctrl);
 		}
 		bool focus_control(nv_form_control@ctrl, bool quiet = false, bool interupt_previous_speech = true) {
 			if(@ctrl == null) return false;
