@@ -110,6 +110,20 @@ namespace nvform {
 			if(this.errors.length()<=0) return form_error_none;
 			return this.errors[this.errors.length()-1];
 		}
+		//helper functions.
+		bool is_pressed(string control_id) {
+			nv_form_control@ctrl = this.get_control_by_id(control_id);
+			if(@ctrl == null or ctrl.type != ct_button) return this.error(form_error_invalid_control);
+			nv_form_button@btn = cast<nv_form_button@>(ctrl);
+			if(@btn == null) return this.error(form_error_invalid_control);
+			return this.is_pressed(btn);
+		}
+		bool is_pressed(nv_form_button@btn) {
+			if(@btn.parent != this) return this.error(form_error_invalid_control);
+			bool result = btn.pressed;
+			if(result) btn.pressed = false;
+			return result;
+		}
 		nv_form_button@add_button(string caption, string id = "", bool primary = false, bool cancel = false, int position = -1, nv_form_control_callback@callback = null) {
 			nv_form_button@btn = nv_form_button(this, caption, id);
 			bool added = this.add_control(btn, primary, cancel, position, @callback);

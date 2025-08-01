@@ -16,14 +16,20 @@ void main() {
 	nvform::custom_button my_button(f);
 	f.create_window("Test", say_dialog = true);
 	f.add_control(my_button);
-	//now we create a basic button.
+	//now we create a basic button with a callback registered to it.
 	nvform::nv_form_button@btn = f.add_button("Press this other button here", "testbtn", cancel = true, callback = on_x_click);
+	//now we create a legacy style button, setting it as the primary control.
+	f.add_button("Speak something", "speak");
 	f.add_checkbox("Uncheck this", "box", true);
 	while(true) {
 		wait(5);
 		if(!f.monitor()) {
 			alert("ok", "time to exit this application");
 			break;
+		}
+		if(f.is_pressed("speak")) {
+			speak("Legacy buttons work!", false);
+			continue;
 		}
 	}
 }
