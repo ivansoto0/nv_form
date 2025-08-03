@@ -1,14 +1,12 @@
-namespace nvform {
-	class nv_form_button: nv_form_control {
-		bool pressed;
-		nv_form_button(nv_form@parent, string caption, string id = "", bool pressed = false) {
-			super(caption, id, ct_button, @parent);
-			this.pressed = pressed;
-		}
-		bool monitor() { return this.pressed; }
-		void fire() {
-			this.pressed = true;
-			nv_form_control::fire();
-		}
+class nv_form_button: nv_form_control {
+	bool pressed;
+	nv_form_button(nv_form@parent, string caption, string id = "", bool pressed = false) {
+		super(caption, id, nv_form_ct_button, @parent);
+		this.pressed = pressed;
+	}
+	bool monitor() { return this.pressed; }
+	void fire() {
+		this.pressed = true;
+		nv_form_control::fire();
 	}
 }

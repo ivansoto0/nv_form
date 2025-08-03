@@ -1,25 +1,23 @@
 #include"form.nvgt"
-namespace nvform {
-	class custom_button: nv_form_button {
-		custom_button(nv_form@parent) {
-			super(@parent, "press this now", "click");
-		}
-		void on_fire() {
-			alert("ok", "it works: "+this.pressed);
-		}
+class custom_button: nv_form_button {
+	custom_button(nv_form@parent) {
+		super(@parent, "press this now", "click");
 	}
-
+	void on_fire() {
+		alert("ok", "it works: "+this.pressed);
+	}
 }
+
 void main() {
-	nvform::nv_form f;
+	nv_form f;
 	speak("It works");
-	nvform::custom_button my_button(f);
+	custom_button my_button(f);
 	f.create_window("Test", say_dialog = true);
 	f.add_control(my_button);
 	//now we create a basic button with a callback registered to it.
-	nvform::nv_form_button@btn = f.add_button("Press this other button here", "testbtn", cancel = true, callback = on_x_click);
+	nv_form_button@btn = f.add_button("Press this other button here", "testbtn", cancel = true, callback = on_x_click);
 	//now we create a legacy style button, setting it as the primary control.
-	f.add_button("Speak something", "speak");
+	f.add_button("Speak something", "speak", primary = true);
 	f.add_checkbox("Uncheck this", "box", true);
 	while(true) {
 		wait(5);
@@ -33,7 +31,7 @@ void main() {
 		}
 	}
 }
-bool on_x_click(nvform::nv_form_control@ctrl) {
+bool on_x_click(nv_form_control@ctrl) {
 	alert("ok", "goodbye");
 	exit();
 	return true;

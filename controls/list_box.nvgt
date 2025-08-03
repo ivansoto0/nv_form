@@ -1,37 +1,65 @@
-namespace nvform {
-	class nv_form_list_box: nv_form_control {
-		nv_form_list_item@[]items;
-		bool multiselect;
-		int max_items = -1;
-		int list_position = 0;
-		nv_form_list_box(nv_form@parent, string caption, string id = "", bool allow_multiselect = false, nv_form_list_item@[] items = {}, int max_items = -1) {
-			super(caption, id, ct_list, @parent);
-			this.multiselect = allow_multiselect;
-			this.max_items = max_items;
-			if(items.length()>0) this.items.extend(items);
-		}
-		bool add(string item, string id = "", bool selected = false) {
-			if(this.max_items>0 and this.items.length()>=this.max_items) return this.parent.error(form_error_list_full);
-			this.items.insert_last(nv_form_list_item(item, id, selected));
-			return true;
-		}
-		int[]@get_list_selections() {
-			int[] res;
-			if(this.items.length()<=0) return res;
-			for(uint i = 0; i<this.items.length(); i+=1) {
-				if(this.items[i].selected) res.insert_last(i);
-			}
-			return res;
-		}
+class nv_form_list_box: nv_form_control {
+	nv_form_list_item@[]items;
+	bool multiselect;
+	int max_items = -1;
+	int list_position = 0;
+	nv_form_list_box(nv_form@parent, string caption, string id = "", bool allow_multiselect = false, nv_form_list_item@[] items = {}, int max_items = -1) {
+		super(caption, id, nv_form_ct_list, @parent);
+		this.multiselect = allow_multiselect;
+		this.max_items = max_items;
+		if(items.length()>0) this.items.extend(items);
 	}
-
-	class nv_form_list_item {
-		bool selected;
-		string text, id;
-		nv_form_list_item(string text, string id, bool selected = false) {
-			this.text = text;
-			this.id = id;
-			this.selected = selected;
+	bool set_item_selected_state(int item_index, bool selected) {
+		if(this.items.length()<=0 or (item_index<0 or item_index>=this.items.length())) return this.parent.error(nv_form_error_invalid_list_index);
+		if(!this.multiselect and selected == true) {
+			this.clear_list_selections();
 		}
+		this.items[item_index].selected = selected;
+		return true;
+	}
+	bool clear_list_selections() {
+		int[]@sel = this.get_list_selections();
+		if(sel.length()<=0) return this.parent.error(nv_form_error_no_selections);
+		for(uint i = 0; i<sel.length(); i+=1) {
+			int ind = sel[i];
+			this.items[ind].selected = false;
+		}
+		return true;
+	}
+	int get_item_index(string id) {
+		if(id.empty()) return -1;
+		for(uint i = 0; i<this.items.length(); i+=1) {
+			if(this.items[i].id.empty()) continue;
+			if(this.items[i].id == id) {
+				return i;
+			}
+		}
+		return -1;
+	}
+	bool add(string item, string id = "", bool selected = false) {
+		if(this.max_items>0 and this.items.length()>=this.max_items) return this.parent.error(nv_form_error_list_full);
+		this.items.insert_last(nv_form_list_item(item, id, selected));
+		return true;
+	}
+	int[]@get_list_selections() {
+		int[] res;
+		if(this.items.length()<=0) return res;
+		for(uint i = 0; i<this.items.length(); i+=1) {
+			if(this.items[i].selected) {
+				res.insert_last(i);
+				if(!this.multiselect) break;
+			}
+		}
+		return res;
+	}
+}
+
+class nv_form_list_item {
+	bool selected;
+	string text, id;
+	nv_form_list_item(string text, string id, bool selected = false) {
+		this.text = text;
+		this.id = id;
+		this.selected = selected;
 	}
 }

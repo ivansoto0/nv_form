@@ -1,4 +1,2 @@
-namespace nvform {
-	funcdef bool nv_form_callback(nv_form@f, nv_form_control@ctrl = null, dictionary@args = null);
-	funcdef bool nv_form_control_callback(nv_form_control@ctrl);
-}
+funcdef bool nv_form_callback(nv_form@f, nv_form_control@ctrl = null, dictionary@args = null);
+funcdef bool nv_form_control_callback(nv_form_control@ctrl);

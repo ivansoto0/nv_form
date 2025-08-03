@@ -1,51 +1,37 @@
-namespace nvform {
-	shared enum control_types {
-		ct_button = 0,
-		ct_input,
-		ct_checkbox,
-		ct_progress,
-		ct_status_bar,
-		ct_list,
-		ct_slider,
-		ct_form,
-		ct_keyboard_area,
-		ct_link
+abstract class nv_form_control {
+	nv_form_control_type type;
+	string caption;
+	string id;
+	nv_form@parent;
+	bool hidden = false;
+	nv_form_control_callback@callback = null;
+	nv_form_control(string caption, string id, nv_form_control_type type, nv_form@parent) {
+		this.caption = caption;
+		this.type = type;
+		this.id = id;
+		@this.parent = parent;
 	}
-	abstract class nv_form_control {
-		control_types type;
-		string caption;
-		string id;
-		nv_form@parent;
-		bool hidden = false;
-		nv_form_control_callback@callback = null;
-		nv_form_control(string caption, string id, control_types type, nv_form@parent) {
-			this.caption = caption;
-			this.type = type;
-			this.id = id;
-			@this.parent = parent;
-		}
-		bool hide() {
-			if(this.hidden) return false;
-			this.hidden = true;
-			return true;
-		}
-		bool unhide() {
-			if(!this.hidden) return false;
-			this.hidden = false;
-			return true;
-		}
-		bool monitor() { return false;}
-		void fire() {
-			bool ok = true;
-			if(@this.callback != null) ok = this.callback(this);
-			if(!ok) return;
-			string i = this.get_control_info();
-			if(!i.empty()) speak(i);
-			this.on_fire();
-		}
-		void on_fire() { }
-		string get_control_info() {
-			return "";
+	bool hide() {
+		if(this.hidden) return false;
+		this.hidden = true;
+		return true;
 	}
+	bool unhide() {
+		if(!this.hidden) return false;
+		this.hidden = false;
+		return true;
 	}
+	bool monitor() { return false;}
+	void fire() {
+		bool ok = true;
+		if(@this.callback != null) ok = this.callback(this);
+		if(!ok) return;
+		string i = this.get_control_info();
+		if(!i.empty()) speak(i);
+		this.on_fire();
+	}
+	void on_fire() { }
+	string get_control_info() {
+		return "";
+}
 }
