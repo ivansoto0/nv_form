@@ -9,6 +9,8 @@ class custom_button: nv_form_button {
 }
 
 void main() {
+	int profile = question("profiler", "Would you like to run the profile during this test?");
+	if(profile == 1) start_profiling();
 	nv_form f;
 	speak("It works");
 	custom_button my_button(f);
@@ -16,12 +18,14 @@ void main() {
 	f.add_control(my_button);
 	//now we create a basic button with a callback registered to it.
 	nv_form_button@btn = f.add_button("Press this other button here", "testbtn", cancel = true, callback = on_x_click);
+	btn.hide();
 	//now we create a legacy style button, setting it as the primary control.
 	f.add_button("Speak something", "speak", primary = true);
 	f.add_checkbox("Uncheck this", "box", true);
 	nv_form_list_box@lst = nv_form_list_box(f, "test items", "items");
 	lst.add_items({"This is a test item", "another item", "nvgt", "cpp"});
 	f.add_control(lst);
+	nv_form_slider@slider = f.add_slider("volume level", "vol", max_value = 50);
 	while(true) {
 		wait(5);
 		if(!f.monitor()) {
@@ -30,12 +34,23 @@ void main() {
 		}
 		if(f.is_pressed("speak")) {
 			speak("Legacy buttons work!", false);
+			nv_form_list_item@focused_item = f.get_list_focus("items");
+			if(@focused_item == null) speak("Nothing selected", false);
+			else speak(focused_item.text+" selected", false);
+			speak("Checkbox is "+(f.is_checked("box")?"checked":"unchecked"), false);
 			continue;
 		}
 	}
 }
 bool on_x_click(nv_form_control@ctrl) {
 	alert("ok", "goodbye");
+	string r= generate_profile();
+	if(!r.empty()) {
+		file f;
+		f.open("profile.log", "wb");
+		f.write(r);
+		f.close();
+	}
 	exit();
 	return true;
 }

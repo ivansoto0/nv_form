@@ -3,7 +3,7 @@
  * NVGT - NonVisual Gaming Toolkit
  * Copyright (c) 2022-2024 Sam Tupy
  * https://nvgt.gg
- * form2.nvgt - Copyright (C) 2025 Ivan Soto
+ * nv_form - Copyright (C) 2025 Ivan Soto
  * This software is provided "as-is", without any express or implied warranty. In no event will the authors be held liable for any damages arising from the use of this software.
  * Permission is granted to anyone to use this software for any purpose, including commercial applications, and to alter it and redistribute it freely, subject to the following restrictions:
  * 1. The origin of this software must not be misrepresented; you must not claim that you wrote the original software. If you use this software in a product, an acknowledgment in the product documentation would be appreciated but is not required.
@@ -124,6 +124,35 @@ class nv_form {
 		if(result) btn.pressed = false;
 		return result;
 	}
+	bool is_checked(string control_id) {
+		nv_form_checkbox@box = cast<nv_form_checkbox@>(this.get_control_by_id(control_id));
+		if(@box == null) return this.error(nv_form_error_invalid_control);
+		return this.is_checked(box);
+	}
+	bool is_checked(nv_form_checkbox@box) {
+		if(@box.parent != this) return this.error(nv_form_error_invalid_control);
+		return box.state;
+	}
+	nv_form_list_item@get_list_focus(string control_id) {
+		return this.get_list_focus(cast<nv_form_list_box@>(this.get_control_by_id(control_id)));
+	}
+	nv_form_list_item@get_list_focus(nv_form_list_box@lst) {
+		if(@lst == null or @lst.parent != this) {
+			this.error(nv_form_error_invalid_control);
+			return null;
+		}
+		return lst.focused_item;
+	}
+	int get_slider_value(string control_id) {
+		return this.get_slider_value(cast<nv_form_slider@>(this.get_control_by_id(control_id)));
+	}
+	int get_slider_value(nv_form_slider@slider) {
+		if(@slider == null or @slider.parent != this) {
+			this.error(nv_form_error_invalid_control);
+			return 0;
+		}
+		return slider.value;
+	}
 	nv_form_button@add_button(string caption, string id = "", bool primary = false, bool cancel = false, int position = -1, nv_form_control_callback@callback = null) {
 		nv_form_button@btn = nv_form_button(this, caption, id);
 		bool added = this.add_control(btn, primary, cancel, position, @callback);
@@ -140,6 +169,12 @@ class nv_form {
 		nv_form_list_box@lst = nv_form_list_box(this, caption, id, allow_multiselect, items, max_items);
 		bool added = this.add_control(lst, position = position);
 		if(added) return lst;
+		return null;
+	}
+	nv_form_slider@add_slider(string caption, string id = "", int min_value = 0, int max_value = 100, int step_size = 1, int initial_value = 0, int position = -1) {
+		nv_form_slider slide(this, caption, id, min_value, max_value, step_size, initial_value);
+		bool added = this.add_control(@slide, position = position);
+		if(added) return slide;
 		return null;
 	}
 	bool add_control(nv_form_control@ctrl, bool primary = false, bool cancel = false, int position = -1, nv_form_control_callback@callback = null) {

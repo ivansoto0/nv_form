@@ -1,0 +1,31 @@
+class nv_form_slider: nv_form_control {
+	int min_value, max_value, step, value;
+	nv_form_slider(nv_form@parent, string caption, string id = "", int min_value = 0, int max_value = 100, int step = 1, int initial_value = 0) {
+		super(caption, id, nv_form_ct_slider, @parent);
+		this.min_value = min_value;
+		this.max_value = max_value;
+		this.step = step;
+		this.value = initial_value;
+		this.clamp_value();
+	}
+	void clamp_value() {
+		if(this.value < this.min_value) this.value = this.min_value;
+		if(this.value > this.max_value) this.value = this.max_value;
+	}
+	bool handle_input() {
+		if(key_repeating(KEY_DOWN)) {
+			this.value -= this.step;
+			this.clamp_value();
+			speak(this.value);
+		}
+		if(key_repeating(KEY_UP)) {
+			this.value += this.step;
+			this.clamp_value();
+			speak(this.value);
+		}
+		return true;
+	}
+	void on_focus_gained() {
+		speak(this.value, false);
+	}
+}
