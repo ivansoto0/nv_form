@@ -23,6 +23,22 @@ class nv_form_list_box: nv_form_control {
 		this.list_position = index;
 		return true;
 	}
+	bool handle_input() {
+		if(key_repeating(KEY_UP)) {
+			bool nav = this.navigate(false);
+			if(nav) speak(this.focused_item.text);
+		}
+		if(key_repeating(KEY_DOWN)) {
+			bool nav = this.navigate();
+			if(nav) speak(this.focused_item.text);
+		}
+		return true;
+	}
+	void on_focus_gained() {
+		nv_form_list_item@item = this.focused_item;
+		if(@item == null) return;
+		speak(item.text, false);
+	}
 	bool set_item_selected_state(int item_index, bool selected) {
 		if(this.items.length()<=0 or (item_index<0 or item_index>=this.items.length())) return this.parent.error(nv_form_error_invalid_list_index);
 		if(!this.multiselect and selected == true) {
@@ -44,6 +60,10 @@ class nv_form_list_box: nv_form_control {
 		if(this.max_items>0 and this.items.length()>=this.max_items) return this.parent.error(nv_form_error_list_full);
 		this.items.insert_last(nv_form_list_item(item, id, selected));
 		return true;
+	}
+	void add_items(string[]@items) {
+		if(items.length()<=0) return;
+		for(uint i = 0; i<items.length(); i+=1) this.add(items[i], items[i]);
 	}
 	bool delete(const string&in id) {
 		if(this.items.length()<=0) return this.parent.error(nv_form_error_list_empty);

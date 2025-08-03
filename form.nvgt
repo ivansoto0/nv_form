@@ -89,6 +89,8 @@ class nv_form {
 		return true;
 	}
 	void handle_input() {
+		nv_form_control@cur_control = this.current_control;
+		if(@cur_control != null) cur_control.handle_input();
 		if(key_pressed(KEY_SPACE)) {
 			nv_form_control@ctrl = this.current_control;
 			if(@ctrl != null) ctrl.fire();
@@ -164,8 +166,11 @@ class nv_form {
 	private bool set_focus(int control_index, bool quiet = false, bool interrupt_previous_speech = true) {
 		if(control_index<0 or control_index>=this.controls.length()) return false;
 		this.control_index = control_index;
-		if(!quiet) return this.speak_current_control(interrupt_previous_speech);
-		else return true;
+		bool result;
+		if(!quiet) result = this.speak_current_control(interrupt_previous_speech);
+		else result = true;
+		this.current_control.on_focus_gained();
+		return result;
 	}
 	bool speak_current_control(bool interrupt = true) {
 		if(this.control_index == -1) return false;

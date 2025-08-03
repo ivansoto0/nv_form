@@ -21,6 +21,7 @@ abstract class nv_form_control {
 		this.hidden = false;
 		return true;
 	}
+	bool handle_input() { return false; }
 	bool monitor() { return false;}
 	void fire() {
 		bool ok = true;
@@ -31,6 +32,7 @@ abstract class nv_form_control {
 		this.on_fire();
 	}
 	void on_fire() { }
+	void on_focus_gained() { }
 	string get_control_info() {
 		return "";
 }

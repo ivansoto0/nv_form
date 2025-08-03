@@ -19,6 +19,9 @@ void main() {
 	//now we create a legacy style button, setting it as the primary control.
 	f.add_button("Speak something", "speak", primary = true);
 	f.add_checkbox("Uncheck this", "box", true);
+	nv_form_list_box@lst = nv_form_list_box(f, "test items", "items");
+	lst.add_items({"This is a test item", "another item", "nvgt", "cpp"});
+	f.add_control(lst);
 	while(true) {
 		wait(5);
 		if(!f.monitor()) {
