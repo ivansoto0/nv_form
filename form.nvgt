@@ -179,6 +179,12 @@ class nv_form {
 		if(added) return slide;
 		return null;
 	}
+	nv_form_progress_bar@add_progress_bar(string caption, string id = "", double min = 0, double max = 100, double initial = 0.0, int position = -1) {
+		nv_form_progress_bar@bar = nv_form_progress_bar(@this, caption, id, min, max, initial);
+		bool added = this.add_control(@bar, position = position);
+		if(added) return bar;
+		return null;
+	}
 	nv_form_keyboard_area@add_keyboard_area(string caption, string id = "", int position = -1) {
 		nv_form_keyboard_area area(@this, caption, id);
 		bool added = this.add_control(@area, position = position);
