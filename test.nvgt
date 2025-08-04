@@ -26,12 +26,14 @@ void main() {
 	lst.add_items({"This is a test item", "another item", "nvgt", "cpp"});
 	f.add_control(lst);
 	nv_form_slider@slider = f.add_slider("volume level", "vol", max_value = 50);
+	f.add_keyboard_area("have fun here", "kbd");
 	while(true) {
 		wait(5);
 		if(!f.monitor()) {
 			alert("ok", "time to exit this application");
 			break;
 		}
+		keyboard_loop();
 		if(f.is_pressed("speak")) {
 			speak("Legacy buttons work!", false);
 			nv_form_list_item@focused_item = f.get_list_focus("items");
@@ -53,4 +55,12 @@ bool on_x_click(nv_form_control@ctrl) {
 	}
 	exit();
 	return true;
+}
+sound snd;
+void keyboard_loop() {
+	if(key_pressed(KEY_SPACE)) {
+		if(!snd.active) snd.load("C:\\Windows\\Media\\Speech Misrecognition.wav");
+		if(snd.playing) snd.stop();
+		snd.play();
+	}
 }

@@ -91,11 +91,13 @@ class nv_form {
 	void handle_input() {
 		nv_form_control@cur_control = this.current_control;
 		if(@cur_control != null) cur_control.handle_input();
-		if(key_pressed(KEY_SPACE)) {
-			nv_form_control@ctrl = this.current_control;
-			if(@ctrl != null) ctrl.fire();
+		if(@cur_control != null and cur_control.type != nv_form_ct_keyboard_area) {
+			if(key_pressed(KEY_SPACE)) {
+				nv_form_control@ctrl = this.current_control;
+				if(@ctrl != null) ctrl.fire();
+			}
+			if(key_pressed(KEY_ESCAPE) and @this.cancel_control != null) this.cancel_control.fire();
 		}
-		if(key_pressed(KEY_ESCAPE) and @this.cancel_control != null) this.cancel_control.fire();
 		if(key_repeating(KEY_TAB)) {
 			bool next_control = true;
 			if(key_down(KEY_LSHIFT) or key_down(KEY_RSHIFT)) next_control = false;
@@ -175,6 +177,12 @@ class nv_form {
 		nv_form_slider slide(this, caption, id, min_value, max_value, step_size, initial_value);
 		bool added = this.add_control(@slide, position = position);
 		if(added) return slide;
+		return null;
+	}
+	nv_form_keyboard_area@add_keyboard_area(string caption, string id = "", int position = -1) {
+		nv_form_keyboard_area area(@this, caption, id);
+		bool added = this.add_control(@area, position = position);
+		if(added) return area;
 		return null;
 	}
 	bool add_control(nv_form_control@ctrl, bool primary = false, bool cancel = false, int position = -1, nv_form_control_callback@callback = null) {
