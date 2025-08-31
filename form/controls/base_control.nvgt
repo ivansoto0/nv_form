@@ -12,12 +12,12 @@ abstract class nv_form_control {
 		@this.parent = parent;
 	}
 	bool hide() {
-		if(this.hidden) return false;
+		if (this.hidden) return false;
 		this.hidden = true;
 		return true;
 	}
 	bool unhide() {
-		if(!this.hidden) return false;
+		if (!this.hidden) return false;
 		this.hidden = false;
 		return true;
 	}
@@ -25,15 +25,15 @@ abstract class nv_form_control {
 	bool monitor() { return false;}
 	void fire() {
 		bool ok = true;
-		if(@this.callback != null) ok = this.callback(this);
-		if(!ok) return;
+		if (@this.callback != null) ok = this.callback(this);
+		if (!ok) return;
 		string i = this.get_control_info();
-		if(!i.empty()) speak(i);
+		if (!i.empty()) speak(i);
 		this.on_fire();
 	}
 	void on_fire() { }
 	void on_focus_gained() { }
 	string get_control_info() {
 		return "";
-}
+	}
 }

@@ -9,16 +9,16 @@ class nv_form_slider: nv_form_control {
 		this.clamp_value();
 	}
 	void clamp_value() {
-		if(this.value < this.min_value) this.value = this.min_value;
-		if(this.value > this.max_value) this.value = this.max_value;
+		if (this.value < this.min_value) this.value = this.min_value;
+		if (this.value > this.max_value) this.value = this.max_value;
 	}
 	bool handle_input() {
-		if(key_repeating(KEY_DOWN)) {
+		if (key_repeating(KEY_DOWN)) {
 			this.value -= this.step;
 			this.clamp_value();
 			speak(this.value);
 		}
-		if(key_repeating(KEY_UP)) {
+		if (key_repeating(KEY_UP)) {
 			this.value += this.step;
 			this.clamp_value();
 			speak(this.value);

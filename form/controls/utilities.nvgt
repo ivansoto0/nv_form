@@ -1,5 +1,5 @@
 string get_nv_form_control_type_string(nv_form_control_type ct) {
-	switch(ct) {
+	switch (ct) {
 		case nv_form_ct_button: return "button";
 		case nv_form_ct_input: return "input";
 		case nv_form_ct_checkbox: return "checkbox";

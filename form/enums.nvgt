@@ -11,8 +11,7 @@ shared enum nv_form_control_type {
 	nv_form_ct_link
 }
 
-shared enum nv_form_clipboard_flags
-	{
+shared enum nv_form_clipboard_flags {
 	nv_clipboard_flag_copy = 1 << 0,
 	nv_clipboard_flag_cut = 1 << 1,
 	nv_clipboard_flag_paste = 1 << 2
