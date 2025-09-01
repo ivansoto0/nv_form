@@ -1,5 +1,6 @@
 abstract class nv_form_control {
 	nv_form_control_type type;
+	string custom_type = "";
 	string caption;
 	string id;
 	nv_form@parent;
