@@ -66,7 +66,7 @@ class nv_form {
 		this.active = true;
 		if (change_screen_title) show_window(this.window_title);
 		if (!silent)
-			speak(window_title + (say_dialog ? " dialog" : ""), false);
+			speak(window_title + (say_dialog ? "  dialog" : ""), false);
 		return true;
 	}
 	bool check_controls(nv_form_control@&out ctrl = void) {
@@ -90,12 +90,11 @@ class nv_form {
 		return true;
 	}
 	void handle_input() {
-		nv_form_control@cur_control = this.current_control;
-		if (@cur_control != null) cur_control.handle_input();
-		if (@cur_control != null and cur_control.type != nv_form_ct_keyboard_area) {
+		nv_form_control@ctrl = this.current_control;
+		if (@ctrl != null) ctrl.handle_input();
+		if (@ctrl != null and ctrl.type != nv_form_ct_keyboard_area) {
 			if (key_pressed(KEY_SPACE)) {
-				nv_form_control@ctrl = this.current_control;
-				if (@ctrl != null) ctrl.fire();
+				ctrl.fire();
 			}
 			if (key_pressed(KEY_ESCAPE) and @this.cancel_control != null) this.cancel_control.fire();
 		}
