@@ -1,3 +1,7 @@
+# Pre directory is used to add private ones, for test purpose before push, so they would not contain in commits.
+pre/**
+!pre/README.md
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.json

@@ -7,89 +7,87 @@ class nv_form_list_box: nv_form_control {
 		super(caption, id, nv_form_ct_list, @parent);
 		this.multiselect = allow_multiselect;
 		this.max_items = max_items;
-		if(items.length()>0) this.items.extend(items);
+		if (items.length() > 0) this.items.extend(items);
 	}
 	nv_form_list_item@get_focused_item() const property {
-		if(this.items.length()<=0 or this.list_position<0) return null;
+		if (this.items.length() <= 0 or this.list_position < 0) return null;
 		return this.items[this.list_position];
 	}
 	bool navigate(bool next = true) {
-		if(this.items.length()<=0) return this.parent.error(nv_form_error_list_empty);
+		if (this.items.length() <= 0) return this.parent.error(nv_form_error_list_empty);
 		int index = this.list_position;
-		if(next) index += 1;
+		if (next) index += 1;
 		else index -= 1;
-		if(index<0) index = 0;
-		if(index>=this.items.length()) index = this.items.length()-1;
+		if (index < 0) index = 0;
+		if (index >= this.items.length()) index = this.items.length() - 1;
 		this.list_position = index;
 		return true;
 	}
 	bool handle_input() {
-		if(key_repeating(KEY_UP)) {
+		if (key_repeating(KEY_UP)) {
 			bool nav = this.navigate(false);
-			if(nav) speak(this.focused_item.text);
+			if (nav) speak(this.focused_item.text);
 		}
-		if(key_repeating(KEY_DOWN)) {
+		if (key_repeating(KEY_DOWN)) {
 			bool nav = this.navigate();
-			if(nav) speak(this.focused_item.text);
+			if (nav) speak(this.focused_item.text);
 		}
 		return true;
 	}
 	void on_focus_gained() {
 		nv_form_list_item@item = this.focused_item;
-		if(@item == null) return;
+		if (@item == null) return;
 		speak(item.text, false);
 	}
 	bool set_item_selected_state(int item_index, bool selected) {
-		if(this.items.length()<=0 or (item_index<0 or item_index>=this.items.length())) return this.parent.error(nv_form_error_invalid_list_index);
-		if(!this.multiselect and selected == true) {
+		if (this.items.length() <= 0 or (item_index<0 or item_index >= this.items.length())) return this.parent.error(nv_form_error_invalid_list_index);
+		if (!this.multiselect and selected == true)
 			this.clear_list_selections();
-		}
 		this.items[item_index].selected = selected;
 		return true;
 	}
 	bool clear_list_selections() {
 		int[]@sel = this.get_list_selections();
-		if(sel.length()<=0) return this.parent.error(nv_form_error_no_selections);
-		for(uint i = 0; i<sel.length(); i+=1) {
+		if (sel.length() <= 0) return this.parent.error(nv_form_error_no_selections);
+		for (uint i = 0; i < sel.length(); i += 1) {
 			int ind = sel[i];
 			this.items[ind].selected = false;
 		}
 		return true;
 	}
 	bool add(string item, string id = "", bool selected = false) {
-		if(this.max_items>0 and this.items.length()>=this.max_items) return this.parent.error(nv_form_error_list_full);
+		if (this.max_items > 0 and this.items.length() >= this.max_items) return this.parent.error(nv_form_error_list_full);
 		this.items.insert_last(nv_form_list_item(item, id, selected));
 		return true;
 	}
 	void add_items(string[]@items) {
-		if(items.length()<=0) return;
-		for(uint i = 0; i<items.length(); i+=1) this.add(items[i], items[i]);
+		if (items.length() <= 0) return;
+		for (uint i = 0; i < items.length(); i += 1) this.add(items[i], items[i]);
 	}
-	bool delete(const string&in id) {
-		if(this.items.length()<=0) return this.parent.error(nv_form_error_list_empty);
+	bool delete (const string&in id) {
+		if (this.items.length() <= 0) return this.parent.error(nv_form_error_list_empty);
 		int item_index = this.get_item_index(id);
-		if(item_index == -1) return this.parent.error(nv_form_error_invalid_value);
+		if (item_index == -1) return this.parent.error(nv_form_error_invalid_value);
 		@this.items[item_index] = null;
 		this.items.remove_at(item_index);
 		return true;
 	}
 	int get_item_index(const string&in id) {
-		if(id.empty()) return -1;
-		for(uint i = 0; i<this.items.length(); i+=1) {
-			if(this.items[i].id.empty()) continue;
-			if(this.items[i].id == id) {
+		if (id.empty()) return -1;
+		for (uint i = 0; i < this.items.length(); i += 1) {
+			if (this.items[i].id.empty()) continue;
+			if (this.items[i].id == id)
 				return i;
-			}
 		}
 		return -1;
 	}
 	int[]@get_list_selections() {
 		int[] res;
-		if(this.items.length()<=0) return res;
-		for(uint i = 0; i<this.items.length(); i+=1) {
-			if(this.items[i].selected) {
+		if (this.items.length() <= 0) return res;
+		for (uint i = 0; i < this.items.length(); i += 1) {
+			if (this.items[i].selected) {
 				res.insert_last(i);
-				if(!this.multiselect) break;
+				if (!this.multiselect) break;
 			}
 		}
 		return res;

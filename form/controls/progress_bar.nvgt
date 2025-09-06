@@ -12,31 +12,31 @@ class nv_form_progress_bar: nv_form_control {
 	}
 	private sound@ generate_progress_tone(double duration = 0.2, double min_freq = 220.0, double max_freq = 880.0) {
 		tone_synth@synth = tone_synth();
-		if(@synth == null) return null;
+		if (@synth == null) return null;
 		double percent = this.percentage / 100.0;
-		if(percent < 0.0) percent = 0.0;
-		if(percent > 1.0) percent = 1.0;
+		if (percent < 0.0) percent = 0.0;
+		if (percent > 1.0) percent = 1.0;
 		double freq = min_freq + (max_freq - min_freq) * percent;
 		synth.reset();
 		synth.waveform_type = 3;
 		synth.allow_silent_output = false;
 		synth.volume = 0.8;
 		synth.pan = 0.0;
-		if(!synth.freq(freq, duration)) return null;
+		if (!synth.freq(freq, duration)) return null;
 		return synth.write_wave_sound();
 	}
 	void clamp_value() {
-		if(this.value < this.min_value) this.value = this.min_value;
-		if(this.value > this.max_value) this.value = this.max_value;
+		if (this.value < this.min_value) this.value = this.min_value;
+		if (this.value > this.max_value) this.value = this.max_value;
 	}
 	void set_value(double v) property {
-		if(v < this.min_value or v > this.max_value) {
+		if (v < this.min_value or v > this.max_value) {
 			this.parent.error(nv_form_error_invalid_value);
 			return;
 		}
 		bool should_speak = abs(v - this.last_spoken_value) >= this.update_interval;
 		this.cur_value = v;
-		if(should_speak) {
+		if (should_speak) {
 			this.last_spoken_value = v;
 			this.report_progress();
 		}
@@ -45,19 +45,19 @@ class nv_form_progress_bar: nv_form_control {
 		return this.cur_value;
 	}
 	double get_percentage() property {
-		if(this.max_value <= this.min_value) return 0.0;
+		if (this.max_value <= this.min_value) return 0.0;
 		return ((this.value - this.min_value) / (this.max_value - this.min_value)) * 100.0;
 	}
 	void report_progress() {
-		if(this.speak_progress_updates) speak(this.percentage+" percent", false);
-		if(this.beep_progress_updates) {
-			if(@this.beepsound != null and this.beepsound.playing) this.beepsound.stop();
+		if (this.speak_progress_updates) speak(this.percentage + " percent", false);
+		if (this.beep_progress_updates) {
+			if (@this.beepsound != null and this.beepsound.playing) this.beepsound.stop();
 			@this.beepsound = this.generate_progress_tone();
-			if(@this.beepsound != null) this.beepsound.play();
+			if (@this.beepsound != null) this.beepsound.play();
 		}
 	}
 	void on_focus_gained() {
-		speak(this.percentage+" percent", false);
+		speak(this.percentage + " percent", false);
 	}
 	private sound@beepsound;
 }

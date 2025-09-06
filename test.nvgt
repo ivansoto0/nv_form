@@ -1,16 +1,16 @@
-#include"form.nvgt"
+#include"form/form.nvgt"
 class custom_button: nv_form_button {
 	custom_button(nv_form@parent) {
 		super(@parent, "press this now", "click");
 	}
 	void on_fire() {
-		alert("ok", "it works: "+this.pressed);
+		alert("ok", "it works: " + this.pressed);
 	}
 }
 
 void main() {
 	int profile = question("profiler", "Would you like to run the profile during this test?");
-	if(profile == 1) start_profiling();
+	if (profile == 1) start_profiling();
 	nv_form f;
 	speak("It works");
 	custom_button my_button(f);
@@ -25,28 +25,33 @@ void main() {
 	nv_form_list_box@lst = nv_form_list_box(f, "test items", "items");
 	lst.add_items({"This is a test item", "another item", "nvgt", "cpp"});
 	f.add_control(lst);
+	nv_form_list_box@lst_c = nv_form_list_box(f, "Custom test items", "items2");
+	lst_c.custom_type = "Combo box";
+	lst_c.add_items({"NVGT", "CPP", "HTML", "JS", "CSS"});
+	f.add_control(lst_c);
 	nv_form_slider@slider = f.add_slider("volume level", "vol", max_value = 50);
 	f.add_keyboard_area("have fun here", "kbd");
 	nv_form_progress_bar@progress = nv_form_progress_bar(f, "downloading file", "progress");
 	progress.speak_progress_updates = false;
 	f.add_control(@progress, position = 3);
-	while(true) {
+	nv_form_link@ link = f.add_link("Open NVGT Website", "https://nvgt.gg", "nvgtweb");
+	while (true) {
 		wait(5);
-		if(!f.monitor()) {
+		if (!f.monitor()) {
 			alert("ok", "time to exit this application");
 			break;
 		}
 		keyboard_loop();
-		if(f.is_pressed("speak")) {
+		if (f.is_pressed("speak")) {
 			speak("Legacy buttons work!", false);
 			nv_form_list_item@focused_item = f.get_list_focus("items");
-			if(@focused_item == null) speak("Nothing selected", false);
-			else speak(focused_item.text+" selected", false);
-			speak("Checkbox is "+(f.is_checked("box")?"checked":"unchecked"), false);
-			if(progress.value != 100) {
+			if (@focused_item == null) speak("Nothing selected", false);
+			else speak(focused_item.text + " selected", false);
+			speak("Checkbox is " + (f.is_checked("box") ? "checked" : "unchecked"), false);
+			if (progress.value != 100) {
 				double r = random(5.0, 10.0);
 				r += progress.value;
-				for(double start = progress.value; start<r; start += 1) {
+				for (double start = progress.value; start < r; start += 1) {
 					progress.value = start;
 					wait(random(50, 300));
 				}
@@ -57,8 +62,8 @@ void main() {
 }
 bool on_x_click(nv_form_control@ctrl) {
 	alert("ok", "goodbye");
-	string r= generate_profile();
-	if(!r.empty()) {
+	string r = generate_profile();
+	if (!r.empty()) {
 		file f;
 		f.open("profile.log", "wb");
 		f.write(r);
@@ -69,9 +74,9 @@ bool on_x_click(nv_form_control@ctrl) {
 }
 sound snd;
 void keyboard_loop() {
-	if(key_pressed(KEY_SPACE)) {
-		if(!snd.active) snd.load("C:\\Windows\\Media\\Speech Misrecognition.wav");
-		if(snd.playing) snd.stop();
+	if (key_pressed(KEY_SPACE)) {
+		if (!snd.active) snd.load("C:\\Windows\\Media\\Speech Misrecognition.wav");
+		if (snd.playing) snd.stop();
 		snd.play();
 	}
 }
