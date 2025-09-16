@@ -18,6 +18,10 @@ class nv_form_list_box: nv_form_control {
 		int index = this.list_position;
 		if (next) index += 1;
 		else index -= 1;
+		return this.set_pos(index);
+	}
+	bool set_pos(int index) {
+		if (this.items.length() < 1) return this.parent.error(nv_form_error_list_empty);
 		if (index < 0) index = 0;
 		if (index >= this.items.length()) index = this.items.length() - 1;
 		this.list_position = index;
@@ -31,6 +35,16 @@ class nv_form_list_box: nv_form_control {
 		}
 		if (key_repeating(KEY_DOWN)) {
 			bool nav = this.navigate();
+			if (nav) speak(this.focused_item.text);
+			return true;
+		}
+		if (key_repeating(KEY_HOME)) {
+			bool nav = this.set_pos(0);
+			if (nav) speak(this.focused_item.text);
+			return true;
+		}
+		if (key_repeating(KEY_END)) {
+			bool nav = this.set_pos(this.items.length() - 1);
 			if (nav) speak(this.focused_item.text);
 			return true;
 		}

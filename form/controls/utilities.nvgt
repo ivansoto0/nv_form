@@ -10,6 +10,7 @@ string get_nv_form_control_type_string(nv_form_control_type ct) {
 		case nv_form_ct_form: return "form";
 		case nv_form_ct_keyboard_area: return "keyboard area";
 		case nv_form_ct_link: return "link";
+		case nv_form_ct_switch: return "switch";
 		default: return "unknown";
 	}
 }

@@ -185,6 +185,12 @@ class nv_form {
 		if (added) return lst;
 		return null;
 	}
+	nv_form_switch@add_switch(string caption, string id = "", nv_form_switch_item@[] items = {}, int position = -1) {
+		nv_form_switch@ lst = nv_form_switch(this, caption, id, items);
+		bool added = this.add_control(lst, position = position);
+		if (added) return lst;
+		return null;
+	}
 	nv_form_slider@add_slider(string caption, string id = "", int min_value = 0, int max_value = 100, int step_size = 1, int initial_value = 0, int position = -1) {
 		nv_form_slider slide(this, caption, id, min_value, max_value, step_size, initial_value);
 		bool added = this.add_control(@slide, position = position);

@@ -8,7 +8,8 @@ shared enum nv_form_control_type {
 	nv_form_ct_slider,
 	nv_form_ct_form,
 	nv_form_ct_keyboard_area,
-	nv_form_ct_link
+	nv_form_ct_link,
+	nv_form_ct_switch
 }
 
 shared enum nv_form_clipboard_flags {
@@ -32,7 +33,8 @@ shared enum nv_form_errorcode {
 	nv_form_error_invalid_list_index,
 	nv_form_error_control_invisible,
 	nv_form_error_no_controls_visible,
-	nv_form_error_already_active
+	nv_form_error_already_active,
+	nv_form_error_switch_empty
 }
 //text entry speech flags
 shared enum nv_form_text_entry_speech_flags {

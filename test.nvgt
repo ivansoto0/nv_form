@@ -16,6 +16,11 @@ void main() {
 	custom_button my_button(f);
 	f.create_window("Test", say_dialog = true);
 	f.add_control(my_button);
+	nv_form_switch@ dark = f.add_switch("Dark Mode", "dark");
+	dark.add("On", "1");
+	dark.add("Off", "0");
+	dark.add("Auto", "-1");
+	dark.set_pos(0);
 	//now we create a basic button with a callback registered to it.
 	nv_form_button@btn = f.add_button("Press this other button here", "testbtn", cancel = true, callback = on_x_click);
 	btn.hide();

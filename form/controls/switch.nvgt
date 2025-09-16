@@ -1,0 +1,71 @@
+class nv_form_switch: nv_form_control {
+	nv_form_switch_item@[]items;
+	int index = -1;
+	nv_form_switch(nv_form@parent, string caption, string id = "", nv_form_switch_item@[] items = {}) {
+		super(caption, id, nv_form_ct_switch, @parent);
+		if (items.length() > 0) this.items.extend(items);
+	}
+	nv_form_switch_item@get_focused_item() const property {
+		if (this.items.length() <= 0 or this.index < 0) return null;
+		return this.items[this.index];
+	}
+	bool get_next() property {
+		if (this.items.length() <= 0) return this.parent.error(nv_form_error_switch_empty);
+		int x = this.index;
+		x ++;
+		return this.set_pos(x);
+	}
+	bool set_pos(int value) {
+		if (this.items.length() < 1) return this.parent.error(nv_form_error_switch_empty);
+		if (value < 0) value = this.items.length() - 1;
+		if (value >= this.items.length()) value = 0;
+		this.index = value;
+		return true;
+	}
+	bool handle_input() {
+		if (key_repeating(KEY_SPACE)) {
+			bool nav = this.next;
+			if (nav) speak(this.focused_item.text);
+			return true;
+		}
+		return false;
+	}
+	string get_control_info() {
+		nv_form_switch_item@item = this.focused_item;
+		if (@item == null) return "";
+		return item.text;
+	}
+	bool add(string item, string id = "") {
+		this.items.insert_last(nv_form_switch_item(item, id));
+		return true;
+	}
+	void add_items(string[]@items) {
+		if (items.length() <= 0) return;
+		for (uint i = 0; i < items.length(); i += 1) this.add(items[i], items[i]);
+	}
+	bool delete (const string&in id) {
+		if (this.items.length() <= 0) return this.parent.error(nv_form_error_list_empty);
+		int item_index = this.get_item_index(id);
+		if (item_index == -1) return this.parent.error(nv_form_error_invalid_value);
+		@this.items[item_index] = null;
+		this.items.remove_at(item_index);
+		return true;
+	}
+	int get_item_index(const string&in id) {
+		if (id.empty()) return -1;
+		for (uint i = 0; i < this.items.length(); i += 1) {
+			if (this.items[i].id.empty()) continue;
+			if (this.items[i].id == id)
+				return i;
+		}
+		return -1;
+	}
+}
+
+class nv_form_switch_item {
+	string text, id;
+	nv_form_switch_item(string text, string id) {
+		this.text = text;
+		this.id = id;
+	}
+}
