@@ -27,12 +27,14 @@ class nv_form_list_box: nv_form_control {
 		if (key_repeating(KEY_UP)) {
 			bool nav = this.navigate(false);
 			if (nav) speak(this.focused_item.text);
+			return true;
 		}
 		if (key_repeating(KEY_DOWN)) {
 			bool nav = this.navigate();
 			if (nav) speak(this.focused_item.text);
+			return true;
 		}
-		return true;
+		return false;
 	}
 	void on_focus_gained() {
 		nv_form_list_item@item = this.focused_item;

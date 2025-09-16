@@ -12,4 +12,11 @@ class nv_form_link: nv_form_control {
 		urlopen(this.url);
 		nv_form_control::fire();
 	}
+	bool handle_input() {
+		if (key_pressed(KEY_SPACE) || key_pressed(KEY_RETURN) || key_pressed(KEY_NUMPAD_ENTER)) {
+			this.fire();
+			return true;
+		}
+		return false;
+	}
 }

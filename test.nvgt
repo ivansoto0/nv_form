@@ -41,7 +41,8 @@ void main() {
 			alert("ok", "time to exit this application");
 			break;
 		}
-		keyboard_loop();
+		nv_form_control@ ctrl = f.current_control;
+		if (@ctrl != null && ctrl.id == "kbd") keyboard_loop();
 		if (f.is_pressed("speak")) {
 			speak("Legacy buttons work!", false);
 			nv_form_list_item@focused_item = f.get_list_focus("items");

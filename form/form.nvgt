@@ -90,14 +90,11 @@ class nv_form {
 		return true;
 	}
 	void handle_input() {
-		nv_form_control@ctrl = this.current_control;
+		nv_form_control@ ctrl = this.current_control;
+		nv_form_control@ pctrl = this.primary_control;
 		if (@ctrl != null) ctrl.handle_input();
-		if (@ctrl != null and ctrl.type != nv_form_ct_keyboard_area) {
-			if (key_pressed(KEY_SPACE)) {
-				ctrl.fire();
-			}
-			if (key_pressed(KEY_ESCAPE) and @this.cancel_control != null) this.cancel_control.fire();
-		}
+		if (@pctrl != null && pctrl.type != nv_form_ct_keyboard_area && ((@ctrl != null && ctrl.type != nv_form_ct_keyboard_area && !ctrl.handle_input()) || @ctrl == null) && (key_pressed(KEY_RETURN) || key_pressed(KEY_NUMPAD_ENTER))) pctrl.fire();
+		if (key_pressed(KEY_ESCAPE) and @this.cancel_control != null) this.cancel_control.fire();
 		if (key_repeating(KEY_TAB)) {
 			bool next_control = true;
 			if (key_down(KEY_LSHIFT) or key_down(KEY_RSHIFT)) next_control = false;

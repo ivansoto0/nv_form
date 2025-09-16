@@ -24,4 +24,11 @@ class nv_form_checkbox: nv_form_control {
 		this.state = false;
 		return true;
 	}
+	bool handle_input() {
+		if (key_pressed(KEY_SPACE) || key_pressed(KEY_RETURN) || key_pressed(KEY_NUMPAD_ENTER)) {
+			this.fire();
+			return true;
+		}
+		return false;
+	}
 }

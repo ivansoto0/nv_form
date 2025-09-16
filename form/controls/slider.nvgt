@@ -17,13 +17,15 @@ class nv_form_slider: nv_form_control {
 			this.value -= this.step;
 			this.clamp_value();
 			speak(this.value);
+			return true;
 		}
 		if (key_repeating(KEY_UP)) {
 			this.value += this.step;
 			this.clamp_value();
 			speak(this.value);
+			return true;
 		}
-		return true;
+		return false;
 	}
 	void on_focus_gained() {
 		speak(this.value, false);
