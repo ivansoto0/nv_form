@@ -14,7 +14,9 @@
 #include "enums.nvgt"
 #include "nv_form_funcdefs.nvgt"
 #include "speech.nvgt"
-#include "controls/*"
+#include "controls/*.nvgt"
+#include "base_control.nvgt"
+#include "utilities.nvgt"
 
 class nv_form {
 	nv_form_control@[]controls;
