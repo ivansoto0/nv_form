@@ -27,9 +27,11 @@ void main() {
 	//now we create a legacy style button, setting it as the primary control.
 	f.add_button("Speak something", "speak", primary = true);
 	f.add_checkbox("Uncheck this", "box", true);
-	nv_form_list_box@lst = nv_form_list_box(f, "test items", "items");
+	nv_form_list_box@lst = nv_form_list_box(f, "test items", "items", speak_position = true);
 	lst.add_items({"This is a test item", "another item", "nvgt", "cpp"});
 	f.add_control(lst);
+	nv_form_list_box@ mlst = f.add_list("Files (multiselect)", "mls", multiselect = true);
+	mlst.add_items({"document.txt", "readme.md", "program.exe", "python.py", "test.c", "test.h"});
 	nv_form_list_box@lst_c = nv_form_list_box(f, "Custom test items", "items2");
 	lst_c.custom_type = "Combo box";
 	lst_c.add_items({"NVGT", "CPP", "HTML", "JS", "CSS"});
@@ -66,8 +68,12 @@ void main() {
 				}
 			}
 			if (@enabled != null) speak("Enable button is set to " + enabled.text + ", which is " + enabled.id + " in the variable", false);
-			speak(btne.enabled);
+			int[] mls = mlst.get_list_selections();
+			speak(mls.length() + " multiselection list items selected");
 			continue;
+		} else if (f.is_pressed(btne)) {
+			if (!btne.enabled) speak("Unavailable");
+			else speak("Subscribed");
 		}
 	}
 }

@@ -2,7 +2,7 @@ string get_nv_form_control_type_string(nv_form_control_type ct) {
 	switch (ct) {
 		case nv_form_ct_button: return "button";
 		case nv_form_ct_input: return "input";
-		case nv_form_ct_checkbox: return "checkbox";
+		case nv_form_ct_checkbox: return "check box";
 		case nv_form_ct_progress: return "progress bar";
 		case nv_form_ct_status_bar: return "status bar";
 		case nv_form_ct_list: return "list";

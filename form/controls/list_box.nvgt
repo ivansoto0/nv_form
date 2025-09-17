@@ -1,11 +1,13 @@
 class nv_form_list_box: nv_form_control {
 	nv_form_list_item@[]items;
 	bool multiselect;
+	bool speak_position;
 	int max_items = -1;
 	int list_position = -1;
-	nv_form_list_box(nv_form@parent, string caption, string id = "", bool allow_multiselect = false, nv_form_list_item@[] items = {}, int max_items = -1) {
+	nv_form_list_box(nv_form@parent, string caption, string id = "", bool allow_multiselect = false, nv_form_list_item@[] items = {}, int max_items = -1, bool speak_position = false) {
 		super(caption, id, nv_form_ct_list, @parent);
 		this.multiselect = allow_multiselect;
+		this.speak_position = speak_position;
 		this.max_items = max_items;
 		if (items.length() > 0) this.items.extend(items);
 	}
@@ -31,6 +33,7 @@ class nv_form_list_box: nv_form_control {
 		string[] f;
 		f.insert_last(value.text);
 		if (this.multiselect && value.selected) f.insert_last("checked");
+		if (this.speak_position) f.insert_last((this.list_position + 1) + " of " + this.items.length());
 		return join(f, "  ");
 	}
 	bool handle_input() {
@@ -53,6 +56,19 @@ class nv_form_list_box: nv_form_control {
 			bool nav = this.set_pos(this.items.length() - 1);
 			if (nav) speak(this.speak_list_item(this.focused_item));
 			return true;
+		}
+		if (this.multiselect) {
+			if ((key_down(KEY_LCTRL) || key_down(KEY_RCTRL)) && key_pressed(KEY_A)) {
+				for (uint i = 0; i < this.items.length(); i++)
+					this.items[i].selected = true;
+				speak(this.items.length() + " items selected");
+				return true;
+			}
+			if (key_pressed(KEY_SPACE) && @this.focused_item != null) {
+				this.focused_item.selected = (this.focused_item.selected ? false : true);
+				speak((this.focused_item.selected ? "Checked" : "Not checked"));
+				return true;
+			}
 		}
 		return false;
 	}
