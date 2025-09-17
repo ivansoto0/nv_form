@@ -13,12 +13,14 @@ class nv_form_switch: nv_form_control {
 		if (this.items.length() <= 0) return this.parent.error(nv_form_error_switch_empty);
 		int x = this.index;
 		x ++;
+		if (x < 0) x = this.items.length() - 1;
+		if (x >= this.items.length()) x = 0;
 		return this.set_pos(x);
 	}
 	bool set_pos(int value) {
 		if (this.items.length() < 1) return this.parent.error(nv_form_error_switch_empty);
-		if (value < 0) value = this.items.length() - 1;
-		if (value >= this.items.length()) value = 0;
+		if (value < 0) value = 0;
+		if (value >= this.items.length()) value = this.items.length() - 1;
 		this.index = value;
 		return true;
 	}

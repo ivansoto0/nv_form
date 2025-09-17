@@ -27,25 +27,31 @@ class nv_form_list_box: nv_form_control {
 		this.list_position = index;
 		return true;
 	}
+	string speak_list_item(nv_form_list_item@ value) {
+		string[] f;
+		f.insert_last(value.text);
+		if (this.multiselect && value.selected) f.insert_last("checked");
+		return join(f, "  ");
+	}
 	bool handle_input() {
 		if (key_repeating(KEY_UP)) {
 			bool nav = this.navigate(false);
-			if (nav) speak(this.focused_item.text);
+			if (nav) speak(this.speak_list_item(this.focused_item));
 			return true;
 		}
 		if (key_repeating(KEY_DOWN)) {
 			bool nav = this.navigate();
-			if (nav) speak(this.focused_item.text);
+			if (nav) speak(this.speak_list_item(this.focused_item));
 			return true;
 		}
 		if (key_repeating(KEY_HOME)) {
 			bool nav = this.set_pos(0);
-			if (nav) speak(this.focused_item.text);
+			if (nav) speak(this.speak_list_item(this.focused_item));
 			return true;
 		}
 		if (key_repeating(KEY_END)) {
 			bool nav = this.set_pos(this.items.length() - 1);
-			if (nav) speak(this.focused_item.text);
+			if (nav) speak(this.speak_list_item(this.focused_item));
 			return true;
 		}
 		return false;

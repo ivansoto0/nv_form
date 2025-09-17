@@ -12,9 +12,9 @@ void main() {
 	int profile = question("profiler", "Would you like to run the profile during this test?");
 	if (profile == 1) start_profiling();
 	nv_form f;
-	speak("It works");
 	custom_button my_button(f);
 	f.create_window("Test", say_dialog = true);
+	wait(250);
 	f.add_control(my_button);
 	nv_form_switch@ dark = f.add_switch("Dark Mode", "dark");
 	dark.add("On", "1");
@@ -40,6 +40,7 @@ void main() {
 	progress.speak_progress_updates = false;
 	f.add_control(@progress, position = 3);
 	nv_form_link@ link = f.add_link("Open NVGT Website", "https://nvgt.gg", "nvgtweb");
+	f.focus_control(f.controls[0]);
 	while (true) {
 		wait(5);
 		if (!f.monitor()) {
