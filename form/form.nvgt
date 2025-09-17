@@ -259,6 +259,7 @@ class nv_form {
 		nv_form_control@ctrl = this.controls[this.control_index];
 		if (@ctrl == null) return false;
 		string text = ctrl.caption + "  " + this.get_fixed_type(ctrl);
+		if (!ctrl.enabled) text += " unavailable";
 		if (!this.speak_control_attributes_separately) {
 			text += "  " + ctrl.get_control_info();
 			return speak(text, interrupt);

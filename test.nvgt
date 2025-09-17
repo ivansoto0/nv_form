@@ -16,11 +16,11 @@ void main() {
 	f.create_window("Test", say_dialog = true);
 	wait(250);
 	f.add_control(my_button);
-	nv_form_switch@ dark = f.add_switch("Dark Mode", "dark");
-	dark.add("On", "1");
-	dark.add("Off", "0");
-	dark.add("Auto", "-1");
-	dark.set_pos(dark.get_item_index("-1"));
+	nv_form_switch@ enable = f.add_switch("Enable the next button", "enable");
+	enable.add("On", "1");
+	enable.add("Off", "0");
+	enable.set_pos(enable.get_item_index("1"));
+	nv_form_button@ btne = f.add_button("Subscribe", "sub");
 	//now we create a basic button with a callback registered to it.
 	nv_form_button@btn = f.add_button("Press this other button here", "testbtn", cancel = true, callback = on_x_click);
 	btn.hide();
@@ -49,6 +49,8 @@ void main() {
 		}
 		nv_form_control@ ctrl = f.current_control;
 		if (@ctrl != null && ctrl.id == "kbd") keyboard_loop();
+		nv_form_switch_item@ enabled = f.get_switch_focus(enable);
+		btne.enabled = enabled.id == "1";
 		if (f.is_pressed("speak")) {
 			speak("Legacy buttons work!", false);
 			nv_form_list_item@focused_item = f.get_list_focus("items");
@@ -63,8 +65,8 @@ void main() {
 					wait(random(50, 300));
 				}
 			}
-			nv_form_switch_item@ darkmode = f.get_switch_focus(dark);
-			if (@darkmode != null) speak("Dark mode is set to " + darkmode.text + ", which is " + darkmode.id + " in the variable", false);
+			if (@enabled != null) speak("Enable button is set to " + enabled.text + ", which is " + enabled.id + " in the variable", false);
+			speak(btne.enabled);
 			continue;
 		}
 	}

@@ -4,7 +4,7 @@ abstract class nv_form_control {
 	string caption;
 	string id;
 	nv_form@parent;
-	bool hidden = false;
+	bool hidden = false, enabled = true;
 	nv_form_control_callback@callback = null;
 	nv_form_control(string caption, string id, nv_form_control_type type, nv_form@parent) {
 		this.caption = caption;
@@ -25,6 +25,7 @@ abstract class nv_form_control {
 	bool handle_input() { return false; }
 	bool monitor() { return false;}
 	void fire() {
+		if (!this.enabled) return;
 		bool ok = true;
 		if (@this.callback != null) ok = this.callback(this);
 		if (!ok) return;
