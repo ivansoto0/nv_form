@@ -20,7 +20,7 @@ void main() {
 	dark.add("On", "1");
 	dark.add("Off", "0");
 	dark.add("Auto", "-1");
-	dark.set_pos(0);
+	dark.set_pos(dark.get_item_index("-1"));
 	//now we create a basic button with a callback registered to it.
 	nv_form_button@btn = f.add_button("Press this other button here", "testbtn", cancel = true, callback = on_x_click);
 	btn.hide();
@@ -63,6 +63,8 @@ void main() {
 					wait(random(50, 300));
 				}
 			}
+			nv_form_switch_item@ darkmode = f.get_switch_focus(dark);
+			if (@darkmode != null) speak("Dark mode is set to " + darkmode.text + ", which is " + darkmode.id + " in the variable", false);
 			continue;
 		}
 	}

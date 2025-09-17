@@ -151,6 +151,16 @@ class nv_form {
 		}
 		return lst.focused_item;
 	}
+	nv_form_switch_item@get_switch_focus(string control_id) {
+		return this.get_switch_focus(cast < nv_form_switch@ > (this.get_control_by_id(control_id)));
+	}
+	nv_form_switch_item@get_switch_focus(nv_form_switch@lst) {
+		if (@lst == null or @lst.parent != this) {
+			this.error(nv_form_error_invalid_control);
+			return null;
+		}
+		return lst.focused_item;
+	}
 	double get_slider_value(string control_id) {
 		return this.get_slider_value(cast < nv_form_slider@ > (this.get_control_by_id(control_id)));
 	}
