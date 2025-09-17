@@ -1,0 +1,7 @@
+# nv_form
+This class facilitates the easy creation of user interfaces that convey their usage entirely through audio.
+
+## Notes:
+- many of the methods in this class only work on certain types of controls, and will return false and set an error value if used on invalid types of controls. This will generally be indicated in the documentation for each function.
+- Exceptions are not used here. Instead, we indicate errors through `nv_form::get_last_error()`.
+- A form object can have unlimited controls by default.

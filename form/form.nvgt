@@ -151,10 +151,10 @@ class nv_form {
 		}
 		return lst.focused_item;
 	}
-	int get_slider_value(string control_id) {
+	double get_slider_value(string control_id) {
 		return this.get_slider_value(cast < nv_form_slider@ > (this.get_control_by_id(control_id)));
 	}
-	int get_slider_value(nv_form_slider@slider) {
+	double get_slider_value(nv_form_slider@slider) {
 		if (@slider == null or @slider.parent != this) {
 			this.error(nv_form_error_invalid_control);
 			return 0;
@@ -191,8 +191,8 @@ class nv_form {
 		if (added) return lst;
 		return null;
 	}
-	nv_form_slider@add_slider(string caption, string id = "", int min_value = 0, int max_value = 100, int step_size = 1, int initial_value = 0, int position = -1) {
-		nv_form_slider slide(this, caption, id, min_value, max_value, step_size, initial_value);
+	nv_form_slider@add_slider(string caption, string id = "", double min_value = 0, double max_value = 100, double step_size = 1, double initial_value = 0, double page_size = 0, int position = -1) {
+		nv_form_slider slide(this, caption, id, min_value, max_value, step_size, initial_value, page_size);
 		bool added = this.add_control(@slide, position = position);
 		if (added) return slide;
 		return null;
