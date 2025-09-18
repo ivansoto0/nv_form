@@ -163,13 +163,13 @@ class nv_form {
 		}
 		return lst.focused_item;
 	}
-	double get_slider_value(string control_id) {
-		return this.get_slider_value(cast < nv_form_slider@ > (this.get_control_by_id(control_id)));
+	double get_slider_value(string control_id, double def = 0) {
+		return this.get_slider_value(cast < nv_form_slider@ > (this.get_control_by_id(control_id)), def);
 	}
-	double get_slider_value(nv_form_slider@slider) {
+	double get_slider_value(nv_form_slider@slider, double def = 0) {
 		if (@slider == null or @slider.parent != this) {
 			this.error(nv_form_error_invalid_control);
-			return 0;
+			return def;
 		}
 		return slider.value;
 	}

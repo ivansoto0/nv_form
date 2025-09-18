@@ -7,10 +7,10 @@ Creates a new list and adds it to the form.
 - `string caption`: the label to associate with the list.
 - `string id = ""`: The ID.
 - `bool multiselect = false`: Toggles whether to allow multiselection.
-- `nv_form_list_item@[] items = {}`: Initial items to add.
+- `nv_form_list_item@[] items = {}`: The initial array of `nv_form_list_item` handles to add.
 - `int max_items = 0`: The maximum allowed items in this list. 0 is unlimited.
-- `bool speak_position = false`: Should list item positions be spoken when focusing?
 - `int position = -1`: The position to insert at.
+- `bool speak_position = false`: Should list item positions be spoken when focusing?
 
 ## Returns:
 `nv_form_list_box@`: An NV control list type on success, null otherwise.
