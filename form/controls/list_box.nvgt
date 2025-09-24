@@ -75,7 +75,7 @@ class nv_form_list_box: nv_form_control {
 	void on_focus_gained() {
 		nv_form_list_item@item = this.focused_item;
 		if (@item == null) return;
-		speak(item.text, false);
+		speak(this.speak_list_item(item), false);
 	}
 	bool set_item_selected_state(int item_index, bool selected) {
 		if (this.items.length() <= 0 or (item_index<0 or item_index >= this.items.length())) return this.parent.error(nv_form_error_invalid_list_index);

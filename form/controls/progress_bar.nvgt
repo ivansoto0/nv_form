@@ -56,8 +56,8 @@ class nv_form_progress_bar: nv_form_control {
 			if (@this.beepsound != null) this.beepsound.play();
 		}
 	}
-	void on_focus_gained() {
-		speak(this.percentage + " percent", false);
+	string get_control_info() {
+		return this.percentage + " percent";
 	}
 	private sound@beepsound;
 }
