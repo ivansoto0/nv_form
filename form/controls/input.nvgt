@@ -1,7 +1,7 @@
 class nv_form_input: nv_form_control {
 	string text;
 	string password_mask;
-	string highlight_select_speech_text = "selected", highlight_unselect_speech_text = "unselected", delete_speech_text = "deleted";
+	string highlight_select_speech_text = "selected", highlight_unselect_speech_text = "unselected", delete_speech_text = "";
 	int cursor = 0;
 	int sel_start = -1;
 	int sel_end = -1;
@@ -43,8 +43,10 @@ class nv_form_input: nv_form_control {
 		return f;
 	}
 	string get_fixed_type() property {
-		if (this.multiline) return "edit multiline";
-		return "edit";
+		string[] f;
+		if (this.password_mask != "") f.insert_last("protected");
+		if (this.multiline) f.insert_last("multi line");
+		return join(f, " ");
 	}
 	bool handle_input() {
 		string char = get_characters();

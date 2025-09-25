@@ -19,6 +19,9 @@ void main() {
 	nv_form_input@ inp = nv_form_input(f, "Type text", "type1");
 	inp.multiline = true;
 	f.add_control(inp);
+	nv_form_input@ inp2 = nv_form_input(f, "Type password", "type2");
+	inp2.password_mask = "*";
+	f.add_control(inp2);
 	nv_form_switch@ enable = f.add_switch("Enable the next button", "enable");
 	enable.add("On", "1");
 	enable.add("Off", "0");
@@ -72,7 +75,9 @@ void main() {
 			}
 			if (@enabled != null) speak("Enable button is set to " + enabled.text + ", which is " + enabled.id + " in the variable", false);
 			int[] mls = mlst.get_list_selections();
-			speak(mls.length() + " multiselection list items selected");
+			speak(mls.length() + " multiselection list items selected", false);
+			if (inp.text.length() < 1) speak("No text is provided", false);
+			else speak("Text is:\n" + inp.text, false);
 			continue;
 		} else if (f.is_pressed(btne)) {
 			if (!btne.enabled) speak("Unavailable");

@@ -254,10 +254,12 @@ class nv_form {
 	}
 	string get_fixed_type(nv_form_control@ ctrl) {
 		if (@ctrl == null) return "";
-		if (ctrl.custom_type != "") return ctrl.custom_type;
+		string f;
+		if (ctrl.custom_type != "") f = ctrl.custom_type;
+		else f = get_nv_form_control_type_string(ctrl.type);
 		string t = ctrl.fixed_type;
-		if (t != "") return t;
-		return get_nv_form_control_type_string(ctrl.type);
+		if (t != "") f += " " + t;
+		return f;
 	}
 	bool speak_current_control(bool interrupt = true) {
 		if (this.control_index == -1) return false;
