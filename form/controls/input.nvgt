@@ -1,0 +1,185 @@
+class nv_form_input: nv_form_control {
+	string text;
+	string password_mask;
+	int cursor;
+	int sel_start;
+	int sel_end;
+	int max_length;
+	bool multiline;
+	bool read_only;
+	bool overwrite;
+	int echo_flag;
+	nv_form_input(nv_form@parent, string caption, string id = "") {
+		super(caption, id, nv_form_ct_input, @parent);
+		this.cursor = 0;
+		this.sel_start = -1;
+		this.sel_end = -1;
+		this.max_length = 0;
+		this.read_only = false;
+		this.multiline = false;
+		this.echo_flag = textflag_entry_characters;
+	}
+	bool handle_input() {
+		string char = get_characters();
+		if (!this.read_only) {
+			if (char != "") {
+				if (overwrite)
+					edit(char);
+				else
+					add(char);
+				return true;
+			}
+		}
+		return false;
+	}
+	bool add(string character, bool silent = false) {
+		string new_text = text;
+		if (sel_start > -1 && sel_end > -1) {
+			cursor = sel_start;
+			new_text = text.substr(0, cursor) + text.substr(sel_end + 1);
+			sel_start = -1;
+			sel_end = -1;
+		}
+		if ((max_length > 0) && (new_text.length() >= max_length))
+			return false;
+		new_text = new_text.substr(0, cursor) + character + new_text.substr(cursor);
+		if (read_only == false) {
+			text = new_text;
+			cursor += character.length();
+		}
+		if (echo_flag == textflag_entry_characters || echo_flag == textflag_entry_characters_words)
+			speak(input_box_speak(find_appropriate_character(character)), true);
+		/*if (audioform_word_separators .find(character) > -1 && (echo_flag == textflag_entry_words || echo_flag == textflag_entry_characters_words)) {
+			int temp_position = cursor - 1;
+			while (temp_position > 0 && (temp_position >= text.length() || audioform_word_separators .find(text[temp_position - 1]) < 0 && text[temp_position - 1] != "\n"))
+				temp_position--;
+			string word = read_word_from_position(temp_position);
+			if (password_mask != "") {
+				for (uint i = 0; i < word.length(); i++) word[i] = password_mask;
+			}
+			speak(word, echo_flag != textflag_entry_characters_words);
+		}*/
+		return true;
+	}
+	bool edit(string character) {
+		if ((max_length > 0) && (text.length() > max_length))
+			return false;
+		if (text.length() == 0)
+			return false;
+		if (cursor >= text.length())
+			return false;
+		if (read_only == false)
+			text[cursor] = character;
+		if (echo_flag == textflag_entry_characters || echo_flag == textflag_entry_characters_words)
+			speak(input_box_speak(find_appropriate_character(character)), true);
+		/*if (audioform_word_separators .find(character) > -1 && (echo_flag == textflag_entry_words || echo_flag == textflag_entry_characters_words)) {
+			int temp_position = cursor - 1;
+			while (temp_position > 0 && (temp_position >= text.length() || audioform_word_separators .find(text[temp_position - 1]) < 0))
+				temp_position--;
+			speak(read_word_from_position(temp_position), echo_flag != textflag_entry_characters_words);
+		}*/
+		return true;
+	}
+	string input_box_speak(string character) {
+		return input_box_speak(character, false);
+	}
+	string input_box_speak(string character, bool ignore_echo_flag) {
+		if (character == " ")
+			return "Space";
+		if (character == "\n")
+			return "Blank";
+		if (character == "-")
+			return "Dash";
+		if (character == ".")
+			return "Dot";
+		if (character == ",")
+			return "Comma";
+		if (character == "@")
+			return "At";
+		if (character == ">")
+			return "Greater";
+		if (character == ";")
+			return "Semicolon";
+		if (character == ":")
+			return "Colon";
+		if (character == "\t")
+			return "Tab";
+		if (character == "'")
+			return "Apostrophe";
+		if (character == "<")
+			return "Less";
+		if (character == "_")
+			return "Underline";
+		if (character == "+")
+			return "Plus";
+		if (character == "=")
+			return "Equals";
+		if (character == "!")
+			return "Exclamation Mark";
+		if (character == "\"")
+			return "Quote";
+		if (character == "\\")
+			return "Backslash";
+		if (character == "/")
+			return "Slash";
+		if (character == "£")
+			return "Pounds";
+		if (character == "$")
+			return "Dollar";
+		if (character == "%")
+			return "Percent";
+		if (character == "^")
+			return "Carret";
+		if (character == "&")
+			return "And";
+		if (character == "*")
+			return "Star";
+		if (character == "(")
+			return "Left Parenthesis";
+		if (character == ")")
+			return "Right Parenthesis";
+		if (character == "[")
+			return "Left Bracket";
+		if (character == "]")
+			return "Right Bracket";
+		if (character == "{")
+			return "Left Brace";
+		if (character == "}")
+			return "Right Brace";
+		if (character == "|")
+			return "Bar";
+		if (character == "?")
+			return "Question Mark";
+		if (character == "`")
+			return "Grave";
+		if (character == "¬")
+			return "Not";
+		if (character == "#")
+			return "Number";
+		if (character == "~")
+			return "Tilda";
+		if ((echo_flag == textflag_entry_none) && (ignore_echo_flag == false))
+			return "";
+		if (character.is_alphanumeric()) {
+			if (character.is_upper())
+				return "Capital " + character + " ";
+			else
+				return character + " ";
+		}
+		return character + " ";
+	}
+	string find_appropriate_character(string original_character) {
+		original_character.resize(utf8size(original_character));
+		if (password_mask == "")
+			return original_character;
+		else
+			return password_mask;
+	}
+	string get_control_info() {
+		return this.text;
+	}
+	string get_fixed_type() property {
+		if (this.multiline) return "edit multiline";
+		return "edit";
+	}
+}

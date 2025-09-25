@@ -16,6 +16,8 @@ void main() {
 	f.create_window("Test", say_dialog = true);
 	wait(250);
 	f.add_control(my_button);
+	nv_form_input@ inp = nv_form_input(f, "Type text", "type1");
+	f.add_control(inp);
 	nv_form_switch@ enable = f.add_switch("Enable the next button", "enable");
 	enable.add("On", "1");
 	enable.add("Off", "0");

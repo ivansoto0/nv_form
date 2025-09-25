@@ -38,4 +38,7 @@ abstract class nv_form_control {
 	string get_control_info() {
 		return "";
 	}
+	string get_fixed_type() property {
+		return "";
+	}
 }
