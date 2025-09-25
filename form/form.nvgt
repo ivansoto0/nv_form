@@ -18,6 +18,7 @@
 #include "base_control.nvgt"
 #include "utilities.nvgt"
 
+string nvform_word_separators = "_ .,!\\\"/[{()}]=\n:";
 class nv_form {
 	nv_form_control@[]controls;
 	int max_controls = 0;
