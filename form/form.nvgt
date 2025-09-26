@@ -90,7 +90,8 @@ class nv_form {
 	bool monitor() {
 		if (!this.active) return false;
 		if (@this.nv_utility_form != null) {
-			return this.nv_utility_form.monitor();
+			this.nv_utility_form.monitor();
+			return true;
 		}
 		this.handle_input();
 		nv_form_control@ctrl;

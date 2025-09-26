@@ -1,6 +1,6 @@
 class nv_form_input: nv_form_control {
 	string text;
-	string default_text;
+	string __default_text__;
 	string password_mask;
 	string highlight_select_speech_text = "selected", highlight_unselect_speech_text = "unselected", delete_speech_text = "";
 	int cursor = 0;
@@ -188,6 +188,7 @@ class nv_form_input: nv_form_control {
 			}
 			return true;
 		}
+		if (handle_nv_go_to_index(this)) return true;
 		return false;
 	}
 	bool add(string character, bool silent = false) {
@@ -888,5 +889,15 @@ class nv_form_input: nv_form_control {
 		sel_end = -1;
 		if (!silent) speak(read_line(current_line_start_position()), false);
 		return true;
+	}
+	string get_default_text() property {
+		return this.__default_text__;
+	}
+	void set_default_text(string v) property {
+		if ((this.max_length > 0) && (v.length() > this.max_length)) {
+			v = v.substr(0, this.max_length);
+		}
+		this.__default_text__ = v;
+		this.text = v;
 	}
 }

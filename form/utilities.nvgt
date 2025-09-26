@@ -16,7 +16,7 @@ string get_nv_form_control_type_string(nv_form_control_type ct) {
 }
 //utility_form interface used for search and goto dialogs.
 interface nv_utility_form {
-	bool monitor();
+	void monitor();
 }
 class nv_go_to_index : nv_utility_form {
 	nv_form@ parent;
@@ -46,37 +46,50 @@ class nv_go_to_index : nv_utility_form {
 		}
 		@this.f_ok = f.add_button("Ok", "ok", true);
 		@this.f_cancel = f.add_button("Cancel", "cancel", false, true);
-		f.focus_control(index_to_focus);
+		f.focus_control(index_to_focus, false, false);
 		@parent.nv_utility_form = this;
 	}
-	bool monitor() {
-		if (!f.monitor()) return false;
+	void monitor() {
+		if (!f.monitor()) {
+			parent.focus_control(this.ctrl);
+			@parent.nv_utility_form = null;
+			return;
+		}
 		nv_form_input@ ctrl_input = cast<nv_form_input@>(this.ctrl);
 		if (f.is_pressed(f_cancel)) {
 			parent.focus_control(this.ctrl);
 			@parent.nv_utility_form = null;
-			return false;
+			return;
 		} else if (f.is_pressed(f_ok)) {
 			string idx = this.f_index.text;
 			if (!idx.is_digits() or idx.substr(0, 1) == "0") {
 				speak("enter a positive number");
-				f.focus_control(f_index);
-				return true;
+				f.focus_control(f_index, false, false);
+				return;
 			}
 			string col = this.f_col.text;
 			if (!col.is_digits()) {
 				speak("enter a positive number");
-				f.focus_control(f_col);
-				return true;
+				f.focus_control(f_col, false, false);
+				return;
 			}
 			if (!ctrl_input.set_line(parse_int(idx), parse_int(col))) {
 				speak("invalid line number!");
-				f.focus_control(f_index);
+				f.focus_control(f_index, false, false);
 			} else {
 				@parent.nv_utility_form = null;
 				parent.focus_control(this.ctrl);
 			}
 		}
-		return false;
+		return ;
 	}
+}
+bool handle_nv_go_to_index(nv_form_control@ ctrl) {
+	if (@ctrl == null) return false;
+	if (ctrl.type != nv_form_ct_input) return false;
+	if (keyboard_modifiers & KEYMOD_CTRL != 0 && key_pressed(KEY_G)) {
+		nv_go_to_index(ctrl.parent, ctrl);
+		return true;
+	}
+	return false;
 }
