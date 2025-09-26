@@ -29,6 +29,8 @@ class nv_form {
 	private nv_form_errorcode[] errors;
 	nv_form_control@primary_control = null, cancel_control = null;
 	nv_form_callback@background_callback = null;
+	nv_utility_form@ nv_utility_form = null;
+	dictionary nv_utility_form_data;
 	nv_form() {
 		this.reset();
 	}
@@ -38,6 +40,7 @@ class nv_form {
 		this.controls.resize(0);
 		@this.primary_control = null;
 		@this.cancel_control = null;
+		@this.nv_utility_form = null;
 	}
 	nv_form_control@get_control_by_id(const string&in id) {
 		if (this.controls.length() <= 0) return null;
@@ -86,6 +89,9 @@ class nv_form {
 	}
 	bool monitor() {
 		if (!this.active) return false;
+		if (@this.nv_utility_form != null) {
+			return this.nv_utility_form.monitor();
+		}
 		this.handle_input();
 		nv_form_control@ctrl;
 		bool result = this.check_controls(ctrl);

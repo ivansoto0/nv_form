@@ -1,5 +1,6 @@
 class nv_form_input: nv_form_control {
 	string text;
+	string default_text;
 	string password_mask;
 	string highlight_select_speech_text = "selected", highlight_unselect_speech_text = "unselected", delete_speech_text = "";
 	int cursor = 0;
@@ -847,5 +848,45 @@ class nv_form_input: nv_form_control {
 			if (speak_deleted)
 				speak(input_box_speak(find_appropriate_character(del_char), true), true);
 		}
+	}
+	int get_line_number() {
+		if (type != ct_input) return 0;
+		int ln = 1;
+		for (uint i = 0; i < text.length() and i < cursor; i++) {
+			if (text[i] == "\n") ln++;
+		}
+		return ln;
+	}
+	int get_line_column() {
+		if (type != ct_input) return 0;
+		int col = 1;
+		for (int i = cursor - 1; i >= 0 and i < text.length(); i--) {
+			if (text[i] == "\n") break;
+			col++;
+		}
+		return col;
+	}
+	bool set_line(int line, int col = 1, bool silent = false) {
+		if (type != ct_input) return false;
+		if (col < 1) col = 1;
+		int max_col = col;
+		int pos = 0;
+		if (line > 1)
+			pos = bgt_string_contains(text, "\n", line - 1);
+		if (pos > -1) {
+			int pos2 = bgt_string_contains(text, "\n", line);
+			if (pos2 > -1) max_col = pos2 - pos - 1;
+		} else {
+			if (!silent) speak("line number out of range");
+			return false;
+		}
+		if (col > max_col) col = max_col;
+		if (pos==0) col--;
+		pos += col;
+		cursor = pos;
+		sel_start = -1;
+		sel_end = -1;
+		if (!silent) speak(read_line(current_line_start_position()), false);
+		return true;
 	}
 }

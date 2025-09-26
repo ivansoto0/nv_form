@@ -14,3 +14,69 @@ string get_nv_form_control_type_string(nv_form_control_type ct) {
 		default: return "unknown";
 	}
 }
+//utility_form interface used for search and goto dialogs.
+interface nv_utility_form {
+	bool monitor();
+}
+class nv_go_to_index : nv_utility_form {
+	nv_form@ parent;
+	nv_form_control@ ctrl;
+	nv_form f;
+	nv_form_input@ f_index, f_col;
+	nv_form_button@ f_ok, f_cancel;
+	nv_go_to_index(nv_form@ parent, nv_form_control@ control) {
+		@this.parent = @parent;
+		@this.ctrl = @control;
+		nv_form_input@ ctrl_input = cast<nv_form_input@>(ctrl);
+		if (@ctrl_input == null) return;
+		int current = ctrl_input.get_line_number();
+		f.create_window("Go to line", false, true);
+		@this.f_index = nv_form_input(f, "line number", "ln");
+		this.f_index.default_text = current;
+		this.f.add_control(this.f_index);
+		nv_form_control@ index_to_focus = f_index;
+		if (@ctrl_input != null) {
+			@this.f_col = nv_form_input(f, "Line column", "lc");
+			this.f_col.default_text = ctrl_input.get_line_column();
+			this.f.add_control(this.f_col);
+			if (!ctrl_input.multiline) {
+				@index_to_focus = f_col;
+				this.f_index.hide(); // Disable line number
+			}
+		}
+		@this.f_ok = f.add_button("Ok", "ok", true);
+		@this.f_cancel = f.add_button("Cancel", "cancel", false, true);
+		f.focus_control(index_to_focus);
+		@parent.nv_utility_form = this;
+	}
+	bool monitor() {
+		if (!f.monitor()) return false;
+		nv_form_input@ ctrl_input = cast<nv_form_input@>(this.ctrl);
+		if (f.is_pressed(f_cancel)) {
+			parent.focus_control(this.ctrl);
+			@parent.nv_utility_form = null;
+			return false;
+		} else if (f.is_pressed(f_ok)) {
+			string idx = this.f_index.text;
+			if (!idx.is_digits() or idx.substr(0, 1) == "0") {
+				speak("enter a positive number");
+				f.focus_control(f_index);
+				return true;
+			}
+			string col = this.f_col.text;
+			if (!col.is_digits()) {
+				speak("enter a positive number");
+				f.focus_control(f_col);
+				return true;
+			}
+			if (!ctrl_input.set_line(parse_int(idx), parse_int(col))) {
+				speak("invalid line number!");
+				f.focus_control(f_index);
+			} else {
+				@parent.nv_utility_form = null;
+				parent.focus_control(this.ctrl);
+			}
+		}
+		return false;
+	}
+}
