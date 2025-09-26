@@ -12,6 +12,7 @@
 */
 
 #include "enums.nvgt"
+#include "helper.nvgt"
 #include "nv_form_funcdefs.nvgt"
 #include "speech.nvgt"
 #include "controls/*.nvgt"

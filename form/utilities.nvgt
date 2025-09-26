@@ -28,10 +28,19 @@ class nv_go_to_index : nv_utility_form {
 		@this.parent = @parent;
 		@this.ctrl = @control;
 		nv_form_input@ ctrl_input = cast<nv_form_input@>(ctrl);
-		if (@ctrl_input == null) return;
-		int current = ctrl_input.get_line_number();
-		f.create_window("Go to line", false, true);
-		@this.f_index = nv_form_input(f, "line number", "ln");
+		nv_form_list_box@ ctrl_list = cast<nv_form_list_box@>(ctrl);
+		if (@ctrl_list == null && @ctrl_input == null) return;
+		int current = 1;
+		string wmsg = "Go to line";
+		string lnmsg = "Line number";
+		if (@ctrl_input != null) current = ctrl_input.get_line_number();
+		else if (@ctrl_list != null) {
+			current = ctrl_list.list_position + 1;
+			wmsg = "Go to item";
+			lnmsg = "Item number";
+		}
+		f.create_window(wmsg, false, true);
+		@this.f_index = nv_form_input(f, lnmsg, "ln");
 		this.f_index.default_text = current;
 		this.f.add_control(this.f_index);
 		nv_form_control@ index_to_focus = f_index;
@@ -56,6 +65,7 @@ class nv_go_to_index : nv_utility_form {
 			return;
 		}
 		nv_form_input@ ctrl_input = cast<nv_form_input@>(this.ctrl);
+		nv_form_list_box@ ctrl_list = cast<nv_form_list_box@>(ctrl);
 		if (f.is_pressed(f_cancel)) {
 			parent.focus_control(this.ctrl);
 			@parent.nv_utility_form = null;
@@ -65,6 +75,16 @@ class nv_go_to_index : nv_utility_form {
 			if (!idx.is_digits() or idx.substr(0, 1) == "0") {
 				speak("enter a positive number");
 				f.focus_control(f_index, false, false);
+				return;
+			}
+			if (@ctrl_list != null) {
+				if (!ctrl_list.set_pos(parse_int(idx) - 1, false)) {
+					speak("Invalid item number");
+					f.focus_control(f_index, false, false);
+					return;
+				}
+				@parent.nv_utility_form = null;
+				parent.focus_control(this.ctrl);
 				return;
 			}
 			string col = this.f_col.text;
@@ -86,7 +106,8 @@ class nv_go_to_index : nv_utility_form {
 }
 bool handle_nv_go_to_index(nv_form_control@ ctrl) {
 	if (@ctrl == null) return false;
-	if (ctrl.type != nv_form_ct_input) return false;
+	int[] supported_types = {nv_form_ct_list, nv_form_ct_input};
+	if (supported_types.find(ctrl.type) < 0) return false;
 	if (keyboard_modifiers & KEYMOD_CTRL != 0 && key_pressed(KEY_G)) {
 		nv_go_to_index(ctrl.parent, ctrl);
 		return true;

@@ -22,10 +22,13 @@ class nv_form_list_box: nv_form_control {
 		else index -= 1;
 		return this.set_pos(index);
 	}
-	bool set_pos(int index) {
+	bool set_pos(int index, bool autobound = true) {
 		if (this.items.length() < 1) return this.parent.error(nv_form_error_list_empty);
-		if (index < 0) index = 0;
-		if (index >= this.items.length()) index = this.items.length() - 1;
+		if (autobound) {
+			if (index < 0) index = 0;
+			if (index >= this.items.length()) index = this.items.length() - 1;
+		}
+		if (index < 0 || index > this.items.length() - 1) return false;
 		this.list_position = index;
 		return true;
 	}
@@ -70,6 +73,7 @@ class nv_form_list_box: nv_form_control {
 				return true;
 			}
 		}
+		if (handle_nv_go_to_index(this)) return true;
 		return false;
 	}
 	void on_focus_gained() {
