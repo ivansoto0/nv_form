@@ -27,8 +27,8 @@ class nv_go_to_index : nv_utility_form {
 	nv_go_to_index(nv_form@ parent, nv_form_control@ control) {
 		@this.parent = @parent;
 		@this.ctrl = @control;
-		nv_form_input@ ctrl_input = cast<nv_form_input@>(ctrl);
-		nv_form_list_box@ ctrl_list = cast<nv_form_list_box@>(ctrl);
+		nv_form_input@ ctrl_input = cast < nv_form_input@ > (ctrl);
+		nv_form_list_box@ ctrl_list = cast < nv_form_list_box@ > (ctrl);
 		if (@ctrl_list == null && @ctrl_input == null) return;
 		int current = 1;
 		string wmsg = "Go to line";
@@ -64,8 +64,8 @@ class nv_go_to_index : nv_utility_form {
 			@parent.nv_utility_form = null;
 			return;
 		}
-		nv_form_input@ ctrl_input = cast<nv_form_input@>(this.ctrl);
-		nv_form_list_box@ ctrl_list = cast<nv_form_list_box@>(ctrl);
+		nv_form_input@ ctrl_input = cast < nv_form_input@ > (this.ctrl);
+		nv_form_list_box@ ctrl_list = cast < nv_form_list_box@ > (ctrl);
 		if (f.is_pressed(f_cancel)) {
 			parent.focus_control(this.ctrl);
 			@parent.nv_utility_form = null;
@@ -104,7 +104,8 @@ class nv_go_to_index : nv_utility_form {
 		return ;
 	}
 }
-bool handle_nv_go_to_index(nv_form_control@ ctrl) {
+bool handle_nv_utils(nv_form_control@ ctrl) {
+	// This handles utilities, specially go to index and search, to make it not having to add the key presses over and over.
 	if (@ctrl == null) return false;
 	int[] supported_types = {nv_form_ct_list, nv_form_ct_input};
 	if (supported_types.find(ctrl.type) < 0) return false;

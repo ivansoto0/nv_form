@@ -73,7 +73,7 @@ class nv_form_list_box: nv_form_control {
 				return true;
 			}
 		}
-		if (handle_nv_go_to_index(this)) return true;
+		if (handle_nv_utils(this)) return true;
 		return false;
 	}
 	void on_focus_gained() {
