@@ -70,6 +70,7 @@ class nv_form {
 		if (this.active) return this.error(nv_form_error_already_active);
 		if (title.empty()) return this.error(nv_form_error_invalid_operation);
 		this.window_title = title;
+		get_characters();
 		this.active = true;
 		if (change_screen_title) show_window(this.window_title);
 		if (!silent)

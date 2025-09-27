@@ -46,7 +46,9 @@ class nv_form_input: nv_form_control {
 		return join(f, " ");
 	}
 	bool handle_input() {
-		string char = get_characters();
+		if (@this.parent.current_control != @this) return false;
+		string char;
+		char = get_characters();
 		if (!this.read_only) {
 			if (char != "") {
 				if (overwrite)
@@ -186,6 +188,9 @@ class nv_form_input: nv_form_control {
 		}
 		if (handle_nv_utils(this)) return true;
 		return false;
+	}
+	void on_focus_gained() {
+		get_characters(); // Cleanup any characters that might have been accumulated.
 	}
 	bool add(string character, bool silent = false) {
 		string new_text = text;
