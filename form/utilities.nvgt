@@ -42,11 +42,13 @@ class nv_go_to_index : nv_utility_form {
 		f.create_window(wmsg, false, true);
 		@this.f_index = nv_form_input(f, lnmsg, "ln");
 		this.f_index.default_text = current;
+		this.f_index.enable_go_line = false;
 		this.f.add_control(this.f_index);
 		nv_form_control@ index_to_focus = f_index;
 		if (@ctrl_input != null) {
 			@this.f_col = nv_form_input(f, "Line column", "lc");
 			this.f_col.default_text = ctrl_input.get_line_column();
+			this.f_col.enable_go_line = false;
 			this.f.add_control(this.f_col);
 			if (!ctrl_input.multiline) {
 				@index_to_focus = f_col;
@@ -109,7 +111,7 @@ bool handle_nv_utils(nv_form_control@ ctrl) {
 	if (@ctrl == null) return false;
 	int[] supported_types = {nv_form_ct_list, nv_form_ct_input};
 	if (supported_types.find(ctrl.type) < 0) return false;
-	if (keyboard_modifiers & KEYMOD_CTRL != 0 && key_pressed(KEY_G)) {
+	if (keyboard_modifiers & KEYMOD_CTRL != 0 && key_pressed(KEY_G) && ctrl.enable_go_line) {
 		nv_go_to_index(ctrl.parent, ctrl);
 		return true;
 	}

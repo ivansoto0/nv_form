@@ -41,6 +41,7 @@ class nv_form_input: nv_form_control {
 	}
 	string get_fixed_type() property {
 		string[] f;
+		if (this.read_only) f.insert_last("read only");
 		if (this.password_mask != "") f.insert_last("protected");
 		if (this.multiline) f.insert_last("multi line");
 		return join(f, " ");

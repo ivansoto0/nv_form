@@ -7,7 +7,6 @@ class custom_button: nv_form_button {
 		alert("ok", "it works: " + this.pressed);
 	}
 }
-
 void main() {
 	int profile = question("profiler", "Would you like to run the profile during this test?");
 	if (profile == 1) start_profiling();
@@ -22,6 +21,11 @@ void main() {
 	nv_form_input@ inp2 = nv_form_input(f, "Type password", "type2");
 	inp2.password_mask = "*";
 	f.add_control(inp2);
+	nv_form_input@ rinp = nv_form_input(f, "Notes", "note");
+	rinp.read_only = true;
+	rinp.multiline = true;
+	rinp.default_text = "1. Thank you for trying NV Form.\n2. This is testing box";
+	f.add_control(rinp);
 	nv_form_switch@ enable = f.add_switch("Enable the next button", "enable");
 	enable.add("On", "1");
 	enable.add("Off", "0");
@@ -46,7 +50,7 @@ void main() {
 	f.add_keyboard_area("have fun here", "kbd");
 	nv_form_progress_bar@progress = nv_form_progress_bar(f, "downloading file", "progress");
 	progress.speak_progress_updates = false;
-	f.add_control(@progress, position = 3);
+	f.add_control(@progress, position = 6);
 	nv_form_link@ link = f.add_link("Open NVGT Website", "https://nvgt.gg", "nvgtweb");
 	f.focus_control(f.controls[0]);
 	while (true) {
