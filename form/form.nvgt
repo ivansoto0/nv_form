@@ -266,8 +266,10 @@ class nv_form {
 		string f;
 		if (ctrl.custom_type != "") f = ctrl.custom_type;
 		else f = get_nv_form_control_type_string(ctrl.type);
-		string t = ctrl.fixed_type;
+		string t = ctrl.fixed_type_last;
+		string t2 = ctrl.fixed_type_first;
 		if (t != "") f += " " + t;
+		if (t2 != "") f.insert(0, t2 + " ");
 		return f;
 	}
 	bool speak_current_control(bool interrupt = true) {

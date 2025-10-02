@@ -7,8 +7,8 @@ class nv_form_input: nv_form_control {
 	int sel_start = -1;
 	int sel_end = -1;
 	int max_length = 0;
-	bool multiline = false;
 	bool read_only = false;
+	bool multiline = false;
 	bool overwrite = false;
 	bool enable_delete = true;
 	string delete_disabled_message = "This input has disabled deletion";
@@ -39,9 +39,13 @@ class nv_form_input: nv_form_control {
 		}
 		return f;
 	}
-	string get_fixed_type() property {
+	string get_fixed_type_first() property {
 		string[] f;
 		if (this.read_only) f.insert_last("read only");
+		return join(f, " ");
+	}
+	string get_fixed_type_last() property {
+		string[] f;
 		if (this.password_mask != "") f.insert_last("protected");
 		if (this.multiline) f.insert_last("multi line");
 		return join(f, " ");
