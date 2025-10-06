@@ -903,4 +903,29 @@ class nv_form_input: nv_form_control {
 		this.__default_text__ = v;
 		this.text = v;
 	}
+	bool search(const string& in text, int dir = 1, bool silent = false) {
+		string wrapped = "";
+		int idx = dir > 0 ? this.text.find(text, cursor + dir) : this.text.rfind(text, cursor + dir);
+		if (idx < 0) {
+			int tmp_cursor = dir > 0 ? 0 : this.text.length() - 1;
+			wrapped = dir > 0 ? "wrapped to top" : "wrapped to bottom";
+			idx = dir > 0 ? this.text.find(text, tmp_cursor) : this.text.rfind(text, tmp_cursor);
+		}
+		if (idx < 0) {
+			if (!silent) speak("nothing found");
+			return false;
+		}
+		if (cursor == idx) {
+			if (!silent) speak("nothing else found");
+			return false;
+		}
+		cursor = idx;
+		sel_start = -1;
+		sel_end = -1;
+		if (!silent) {
+			if (wrapped != "") speak(wrapped);
+			speak(read_line(current_line_start_position()), wrapped == "");
+		}
+		return true;
+	}
 }

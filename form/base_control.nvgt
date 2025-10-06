@@ -5,7 +5,7 @@ abstract class nv_form_control {
 	string id;
 	nv_form@parent;
 	bool hidden = false, enabled = true;
-	bool enable_go_line = true;
+	bool enable_go_line = true, enable_search = true;
 	nv_form_control_callback@callback = null;
 	nv_form_control(string caption, string id, nv_form_control_type type, nv_form@parent) {
 		this.caption = caption;

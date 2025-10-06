@@ -296,6 +296,13 @@ class nv_form {
 			return true;
 		}
 	}
+	bool search(nv_form_control@ ctrl, const string& in text, int dir = 1, bool silent = false) {
+		nv_form_input@ ctrl_input = cast < nv_form_input@ > (ctrl);
+		nv_form_list_box@ ctrl_list = cast < nv_form_list_box@ > (ctrl);
+		if (@ctrl_input != null) return ctrl_input.search(text, dir, silent);
+		else if (@ctrl_list != null) return ctrl_list.search(text, dir, silent);
+		return false;
+	}
 	// Below lines are intended for this class and should not be modified in subsequence scripts.
 	nv_utility_form@ nv_utility_form = null;
 	dictionary nv_utility_form_data;

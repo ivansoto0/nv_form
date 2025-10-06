@@ -134,8 +134,37 @@ class nv_form_list_box: nv_form_control {
 		}
 		return res;
 	}
+	bool search(const string& in text, int dir = 1, bool silent = false) {
+		if (this.items.length() < 1) return false;
+		string[] nav_items(this.items.length());
+		for (uint i = 0; i < this.items.length(); i++)
+			nav_items[i] = this.items[i].text;
+		bool already_on_result = false;
+		if (this.list_position > -1) already_on_result = nav_items[this.list_position].find(text) > -1;
+		string wrapped = "";
+		for (int i = list_position + dir; i != list_position; i += dir) {
+			if (i < 0) {
+				i = this.items.length() - 1;
+				wrapped = "wrapped to bottom";
+			} else if (i >= this.items.length()) {
+				i = 0;
+				wrapped = "wrapped to top";
+			}
+			if (i == list_position) break;
+			if (nav_items[i].find(text) < 0) continue;
+			if (this.set_pos(i, false)) {
+				if (!silent) {
+					if (wrapped != "") speak(wrapped);
+					if (@this.focused_item != null) speak(this.speak_list_item(this.focused_item), wrapped == "");
+				}
+				return true;
+			}
+		}
+		if (!silent)
+			speak(already_on_result ? "nothing else found" : "nothing found");
+		return false;
+	}
 }
-
 class nv_form_list_item {
 	bool selected;
 	string text, id;
