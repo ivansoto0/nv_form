@@ -200,7 +200,7 @@ class nv_form {
 		inp.default_text = default_text;
 		inp.read_only = read_only;
 		inp.multiline = multiline;
-		bool added = this.add_control(inp, primary, cancel, position, @callback);
+		bool added = this.add_control(inp, false, false, position, @callback);
 		if (added) return inp;
 		return null;
 	}
