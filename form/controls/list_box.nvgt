@@ -33,6 +33,7 @@ class nv_form_list_box: nv_form_control {
 		return true;
 	}
 	string speak_list_item(nv_form_list_item@ value) {
+		if (@value == null) return "";
 		string[] f;
 		f.insert_last(value.text);
 		if (this.multiselect && value.selected) f.insert_last("checked");
