@@ -43,22 +43,22 @@ class nv_form_list_box: nv_form_control {
 	bool handle_input() {
 		if (key_repeating(KEY_UP)) {
 			bool nav = this.navigate(false);
-			if (nav) speak(this.speak_list_item(this.focused_item));
+			if (nav && @this.focused_item != null) speak(this.speak_list_item(this.focused_item));
 			return true;
 		}
 		if (key_repeating(KEY_DOWN)) {
 			bool nav = this.navigate();
-			if (nav) speak(this.speak_list_item(this.focused_item));
+			if (nav && @this.focused_item != null) speak(this.speak_list_item(this.focused_item));
 			return true;
 		}
 		if (key_repeating(KEY_HOME)) {
 			bool nav = this.set_pos(0);
-			if (nav) speak(this.speak_list_item(this.focused_item));
+			if (nav && @this.focused_item != null) speak(this.speak_list_item(this.focused_item));
 			return true;
 		}
 		if (key_repeating(KEY_END)) {
 			bool nav = this.set_pos(this.items.length() - 1);
-			if (nav) speak(this.speak_list_item(this.focused_item));
+			if (nav && @this.focused_item != null) speak(this.speak_list_item(this.focused_item));
 			return true;
 		}
 		if (this.multiselect) {
