@@ -3,7 +3,9 @@ abstract class nv_form_control {
 	string custom_type = "";
 	string caption;
 	string id;
+	string shortcut;
 	nv_form@parent;
+	bool speak_shortcut = true;
 	bool hidden = false, enabled = true;
 	bool enable_go_line = true, enable_search = true;
 	nv_form_control_callback@callback = null;

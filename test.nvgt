@@ -17,6 +17,7 @@ void main() {
 	f.add_control(my_button);
 	nv_form_input@ inp = nv_form_input(f, "Type text", "type1");
 	inp.multiline = true;
+	inp.shortcut = "Alt+E";
 	f.add_control(inp);
 	nv_form_input@ inp2 = nv_form_input(f, "Type password", "type2");
 	inp2.password_mask = "*";

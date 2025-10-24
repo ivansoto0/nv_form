@@ -11,3 +11,62 @@ shared int nv_string_contains(const string& in str, const string& in search, int
 	}
 	return c == occurance ? pos : -1;
 }
+string nv_get_readable_key(const string &in symbol) {
+	string[][] map = {
+		{";", "Semicolon"},
+		{":", "Colon"},
+		{",", "Comma"},
+		{".", "Period"},
+		{"!", "Exclamation"},
+		{"?", "Question"},
+		{"'", "Apostrophe"},
+		{"\"", "Quote"},
+		{"(", "Left Parenthesis"},
+		{")", "Right Parenthesis"},
+		{"[", "Left Bracket"},
+		{"]", "Right Bracket"},
+		{"{", "Left Brace"},
+		{"}", "Right Brace"},
+		{"<", "Less Than"},
+		{">", "Greater Than"},
+		{"/", "Slash"},
+		{"\\", "Backslash"},
+		{"|", "Bar"},
+		{"-", "Dash"},
+		{"_", "Underscore"},
+		{"+", "Plus"},
+		{"=", "Equals"},
+		{"*", "Asterisk"},
+		{"&", "Ampersand"},
+		{"^", "Caret"},
+		{"%", "Percent"},
+		{"$", "Dollar"},
+		{"#", "Number"},
+		{"@", "At"},
+		{"`", "Graav"},
+		{"~", "Tilda"}
+	};
+	for (uint i = 0; i < map.length(); i++) {
+		if (map[i][0] == symbol)
+			return map[i][1];
+	}
+	return symbol;
+}
+string[] nv_keyspressed(int[] keys) {
+	string[] f;
+	if (key_down(KEY_LCTRL) || key_down(KEY_RCTRL)) f.insert_last("Ctrl");
+	if (key_down(KEY_LSHIFT) || key_down(KEY_RSHIFT)) f.insert_last("Shift");
+	if (key_down(KEY_LALT) || key_down(KEY_RALT)) f.insert_last("Alt");
+	int[] k = keys;
+	for (uint i = 0; i < k.length(); i++) {
+		int t = k[i];
+		int[] e = {KEY_LCTRL, KEY_RCTRL, KEY_LSHIFT, KEY_RSHIFT, KEY_LALT, KEY_RALT};
+		if (e.find(t) > -1) continue;
+		string v = get_key_name(t);
+		f.insert_last(v);
+	}
+	return f;
+}
+string nv_keypressed(int[] keys) {
+	return join(nv_keyspressed(keys), "+");
+}

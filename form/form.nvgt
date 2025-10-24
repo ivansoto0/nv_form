@@ -110,6 +110,14 @@ class nv_form {
 			if (key_down(KEY_LSHIFT) or key_down(KEY_RSHIFT)) next_control = false;
 			this.navigate_form(next_control);
 		}
+		string k = nv_keypressed(keys_pressed());
+		foreach (nv_form_control@ l: this.controls) {
+			if (@l == null || l.shortcut == "") continue;
+			if (l.shortcut == k) {
+				this.focus_control(l);
+				break;
+			}
+		}
 	}
 	bool error(nv_form_errorcode error) {
 		this.errors.insert_last(error);
@@ -285,13 +293,14 @@ class nv_form {
 		if (this.control_index == -1) return false;
 		nv_form_control@ctrl = this.controls[this.control_index];
 		if (@ctrl == null) return false;
-		string text = ctrl.caption + "  " + this.get_fixed_type(ctrl);
-		if (!ctrl.enabled) text += " unavailable";
+		string[] texts = {ctrl.caption, this.get_fixed_type(ctrl)};
+		if (!ctrl.enabled) texts.insert_last(" unavailable");
+		if (ctrl.shortcut != "" && ctrl.speak_shortcut) texts.insert_last(nv_get_readable_key(ctrl.shortcut));
 		if (!this.speak_control_attributes_separately) {
-			text += "  " + ctrl.get_control_info();
-			return speak(text, interrupt);
+			texts.insert_last("  " + ctrl.get_control_info());
+			return speak(join(texts, "  "), interrupt);
 		} else {
-			speak(text, interrupt);
+			speak(join(texts, "  "), interrupt);
 			speak(ctrl.get_control_info(), false);
 			return true;
 		}
