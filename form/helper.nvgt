@@ -70,3 +70,14 @@ string[] nv_keyspressed(int[] keys) {
 string nv_keypressed(int[] keys) {
 	return join(nv_keyspressed(keys), "+");
 }
+string nv_read_shortcut(string shortcut) {
+	string f = shortcut;
+	int r = shortcut.rfind("+");
+	if (r > -1) {
+		f = shortcut.substr(0, r);
+		string g = shortcut.substr(r + 1);
+		g = nv_get_readable_key(g);
+		f += "+" + g;
+	} else f = nv_get_readable_key(f);
+	return f;
+}

@@ -295,7 +295,7 @@ class nv_form {
 		if (@ctrl == null) return false;
 		string[] texts = {ctrl.caption, this.get_fixed_type(ctrl)};
 		if (!ctrl.enabled) texts.insert_last(" unavailable");
-		if (ctrl.shortcut != "" && ctrl.speak_shortcut) texts.insert_last(nv_get_readable_key(ctrl.shortcut));
+		if (ctrl.shortcut != "" && ctrl.speak_shortcut) texts.insert_last(nv_read_shortcut(ctrl.shortcut));
 		if (!this.speak_control_attributes_separately) {
 			texts.insert_last("  " + ctrl.get_control_info());
 			return speak(join(texts, "  "), interrupt);
