@@ -857,6 +857,13 @@ class nv_form_input: nv_form_control {
 				speak(input_box_speak(find_appropriate_character(del_char), true), true);
 		}
 	}
+	bool select(int sel_start = -1, int sel_end = -1) {
+		this.sel_start = sel_start;
+		if (sel_start >= 0 && sel_end < 0)
+			sel_end = this.text.length() - 1;
+		this.sel_end = sel_end;
+		return true;
+	}
 	int get_line_number() {
 		int ln = 1;
 		for (uint i = 0; i < text.length() and i < cursor; i++) {

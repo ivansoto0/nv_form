@@ -43,13 +43,17 @@ class nv_go_to_index : nv_utility_form {
 		f.create_window(wmsg, false, true);
 		@this.f_index = nv_form_input(f, lnmsg, "ln");
 		this.f_index.default_text = current;
+		this.f_index.select(0);
 		this.f_index.enable_go_line = false;
+		this.f_index.enable_search = false;
 		this.f.add_control(this.f_index);
 		nv_form_control@ index_to_focus = f_index;
 		if (@ctrl_input != null) {
 			@this.f_col = nv_form_input(f, "Line column", "lc");
 			this.f_col.default_text = ctrl_input.get_line_column();
+			this.f_col.select(0);
 			this.f_col.enable_go_line = false;
+			this.f_col.enable_search = false;
 			this.f.add_control(this.f_col);
 			if (!ctrl_input.multiline) {
 				@index_to_focus = f_col;
@@ -128,6 +132,7 @@ class nv_search_for : nv_utility_form {
 		}
 		this.f.create_window(wmsg, false, true);
 		@f_text = this.f.add_input(lnmsg, "ln", current, "", 256);
+		this.f_text.select(0);
 		this.f_text.enable_go_line = false;
 		this.f_text.enable_search = false;
 		@f_next = this.f.add_button("find next", "next", true);

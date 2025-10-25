@@ -1,4 +1,4 @@
-// Other miscellaneous functions.
+// Other miscellaneous functions and classes.
 shared int nv_string_contains(const string& in str, const string& in search, int occurance = 1) {
 	uint c = 0;
 	int pos = -1;
@@ -52,24 +52,6 @@ string nv_get_readable_key(const string &in symbol) {
 	}
 	return symbol;
 }
-string[] nv_keyspressed(int[] keys) {
-	string[] f;
-	if (key_down(KEY_LCTRL) || key_down(KEY_RCTRL)) f.insert_last("Ctrl");
-	if (key_down(KEY_LSHIFT) || key_down(KEY_RSHIFT)) f.insert_last("Shift");
-	if (key_down(KEY_LALT) || key_down(KEY_RALT)) f.insert_last("Alt");
-	int[] k = keys;
-	for (uint i = 0; i < k.length(); i++) {
-		int t = k[i];
-		int[] e = {KEY_LCTRL, KEY_RCTRL, KEY_LSHIFT, KEY_RSHIFT, KEY_LALT, KEY_RALT};
-		if (e.find(t) > -1) continue;
-		string v = get_key_name(t);
-		f.insert_last(v);
-	}
-	return f;
-}
-string nv_keypressed(int[] keys) {
-	return join(nv_keyspressed(keys), "+");
-}
 string nv_read_shortcut(string shortcut) {
 	string f = shortcut;
 	int r = shortcut.rfind("+");
@@ -80,4 +62,28 @@ string nv_read_shortcut(string shortcut) {
 		f += "+" + g;
 	} else f = nv_get_readable_key(f);
 	return f;
+}
+class nv_shortcut {
+	int key;
+	bool ctrl, shift, alt;
+	nv_shortcut(int k, bool k_ctrl = false, bool k_shift = false, bool k_alt = false) {
+		this.key = k;
+		this.ctrl = k_ctrl;
+		this.shift = k_shift;
+		this.alt = k_alt;
+	}
+	string get_name() property {
+		string[] f;
+		if (this.ctrl) f.insert_last("Ctrl");
+		if (this.shift) f.insert_last("Shift");
+		if (this.alt) f.insert_last("Alt");
+		f.insert_last(get_key_name(this.key));
+		return nv_read_shortcut(join(f, "+"));
+	}
+	bool get_pressed() property {
+		if (this.ctrl && !key_down(KEY_LCTRL) && !key_down(KEY_RCTRL)) return false;
+		if (this.shift && !key_down(KEY_LSHIFT) && !key_down(KEY_RSHIFT)) return false;
+		if (this.alt && !key_down(KEY_LALT) && !key_down(KEY_RALT)) return false;
+		return key_pressed(this.key);
+	}
 }

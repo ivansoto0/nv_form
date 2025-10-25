@@ -3,7 +3,7 @@ abstract class nv_form_control {
 	string custom_type = "";
 	string caption;
 	string id;
-	string shortcut;
+	nv_shortcut@ shortcut = null;
 	nv_form@parent;
 	bool speak_shortcut = true;
 	bool hidden = false, enabled = true;
@@ -43,4 +43,8 @@ abstract class nv_form_control {
 	}
 	string get_fixed_type_first() property { return ""; }
 	string get_fixed_type_last() property { return ""; }
+	bool check_shortcut() {
+		if (@this.shortcut == null) return false;
+		return this.shortcut.pressed;
+	}
 }
