@@ -66,11 +66,11 @@ string nv_read_shortcut(string shortcut) {
 class nv_shortcut {
 	int key;
 	bool ctrl, shift, alt;
-	nv_shortcut(int k, bool k_ctrl = false, bool k_shift = false, bool k_alt = false) {
+	nv_shortcut(int k, bool ctrl = false, bool shift = false, bool alt = false) {
 		this.key = k;
-		this.ctrl = k_ctrl;
-		this.shift = k_shift;
-		this.alt = k_alt;
+		this.ctrl = ctrl;
+		this.shift = shift;
+		this.alt = alt;
 	}
 	string get_name() property {
 		string[] f;

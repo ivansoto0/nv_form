@@ -65,8 +65,13 @@ class nv_form {
 		return null;
 	}
 	bool create_window(string title, bool change_screen_title = true, bool say_dialog = true, bool silent = false) {
-		if (this.active) return this.error(nv_form_error_already_active);
-		if (title.empty()) return this.error(nv_form_error_invalid_operation);
+		if (this.active) {
+			this.error(nv_form_error_already_active);
+			return false;
+		} else if (title.empty()) {
+			this.error(nv_form_error_invalid_operation);
+			return false;
+		}
 		this.window_title = title;
 		get_characters();
 		this.active = true;
@@ -118,9 +123,8 @@ class nv_form {
 			}
 		}
 	}
-	bool error(nv_form_errorcode error) {
+	void error(nv_form_errorcode error) {
 		this.errors.insert_last(error);
-		return true;
 	}
 	nv_form_errorcode get_last_error() const property {
 		if (this.errors.length() <= 0) return nv_form_error_none;
@@ -129,33 +133,51 @@ class nv_form {
 	//helper functions.
 	bool is_pressed(string control_id) {
 		nv_form_control@ctrl = this.get_control_by_id(control_id);
-		if (@ctrl == null || (ctrl.type != nv_form_ct_button && ctrl.type != nv_form_ct_link)) return this.error(nv_form_error_invalid_control);
+		if (@ctrl == null || (ctrl.type != nv_form_ct_button && ctrl.type != nv_form_ct_link)) {
+			this.error(nv_form_error_invalid_control);
+			return false;
+		}
 		nv_form_button@btn = cast < nv_form_button@ > (ctrl);
 		nv_form_link@link = cast < nv_form_link@ > (ctrl);
-		if (@btn == null && @link == null) return this.error(nv_form_error_invalid_control);
+		if (@btn == null && @link == null) {
+			this.error(nv_form_error_invalid_control);
+			return false;
+		}
 		else if (@btn != null) return this.is_pressed(btn);
 		else if (@link != null) return this.is_pressed(link);
 		return false;
 	}
 	bool is_pressed(nv_form_button@btn) {
-		if (@btn.parent != this) return this.error(nv_form_error_invalid_control);
+		if (@btn.parent != this) {
+			this.error(nv_form_error_invalid_control);
+			return false;
+		}
 		bool result = btn.pressed;
 		if (result) btn.pressed = false;
 		return result;
 	}
 	bool is_pressed(nv_form_link@link) {
-		if (@link.parent != this) return this.error(nv_form_error_invalid_control);
+		if (@link.parent != this) {
+			this.error(nv_form_error_invalid_control);
+			return false;
+		}
 		bool result = link.pressed;
 		if (result) link.pressed = false;
 		return result;
 	}
 	bool is_checked(string control_id) {
 		nv_form_checkbox@box = cast < nv_form_checkbox@ > (this.get_control_by_id(control_id));
-		if (@box == null) return this.error(nv_form_error_invalid_control);
+		if (@box == null) {
+			this.error(nv_form_error_invalid_control);
+			return false;
+		}
 		return this.is_checked(box);
 	}
 	bool is_checked(nv_form_checkbox@box) {
-		if (@box.parent != this) return this.error(nv_form_error_invalid_control);
+		if (@box.parent != this) {
+			this.error(nv_form_error_invalid_control);
+			return false;
+		}
 		return box.state;
 	}
 	nv_form_list_item@get_list_focus(string control_id) {
@@ -248,9 +270,18 @@ class nv_form {
 		return null;
 	}
 	bool add_control(nv_form_control@ctrl, bool primary = false, bool cancel = false, int position = -1, nv_form_control_callback@callback = null) {
-		if (!this.active) return this.error(nv_form_error_no_window);
-		if (this.max_controls > 0 and this.controls.length() >= this.max_controls) return this.error(nv_form_error_window_full);
-		if (@ctrl == null) return this.error(nv_form_error_invalid_control);
+		if (!this.active) {
+			this.error(nv_form_error_no_window);
+			return false;
+		}
+		if (this.max_controls > 0 and this.controls.length() >= this.max_controls) {
+			this.error(nv_form_error_window_full);
+			return false;
+		}
+		if (@ctrl == null) {
+			this.error(nv_form_error_invalid_control);
+			return false;
+		}
 		if (@callback != null) @ctrl.callback = callback;
 		if (position < 0) this.controls.insert_last(ctrl);
 		else this.controls.insert_at(position, ctrl);

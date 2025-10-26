@@ -10,7 +10,10 @@ class nv_form_switch: nv_form_control {
 		return this.items[this.index];
 	}
 	bool get_next() property {
-		if (this.items.length() <= 0) return this.parent.error(nv_form_error_switch_empty);
+		if (this.items.length() <= 0) {
+			this.parent.error(nv_form_error_switch_empty);
+			return false;
+		}
 		int x = this.index;
 		x ++;
 		if (x < 0) x = this.items.length() - 1;
@@ -18,7 +21,10 @@ class nv_form_switch: nv_form_control {
 		return this.set_pos(x);
 	}
 	bool set_pos(int value) {
-		if (this.items.length() < 1) return this.parent.error(nv_form_error_switch_empty);
+		if (this.items.length() <= 0) {
+			this.parent.error(nv_form_error_switch_empty);
+			return false;
+		}
 		if (value < 0) value = 0;
 		if (value >= this.items.length()) value = this.items.length() - 1;
 		this.index = value;
@@ -46,9 +52,15 @@ class nv_form_switch: nv_form_control {
 		for (uint i = 0; i < items.length(); i += 1) this.add(items[i], items[i]);
 	}
 	bool delete (const string&in id) {
-		if (this.items.length() <= 0) return this.parent.error(nv_form_error_list_empty);
+		if (this.items.length() <= 0) {
+			this.parent.error(nv_form_error_list_empty);
+			return false;
+		}
 		int item_index = this.get_item_index(id);
-		if (item_index == -1) return this.parent.error(nv_form_error_invalid_value);
+		if (item_index == -1) {
+			this.parent.error(nv_form_error_invalid_value);
+			return false;
+		}
 		@this.items[item_index] = null;
 		this.items.remove_at(item_index);
 		return true;

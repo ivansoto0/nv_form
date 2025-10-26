@@ -125,6 +125,7 @@ class nv_search_for : nv_utility_form {
 		if (@ctrl_list == null && @ctrl_input == null) return;
 		else if ((@ctrl_input != null && ctrl_input.text == "") || (@ctrl_list != null && ctrl_list.items.length() < 1)) return;
 		string current = "";
+		if (this.parent.nv_utility_form_data.exists("last_search")) this.parent.nv_utility_form_data.get("last_search", current);
 		string wmsg = "Search for text";
 		string lnmsg = "Text to search";
 		if (@ctrl_list != null) {
@@ -166,6 +167,7 @@ class nv_search_for : nv_utility_form {
 				f.focus_control(f_text, false, false);
 			} else {
 				@parent.nv_utility_form = null;
+				parent.nv_utility_form_data.set("last_search", text);
 			}
 			return;
 		}
@@ -181,6 +183,13 @@ bool handle_nv_utils(nv_form_control@ ctrl) {
 		return true;
 	} else if (keyboard_modifiers & KEYMOD_CTRL != 0 && key_pressed(KEY_F) && ctrl.enable_go_line) {
 		nv_search_for(ctrl.parent, ctrl);
+		return true;
+	} else if (key_repeating(KEY_F3)) {
+		string last_search = "";
+		if (ctrl.parent.nv_utility_form_data.get("last_search", last_search))
+			ctrl.parent.search(ctrl, last_search, keyboard_modifiers & KEYMOD_SHIFT == 0 ? 1 : -1, false);
+		else
+			nv_search_for(ctrl.parent, ctrl);
 		return true;
 	}
 	return false;

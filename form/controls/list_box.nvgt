@@ -16,14 +16,20 @@ class nv_form_list_box: nv_form_control {
 		return this.items[this.list_position];
 	}
 	bool navigate(bool next = true) {
-		if (this.items.length() <= 0) return this.parent.error(nv_form_error_list_empty);
+		if (this.items.length() <= 0) {
+			this.parent.error(nv_form_error_list_empty);
+			return false;
+		}
 		int index = this.list_position;
 		if (next) index += 1;
 		else index -= 1;
 		return this.set_pos(index);
 	}
 	bool set_pos(int index, bool autobound = true) {
-		if (this.items.length() < 1) return this.parent.error(nv_form_error_list_empty);
+		if (this.items.length() <= 0) {
+			this.parent.error(nv_form_error_list_empty);
+			return false;
+		}
 		if (autobound) {
 			if (index < 0) index = 0;
 			if (index >= this.items.length()) index = this.items.length() - 1;
@@ -83,7 +89,10 @@ class nv_form_list_box: nv_form_control {
 		speak(this.speak_list_item(item), false);
 	}
 	bool set_item_selected_state(int item_index, bool selected) {
-		if (this.items.length() <= 0 or (item_index<0 or item_index >= this.items.length())) return this.parent.error(nv_form_error_invalid_list_index);
+		if (this.items.length() <= 0 or (item_index<0 or item_index >= this.items.length())) {
+			this.parent.error(nv_form_error_invalid_list_index);
+			return false;
+		}
 		if (!this.multiselect and selected == true)
 			this.clear_list_selections();
 		this.items[item_index].selected = selected;
@@ -91,7 +100,10 @@ class nv_form_list_box: nv_form_control {
 	}
 	bool clear_list_selections() {
 		int[]@sel = this.get_list_selections();
-		if (sel.length() <= 0) return this.parent.error(nv_form_error_no_selections);
+		if (sel.length() <= 0) {
+			this.parent.error(nv_form_error_no_selections);
+			return false;
+		}
 		for (uint i = 0; i < sel.length(); i += 1) {
 			int ind = sel[i];
 			this.items[ind].selected = false;
@@ -99,7 +111,10 @@ class nv_form_list_box: nv_form_control {
 		return true;
 	}
 	bool add(string item, string id = "", bool selected = false) {
-		if (this.max_items > 0 and this.items.length() >= this.max_items) return this.parent.error(nv_form_error_list_full);
+		if (this.max_items > 0 and this.items.length() >= this.max_items) {
+			this.parent.error(nv_form_error_list_full);
+			return false;
+		}
 		this.items.insert_last(nv_form_list_item(item, id, selected));
 		return true;
 	}
@@ -108,9 +123,15 @@ class nv_form_list_box: nv_form_control {
 		for (uint i = 0; i < items.length(); i += 1) this.add(items[i], items[i]);
 	}
 	bool delete (const string&in id) {
-		if (this.items.length() <= 0) return this.parent.error(nv_form_error_list_empty);
+		if (this.items.length() <= 0) {
+			this.parent.error(nv_form_error_list_empty);
+			return false;
+		}
 		int item_index = this.get_item_index(id);
-		if (item_index == -1) return this.parent.error(nv_form_error_invalid_value);
+		if (item_index == -1) {
+			this.parent.error(nv_form_error_invalid_value);
+			return false;
+		}
 		@this.items[item_index] = null;
 		this.items.remove_at(item_index);
 		return true;
