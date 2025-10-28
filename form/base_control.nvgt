@@ -47,4 +47,7 @@ abstract class nv_form_control {
 		if (@this.shortcut == null) return false;
 		return this.shortcut.pressed;
 	}
+	bool focus(bool quiet = false, bool interrupt_previous_speech = true) {
+		return this.parent.focus_control(this, quiet, interrupt_previous_speech);
+	}
 }

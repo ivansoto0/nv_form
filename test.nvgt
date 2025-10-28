@@ -58,7 +58,7 @@ void main() {
 	progress.speak_progress_updates = false;
 	f.add_control(@progress, position = 6);
 	nv_form_link@ link = f.add_link("Open NVGT Website", "https://nvgt.gg", "nvgtweb");
-	f.focus_control(f.controls[0]);
+	f.controls[1].focus(false, false);
 	while (true) {
 		wait(5);
 		if (!f.monitor()) {

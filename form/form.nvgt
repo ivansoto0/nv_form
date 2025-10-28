@@ -293,11 +293,11 @@ class nv_form {
 		nv_form_control@ctrl = this.find_next_control(next);
 		return this.focus_control(ctrl);
 	}
-	bool focus_control(nv_form_control@ctrl, bool quiet = false, bool interupt_previous_speech = true) {
+	bool focus_control(nv_form_control@ctrl, bool quiet = false, bool interrupt_previous_speech = true) {
 		if (@ctrl == null) return false;
 		int index = this.controls.find_by_ref(ctrl);
 		if (index == -1) return false;
-		return this.set_focus(index, quiet, interupt_previous_speech);
+		return this.set_focus(index, quiet, interrupt_previous_speech);
 	}
 	private bool set_focus(int control_index, bool quiet = false, bool interrupt_previous_speech = true) {
 		if (control_index<0 or control_index >= this.controls.length()) return false;
