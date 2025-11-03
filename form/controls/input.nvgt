@@ -14,6 +14,9 @@ class nv_form_input: nv_form_control {
 	string delete_disabled_message = "This input has disabled deletion";
 	int echo_flag = textflag_entry_characters;
 	uint8 clipboard_flags = nv_clipboard_flag_copy | nv_clipboard_flag_cut | nv_clipboard_flag_paste;
+	string[] disallowed_chars;
+	bool use_only_disallowed_chars = false;
+	string char_disallowed_description = "";
 	nv_form_input(nv_form@parent, string caption, string id = "") {
 		super(caption, id, nv_form_ct_input, @parent);
 	}
@@ -56,6 +59,10 @@ class nv_form_input: nv_form_control {
 		char = get_characters();
 		if (!this.read_only) {
 			if (char != "") {
+				if (this.disallowed_chars.length() > 0 && this.is_disallowed_char(char)) {
+					if (this.char_disallowed_description != "") speak(this.char_disallowed_description);
+					return true;
+				}
 				if (overwrite)
 					edit(char);
 				else
@@ -800,10 +807,10 @@ class nv_form_input: nv_form_control {
 			speak("clipboard data can't fit", true);
 			return;
 		}
-		/*if (this.disallowed_chars.length() > 0 && this.is_disallowed_char(paste)) {
-		    if (this.char_disallowed_description != "") speak(this.char_disallowed_description);
-		    return;
-		}*/
+		if (this.disallowed_chars.length() > 0 && this.is_disallowed_char(paste)) {
+			if (this.char_disallowed_description != "") speak(this.char_disallowed_description);
+			return;
+		}
 		string new_text = text;
 		if (sel_start > -1 && sel_end > -1) {
 			cursor = sel_start;
@@ -934,5 +941,28 @@ class nv_form_input: nv_form_control {
 			speak(read_line(current_line_start_position()), wrapped == "");
 		}
 		return true;
+	}
+	bool set_disallowed_chars(string chars, bool use_only_disallowed_chars = false, string char_disallowed_description = "") {
+		if (chars.length() < 1)
+			this.disallowed_chars.resize(0);
+		else {
+			for (uint i = 0; i < chars.length(); i++)
+				this.disallowed_chars.insert_last(chars[i]);
+		}
+		this.use_only_disallowed_chars = use_only_disallowed_chars;
+		this.char_disallowed_description = char_disallowed_description;
+		return true;
+	}
+	bool is_disallowed_char(string char, bool search_all = true) {
+		if (char.length() < 1)
+			return false;
+		if (search_all) {
+			for (uint i = 0; i < char.length(); i++) {
+				if (this.disallowed_chars.find(char[i]) < 0 && this.use_only_disallowed_chars) return true;
+				else if (this.disallowed_chars.find(char[i]) > -1 && !this.use_only_disallowed_chars) return true;
+			}
+			return false;
+		}
+		return (this.disallowed_chars.find(char) > -1 && !this.use_only_disallowed_chars) or (this.disallowed_chars.find(char) < 0 && this.use_only_disallowed_chars);
 	}
 }
