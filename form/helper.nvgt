@@ -77,13 +77,13 @@ class nv_shortcut {
 		if (this.ctrl) f.insert_last("Ctrl");
 		if (this.shift) f.insert_last("Shift");
 		if (this.alt) f.insert_last("Alt");
-		f.insert_last(get_key_name(this.key));
+		if (this.key != KEY_UNKNOWN) f.insert_last(get_key_name(this.key));
 		return nv_read_shortcut(join(f, "+"));
 	}
 	bool get_pressed() property {
-		if (this.ctrl && !key_down(KEY_LCTRL) && !key_down(KEY_RCTRL)) return false;
-		if (this.shift && !key_down(KEY_LSHIFT) && !key_down(KEY_RSHIFT)) return false;
-		if (this.alt && !key_down(KEY_LALT) && !key_down(KEY_RALT)) return false;
+		if (!this.ctrl && (key_down(KEY_LCTRL) || key_down(KEY_RCTRL))) return false;
+		if (!this.shift && (key_down(KEY_LSHIFT) || key_down(KEY_RSHIFT))) return false;
+		if (!this.alt && (key_down(KEY_LALT) || key_down(KEY_RALT))) return false;
 		return key_pressed(this.key);
 	}
 }
