@@ -87,3 +87,15 @@ class nv_shortcut {
 		return key_pressed(this.key);
 	}
 }
+nv_shortcut@ parse_nv_shortcut(string value) {
+	string[] lines = value.lower().split("+");
+	if (lines.length() < 1) return null;
+	string f = value;
+	int r = value.rfind("+");
+	if (r > -1) {
+		f = value.substr(r + 1);
+	}
+	bool ctrl = lines.find("ctrl") > -1, shift = lines.find("shift") > -1, alt = lines.find("alt") > -1;
+	int k = get_key_code(f);
+	return nv_shortcut(k, ctrl, shift, alt);
+}
