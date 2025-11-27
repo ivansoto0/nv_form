@@ -38,7 +38,7 @@ class nv_form_switch: nv_form_control {
 		}
 		return false;
 	}
-	string get_control_info() {
+	string get_fixed_type_last() property {
 		nv_form_switch_item@item = this.focused_item;
 		if (@item == null) return "";
 		return item.text;

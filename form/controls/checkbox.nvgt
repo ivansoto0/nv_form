@@ -8,7 +8,7 @@ class nv_form_checkbox: nv_form_control {
 		this.toggle();
 		nv_form_control::fire();
 	}
-	string get_control_info() {
+	string get_fixed_type_last() property {
 		return (this.state ? "checked" : "not check");
 	}
 	void toggle() {

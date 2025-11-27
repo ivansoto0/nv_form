@@ -42,7 +42,7 @@ void main() {
 	btn.hide();
 	//now we create a legacy style button, setting it as the primary control.
 	f.add_button("Speak something", "speak", primary = true);
-	f.add_checkbox("Uncheck this", "box", true);
+	@f.add_checkbox("Uncheck this", "box", true).shortcut = nv_shortcut(KEY_C, alt = true);
 	nv_form_list_box@lst = nv_form_list_box(f, "test items", "items", speak_position = true);
 	lst.add_items({"This is a test item", "another item", "nvgt", "cpp"});
 	f.add_control(lst);
