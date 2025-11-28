@@ -11,6 +11,7 @@ class nv_form_progress_bar: nv_form_control {
 		this.clamp_value();
 	}
 	private sound@ generate_progress_tone(double duration = 0.2, double min_freq = 220.0, double max_freq = 880.0) {
+		#if_not plugin_legacy_sound
 		tone_synth@synth = tone_synth();
 		if (@synth == null) return null;
 		double percent = this.percentage / 100.0;
@@ -24,6 +25,10 @@ class nv_form_progress_bar: nv_form_control {
 		synth.pan = 0.0;
 		if (!synth.freq(freq, duration)) return null;
 		return synth.write_wave_sound();
+		#endif
+		#if plugin_legacy_sound
+		return null;
+		#endif
 	}
 	void clamp_value() {
 		if (this.value < this.min_value) this.value = this.min_value;
@@ -47,6 +52,13 @@ class nv_form_progress_bar: nv_form_control {
 	double get_percentage() property {
 		if (this.max_value <= this.min_value) return 0.0;
 		return ((this.value - this.min_value) / (this.max_value - this.min_value)) * 100.0;
+	}
+	bool handle_input() {
+		if (key_pressed(KEY_UP) || key_pressed(KEY_DOWN)) {
+			speak(this.percentage + " percent", true);
+			return true;
+		}
+		return nv_form_control::handle_input();
 	}
 	void report_progress() {
 		if (this.speak_progress_updates) speak(this.percentage + " percent", false);
