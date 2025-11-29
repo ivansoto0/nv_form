@@ -4,6 +4,9 @@ class nv_form_list_box: nv_form_control {
 	bool speak_position;
 	int max_items = -1;
 	int list_position = -1;
+	bool multinav = true;
+	timer multinavtime;
+	string multichar;
 	nv_form_list_box(nv_form@parent, string caption, string id = "", bool allow_multiselect = false, nv_form_list_item@[] items = {}, int max_items = -1, bool speak_position = false) {
 		super(caption, id, nv_form_ct_list, @parent);
 		this.multiselect = allow_multiselect;
@@ -47,6 +50,60 @@ class nv_form_list_box: nv_form_control {
 		return join(f, "  ");
 	}
 	bool handle_input() {
+		if (this.multinav) {
+			string test;
+			if (multinavtime.elapsed > 1000 and multichar != "")
+				multichar = "";
+			string c = get_characters().lower();
+			if (c != "" and multichar != c) {
+				multinavtime.restart();
+				multichar += c;
+			}
+			if (multichar != "" and c != "") {
+				multichar = multichar.lower();
+				bool found = false;
+				for (uint i = this.list_position; i < items.length(); i++) {
+					if (i < 0 || i >= items.length()) continue;
+					if (i == this.list_position) continue;
+					test = this.items[i].text;
+					test = test.lower();
+					if (test.substr(0, multichar.length()) == multichar) {
+						if (this.items[this.list_position].text.lower().substr(0, multichar.length()) == multichar and multichar.length() > 1) {
+							found = true;
+							break;
+						}
+						if (this.list_position < i)
+							this.list_position = i;
+						else if (this.list_position > i)
+							this.list_position = i;
+						if (this.list_position >= 0 && this.list_position < items.length() && @this.items[this.list_position] != null) speak(this.speak_list_item(this.items[this.list_position]));
+						found = true;
+						break;
+					}
+				}
+				if (found == false) {
+					multichar = multichar.lower();
+					for (uint i = 0; i < items.length(); i++) {
+						test = this.items[i].text;
+						test = test.lower();
+						if (test.substr(0, multichar.length()) == multichar) {
+							if ((this.list_position >= 0 && this.list_position < items.length()) && this.items[this.list_position].text.lower().substr(0, multichar.length()) == multichar and multichar.length() > 1) {
+								found = true;
+								break;
+							}
+							if (this.list_position < i)
+								this.list_position = i;
+							else if (this.list_position > i)
+								this.list_position = i;
+							if (this.list_position >= 0 && this.list_position < items.length() && @this.items[this.list_position] != null) speak(this.speak_list_item(this.items[this.list_position]));
+							found = true;
+							break;
+						}
+					}
+				}
+				return found;
+			}
+		}
 		if (key_repeating(KEY_UP)) {
 			bool nav = this.navigate(false);
 			if (nav && @this.focused_item != null) speak(this.speak_list_item(this.focused_item));
