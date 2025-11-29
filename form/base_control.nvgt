@@ -33,6 +33,8 @@ abstract class nv_form_control {
 		if (@this.callback != null) ok = this.callback(this);
 		if (!ok) return;
 		string i = this.get_control_info();
+		if (i.empty()) i = this.fixed_type_first;
+		if (i.empty()) i = this.fixed_type_last;
 		if (!i.empty()) speak(i);
 		this.on_fire();
 	}
