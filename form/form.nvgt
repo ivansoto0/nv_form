@@ -12,14 +12,15 @@
 */
 
 #include "enums.nvgt"
+#include "event.nvgt"
 #include "helper.nvgt"
 #include "nv_form_funcdefs.nvgt"
 #include "speech.nvgt"
-#include "controls/*.nvgt"
+#include "controls/*.nvgt" /**/
 #include "base_control.nvgt"
 #include "utilities.nvgt"
 
-string nvform_word_separators = "_ .,!\\\"/[{()}]=\n:";
+string nvform_word_separators = "_ .,!\\\"/[{()}]=\n:|";
 class nv_form {
 	nv_form_control@[]controls;
 	int max_controls = 0;
@@ -301,7 +302,12 @@ class nv_form {
 	}
 	private bool set_focus(int control_index, bool quiet = false, bool interrupt_previous_speech = true) {
 		if (control_index<0 or control_index >= this.controls.length()) return false;
+		nv_form_control@ current = this.current_control;
+		if (@current != null) {
+			current.event_focus_lost.fire(nv_form_event(current, nv_form_event_focus_lost));
+		}
 		this.control_index = control_index;
+		this.current_control.event_focus_gained.fire(nv_form_event(this.current_control, nv_form_event_focus_gained));
 		bool result;
 		if (!quiet) result = this.speak_current_control(interrupt_previous_speech);
 		else result = true;

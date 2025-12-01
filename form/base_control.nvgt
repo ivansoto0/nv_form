@@ -9,6 +9,7 @@ abstract class nv_form_control {
 	bool hidden = false, enabled = true;
 	bool enable_go_line = true, enable_search = true;
 	nv_form_control_callback@callback = null;
+	nv_form_event_dispatcher event_focus_gained, event_focus_lost;
 	nv_form_control(string caption, string id, nv_form_control_type type, nv_form@parent) {
 		this.caption = caption;
 		this.type = type;

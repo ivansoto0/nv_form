@@ -17,6 +17,7 @@ class nv_form_input: nv_form_control {
 	string[] disallowed_chars;
 	bool use_only_disallowed_chars = false;
 	string char_disallowed_description = "";
+	nv_form_event_dispatcher event_text_typed;
 	nv_form_input(nv_form@parent, string caption, string id = "") {
 		super(caption, id, nv_form_ct_input, @parent);
 	}
@@ -67,6 +68,7 @@ class nv_form_input: nv_form_control {
 					edit(char);
 				else
 					add(char);
+				this.event_text_typed.fire(nv_form_event(this, nv_form_event_input_text_typed)); // So they can add typing sound maybe.
 				return true;
 			}
 			if ((keyboard_modifiers & KEYMOD_SHIFT > 0) && (key_pressed(KEY_RETURN) || key_pressed(KEY_NUMPAD_ENTER))) {

@@ -30,6 +30,7 @@ void main() {
 	@rinp.shortcut = nv_shortcut(KEY_N, true);
 	rinp.default_text = "1. Thank you for trying NV Form.\n2. This is testing box";
 	rinp.select(0);
+	rinp.event_focus_gained.add(selectinput);
 	f.add_control(rinp);
 	nv_form_switch@ enable = f.add_switch("Enable the next button", "enable");
 	enable.add("On", "1");
@@ -117,4 +118,9 @@ void keyboard_loop() {
 		snd.play();
 		speak("Should play");
 	}
+}
+void selectinput(nv_form_event@ e) {
+	nv_form_input@ c = cast<nv_form_input@>(e.ctrl);
+	if (@c == null) return; // Invalid
+	c.select(0);
 }

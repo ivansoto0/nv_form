@@ -49,13 +49,3 @@ shared enum nv_form_text_edit_mode_constants {
 	nv_form_edit_mode_trim_to_length,
 	nv_form_edit_mode_append_to_end
 }
-//types of update events that can be received by controls
-shared enum nv_control_event_type {
-	nv_event_none = 0,
-	nv_event_focus,
-	nv_event_list_cursor,
-	nv_event_text_cursor,
-	nv_event_button,
-	nv_event_checkbox,
-	nv_event_slider
-}
