@@ -12,6 +12,8 @@ void main() {
 	if (profile == 1) start_profiling();
 	nv_form f;
 	custom_button my_button(f);
+	@my_button.shortcut = nv_shortcut(KEY_P, alt = true);
+	my_button.autoactivate = true;
 	f.create_window("Test", say_dialog = true);
 	wait(250);
 	f.add_control(my_button);
@@ -43,7 +45,9 @@ void main() {
 	nv_form_button@btn = f.add_button("Press this other button here", "testbtn", cancel = true, callback = on_x_click);
 	btn.hide();
 	//now we create a legacy style button, setting it as the primary control.
-	f.add_button("Speak something", "speak", primary = true);
+	nv_form_button@ spt = f.add_button("Speak something", "speak", primary = true);
+	@spt.shortcut = nv_shortcut(KEY_S, alt = true);
+	spt.autoactivate = true;
 	@f.add_checkbox("Uncheck this", "box", true).shortcut = nv_shortcut(KEY_C, alt = true);
 	nv_form_list_box@lst = nv_form_list_box(f, "test items", "items", speak_position = true);
 	lst.add_items({"This is a test item", "another item", "nvgt", "cpp"});

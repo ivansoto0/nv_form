@@ -5,7 +5,7 @@ abstract class nv_form_control {
 	string id;
 	nv_shortcut@ shortcut = null;
 	nv_form@parent;
-	bool speak_shortcut = true;
+	bool speak_shortcut = true, autoactivate = false;
 	bool hidden = false, enabled = true;
 	bool enable_go_line = true, enable_search = true;
 	nv_form_control_callback@callback = null;
@@ -49,6 +49,13 @@ abstract class nv_form_control {
 	bool check_shortcut() {
 		if (@this.shortcut == null) return false;
 		return this.shortcut.pressed;
+	}
+	bool shortcut_focus() {
+		if (this.autoactivate) {
+			this.fire();
+			return true;
+		}
+		return this.focus();
 	}
 	bool focus(bool quiet = false, bool interrupt_previous_speech = true) {
 		return this.parent.focus_control(this, quiet, interrupt_previous_speech);

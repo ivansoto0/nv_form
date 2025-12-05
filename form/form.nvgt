@@ -122,7 +122,7 @@ class nv_form {
 			if (@this.controls[i] == null || @this.controls[i].shortcut == null) continue;
 			if (this.controls[i].check_shortcut()) {
 				found_shortcut = true;
-				this.focus_control(this.controls[i]);
+				this.controls[i].shortcut_focus();
 				break;
 			}
 		}
@@ -130,7 +130,7 @@ class nv_form {
 			foreach (nv_form_control@ l: this.controls) {
 				if (@l == null || @l.shortcut == null) continue;
 				if (l.check_shortcut()) {
-					this.focus_control(l);
+					l.shortcut_focus();
 					break;
 				}
 			}
