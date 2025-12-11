@@ -21,10 +21,13 @@
 #include "utilities.nvgt"
 
 string nvform_word_separators = "_ .,!\\\"/[{()}]=\n:|";
+int nvform_keyboard_echo = textflag_characters;
 class nv_form {
 	nv_form_control@[]controls;
 	int max_controls = 0;
 	int control_index = -1;
+	int __keyboard_echo = nvform_keyboard_echo;
+	bool rely_on_nvform_echo = true;
 	string window_title;
 	bool speak_control_attributes_separately = false;
 	bool active = false;
@@ -41,6 +44,20 @@ class nv_form {
 		@this.primary_control = null;
 		@this.cancel_control = null;
 		@this.nv_utility_form = null;
+	}
+	int get_keyboard_echo() property {
+		if (this.rely_on_nvform_echo) return nvform_keyboard_echo;
+		return this.__keyboard_echo;
+	}
+	void set_keyboard_echo(int echo, bool update = true) {
+		this.__keyboard_echo = echo;
+		if (update) {
+			foreach (nv_form_control@ l: this.controls) {
+				nv_form_input@ ca = cast<nv_form_input@>(l);
+				if (@ca == null) continue;
+				ca.echo_flag = echo;
+			}
+		}
 	}
 	nv_form_control@get_control_by_id(const string&in id) {
 		if (this.controls.length() <= 0) return null;

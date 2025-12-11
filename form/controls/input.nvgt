@@ -20,6 +20,7 @@ class nv_form_input: nv_form_control {
 	nv_form_event_dispatcher event_text_typed;
 	nv_form_input(nv_form@parent, string caption, string id = "") {
 		super(caption, id, nv_form_ct_input, @parent);
+		this.echo_flag = this.parent.keyboard_echo;
 	}
 	string get_control_info() {
 		string f;
@@ -110,6 +111,14 @@ class nv_form_input: nv_form_control {
 		}
 		if (((key_down(KEY_LCTRL)) || (key_down(KEY_RCTRL))) && key_up(KEY_LSHIFT) && key_up(KEY_RSHIFT) && (key_repeating(KEY_A))) {
 			highlight_all();
+			return true;
+		}
+		if (key_repeating(KEY_F2)) {
+			int dir = 1;
+			if (keyboard_modifiers & KEYMOD_SHIFT != 0) dir = -1;
+			nvform_keyboard_echo = nvform_change_keyboard_echo(nvform_keyboard_echo, dir);
+			this.parent.set_keyboard_echo(nvform_keyboard_echo);
+			speak(nvform_keyboard_echo_string(nvform_keyboard_echo));
 			return true;
 		}
 		if ((clipboard_flags & nv_clipboard_flag_copy > 0) && (keyboard_modifiers & KEYMOD_CTRL > 0) && (key_repeating(KEY_C)) && (password_mask == "")) {
