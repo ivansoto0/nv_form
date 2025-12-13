@@ -217,11 +217,14 @@ class nv_form_input: nv_form_control {
 	}
 	bool add(string character, bool silent = false) {
 		string new_text = text;
+		bool prevselect = false;
 		if (sel_start > -1 && sel_end > -1) {
 			cursor = sel_start;
 			new_text = text.substr(0, cursor) + text.substr(sel_end + 1);
 			sel_start = -1;
 			sel_end = -1;
+			prevselect = true;
+			if (!silent) speak(this.highlight_unselect_speech_text);
 		}
 		if ((max_length > 0) && (new_text.length() >= max_length))
 			return false;
@@ -231,7 +234,7 @@ class nv_form_input: nv_form_control {
 			cursor += character.length();
 		}
 		if (echo_flag == textflag_entry_characters || echo_flag == textflag_entry_characters_words)
-			speak(input_box_speak(find_appropriate_character(character)), true);
+			speak(input_box_speak(find_appropriate_character(character)), !prevselect);
 		if (nvform_word_separators .find(character) > -1 && (echo_flag == textflag_entry_words || echo_flag == textflag_entry_characters_words)) {
 			int temp_position = cursor - 1;
 			while (temp_position > 0 && (temp_position >= text.length() || nvform_word_separators .find(text[temp_position - 1]) < 0 && text[temp_position - 1] != "\n"))
@@ -720,17 +723,25 @@ class nv_form_input: nv_form_control {
 		sel_start = start;
 		sel_end = end;
 	}
+	bool unselect(bool silent = false) {
+		if (this.sel_start > -1 && this.sel_end > -1) {
+			this.sel_start = -1;
+			this.sel_end = -1;
+			if (!silent) speak(this.highlight_unselect_speech_text);
+			return true;
+		}
+		return false;
+	}
 	void next_line() {
-		sel_start = -1;
-		sel_end = -1;
+		bool prevsl = this.unselect();
 		if (!multiline) {
 			cursor = text.length();
-			speak(read_line(0), true, null);
+			speak(read_line(0), !prevsl, null);
 			return;
 		}
 		int line_start = current_line_start_position();
 		if (line_start == text.length() || line_start < 0) {
-			speak("Blank", true);
+			speak("Blank", !prevsl);
 			if (line_start == text.length())
 				cursor = text.length();
 			return;
@@ -739,29 +750,28 @@ class nv_form_input: nv_form_control {
 			if (text[counter] != "\n")
 				continue;
 			cursor = counter + 1;
-			speak(read_line(cursor), true, null);
+			speak(read_line(cursor), !prevsl, null);
 			return;
 		}
-		speak(read_line(line_start), true, null);
+		speak(read_line(line_start), !prevsl, null);
 		cursor = text.length();
 	}
 	void previous_line() {
-		sel_start = -1;
-		sel_end = -1;
+		bool prevsl = this.unselect();
 		int line_start = current_line_start_position();
 		if (line_start <= 0 || !multiline) {
 			cursor = 0;
 			if (text == "")
-				speak("Blank");
+				speak("Blank", !prevsl);
 			else
-				speak(read_line(0), true, null);
+				speak(read_line(0), !prevsl, null);
 			return;
 		}
 		cursor = line_start - 1;
 		cursor = current_line_start_position();
 		if (cursor < 0)
 			cursor = 0;
-		speak(read_line(cursor), true, null);
+		speak(read_line(cursor), !prevsl, null);
 	}
 	void highlight_all() {
 		if (text == "") {

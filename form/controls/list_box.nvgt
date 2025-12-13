@@ -213,6 +213,15 @@ class nv_form_list_box: nv_form_control {
 		}
 		return res;
 	}
+	nv_form_list_item@[] get_selections() {
+		nv_form_list_item@[] cs(0);
+		foreach (nv_form_list_item@ l: this.items) {
+			if (@l == null || !l.selected) continue;
+			cs.insert_last(l);
+			if (!this.multiselect) break;
+		}
+		return cs;
+	}
 	bool search(const string& in text, int dir = 1, bool silent = false) {
 		if (this.items.length() < 1) return false;
 		string[] nav_items(this.items.length());
