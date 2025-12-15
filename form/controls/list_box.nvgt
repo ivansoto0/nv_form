@@ -140,11 +140,6 @@ class nv_form_list_box: nv_form_control {
 		if (handle_nv_utils(this)) return true;
 		return false;
 	}
-	void on_focus_gained() {
-		nv_form_list_item@item = this.focused_item;
-		if (@item == null) return;
-		speak(this.speak_list_item(item), false);
-	}
 	bool set_item_selected_state(int item_index, bool selected) {
 		if (this.items.length() <= 0 or (item_index<0 or item_index >= this.items.length())) {
 			this.parent.error(nv_form_error_invalid_list_index);
@@ -253,6 +248,11 @@ class nv_form_list_box: nv_form_control {
 		if (!silent)
 			speak(already_on_result ? "nothing else found" : "nothing found");
 		return false;
+	}
+	string get_fixed_type_last() property {
+		nv_form_list_item@item = this.focused_item;
+		if (@item == null) return "";
+		return this.speak_list_item(item);
 	}
 }
 class nv_form_list_item {
