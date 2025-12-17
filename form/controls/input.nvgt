@@ -213,6 +213,7 @@ class nv_form_input: nv_form_control {
 		return false;
 	}
 	void on_focus_gained() {
+		start_text_input(); // Especially for Android keyboard.
 		get_characters(); // Cleanup any characters that might have been accumulated.
 	}
 	bool add(string character, bool silent = false) {

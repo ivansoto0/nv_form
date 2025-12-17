@@ -254,6 +254,10 @@ class nv_form_list_box: nv_form_control {
 		if (@item == null) return "";
 		return this.speak_list_item(item);
 	}
+	void on_focus_gained() {
+		start_text_input(); // Especially for Android keyboard.
+		get_characters(); // Cleanup any characters that might have been accumulated.
+	}
 }
 class nv_form_list_item {
 	bool selected;
