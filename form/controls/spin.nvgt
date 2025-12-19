@@ -1,0 +1,94 @@
+class nv_form_spin: nv_form_input {
+	double __min = 0, __max = 100, step = 1;
+	nv_form_spin(nv_form@parent, string caption, string id = "") {
+		super(@parent, caption, id);
+		this.type = nv_form_ct_spin;
+		this.set_chars();
+	}
+	void set_chars() {
+		string chars = "0123456789";
+		if (this.min < 0) chars += "-";
+		this.set_disallowed_chars(chars, true);
+	}
+	double min {
+		get {
+			return this.__min;
+		}
+		set {
+			this.__min = value;
+			this.set_chars();
+		}
+	}
+	double max {
+		get {
+			return this.__max;
+		}
+		set {
+			this.__max = value;
+			this.set_chars();
+		}
+	}
+	bool handle_input() {
+		if (key_repeating(KEY_UP)) {
+			double t = parse_float(this.text) + this.step;
+			if (this.text == "") t = this.min;
+			if (t > this.max) t = this.max;
+			this.unselect(true);
+			this.text = t;
+			this.cursor = 0;
+			this.previous_line();
+			return true;
+		} else if (key_repeating(KEY_DOWN)) {
+			double t = parse_float(this.text) - this.step;
+			if (this.text == "") t = this.min;
+			if (t < this.min) t = this.min;
+			this.unselect(true);
+			this.text = t;
+			this.cursor = 0;
+			this.next_line();
+			return true;
+		}
+		return nv_form_input::handle_input();
+	}
+	bool add(string character, bool silent = false) {
+		string new_text = text;
+		bool prevselect = false;
+		if (sel_start > -1 && sel_end > -1) {
+			cursor = sel_start;
+			new_text = text.substr(0, cursor) + text.substr(sel_end + 1);
+			sel_start = -1;
+			sel_end = -1;
+			prevselect = true;
+			if (!silent) speak(this.highlight_unselect_speech_text);
+		}
+		if ((max_length > 0) && (new_text.length() >= max_length))
+			return false;
+		new_text = new_text.substr(0, cursor) + character + new_text.substr(cursor);
+		if (read_only == false) {
+			text = new_text;
+			cursor += character.length();
+		}
+		if (echo_flag == textflag_entry_characters || echo_flag == textflag_entry_characters_words)
+			speak(input_box_speak(find_appropriate_character(character)), !prevselect);
+		if (nvform_word_separators .find(character) > -1 && (echo_flag == textflag_entry_words || echo_flag == textflag_entry_characters_words)) {
+			int temp_position = cursor - 1;
+			while (temp_position > 0 && (temp_position >= text.length() || nvform_word_separators .find(text[temp_position - 1]) < 0 && text[temp_position - 1] != "\n"))
+				temp_position--;
+			string word = read_word_from_position(temp_position);
+			if (password_mask != "") {
+				for (uint i = 0; i < word.length(); i++) word[i] = password_mask;
+			}
+			speak(word, echo_flag != textflag_entry_characters_words);
+		}
+		double t = parse_float(this.text);
+		if (t < this.min || t > this.max){
+			t = clamp(t, this.min, this.max);
+			this.text = t;
+			this.cursor = this.text.length();
+		}
+		return true;
+	}
+	double get_output() property {
+		return parse_float(this.text);
+	}
+}

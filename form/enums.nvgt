@@ -9,7 +9,8 @@ shared enum nv_form_control_type {
 	nv_form_ct_form,
 	nv_form_ct_keyboard_area,
 	nv_form_ct_link,
-	nv_form_ct_switch
+	nv_form_ct_switch,
+	nv_form_ct_spin
 }
 
 shared enum nv_form_clipboard_flags {
