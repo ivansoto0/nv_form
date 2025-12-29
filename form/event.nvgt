@@ -23,5 +23,5 @@ enum nv_form_event_type {
 	nv_form_event_checkbox_toggled,
 	nv_form_event_slider_changed,
 	nv_form_event_switch_changed,
-	nv_form_event_input_text_typed
+	nv_form_event_input
 }

@@ -17,6 +17,7 @@
 #include "nv_form_funcdefs.nvgt"
 #include "speech.nvgt"
 #include "controls/*.nvgt" /**/
+#include "events/*.nvgt" /**/
 #include "base_control.nvgt"
 #include "utilities.nvgt"
 
