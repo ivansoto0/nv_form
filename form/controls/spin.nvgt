@@ -8,6 +8,7 @@ class nv_form_spin: nv_form_input {
 	void set_chars() {
 		string chars = "0123456789";
 		if (this.min < 0) chars += "-";
+		if (string(this.step).find(".") > -1) chars += ".";
 		this.set_disallowed_chars(chars, true);
 	}
 	double min {
@@ -80,6 +81,9 @@ class nv_form_spin: nv_form_input {
 			}
 			speak(word, echo_flag != textflag_entry_characters_words);
 		}
+		nv_form_input_event e(this);
+		e.character = character;
+		this.event.fire(e);
 		double t = parse_float(this.text);
 		if (t < this.min || t > this.max){
 			t = clamp(t, this.min, this.max);
