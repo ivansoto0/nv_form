@@ -17,7 +17,6 @@ class nv_form_input: nv_form_control {
 	string[] disallowed_chars;
 	bool use_only_disallowed_chars = false;
 	string char_disallowed_description = "";
-	nv_form_event_dispatcher event;
 	nv_form_input(nv_form@parent, string caption, string id = "") {
 		super(caption, id, nv_form_ct_input, @parent);
 		this.echo_flag = this.parent.keyboard_echo;

@@ -334,10 +334,10 @@ class nv_form {
 		if (control_index<0 or control_index >= this.controls.length()) return false;
 		nv_form_control@ current = this.current_control;
 		if (@current != null) {
-			current.event_focus_lost.fire(nv_form_event(current, nv_form_event_focus_lost));
+			current.event.fire(nv_form_event(current, nv_form_event_focus_lost));
 		}
 		this.control_index = control_index;
-		this.current_control.event_focus_gained.fire(nv_form_event(this.current_control, nv_form_event_focus_gained));
+		this.current_control.event.fire(nv_form_event(this.current_control, nv_form_event_focus_gained));
 		bool result;
 		if (!quiet) result = this.speak_current_control(interrupt_previous_speech);
 		else result = true;
