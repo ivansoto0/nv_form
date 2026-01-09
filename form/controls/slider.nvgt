@@ -39,12 +39,12 @@ class nv_form_slider: nv_form_control {
 			return true;
 		}
 		if (key_repeating(KEY_HOME)) {
-			this.value = this.max_value;
+			this.value = this.min_value;
 			speak(this.value);
 			return true;
 		}
 		if (key_repeating(KEY_END)) {
-			this.value = this.min_value;
+			this.value = this.max_value;
 			speak(this.value);
 			return true;
 		}
