@@ -18,6 +18,9 @@ class nv_form_list_box: nv_form_control {
 		if (this.items.length() <= 0 or this.list_position < 0) return null;
 		return this.items[this.list_position];
 	}
+	string get_focused_item_id() const property {
+		return (@this.focused_item != null ? this.focused_item.id : "");
+	}
 	bool navigate(bool next = true) {
 		if (this.items.length() <= 0) {
 			this.parent.error(nv_form_error_list_empty);
