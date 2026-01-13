@@ -208,7 +208,7 @@ class nv_form_list_box: nv_form_control {
 		}
 		return res;
 	}
-	nv_form_list_item@[] get_selections() {
+	nv_form_list_item@[] get_selections() property {
 		nv_form_list_item@[] cs(0);
 		foreach (nv_form_list_item@ l: this.items) {
 			if (@l == null || !l.selected) continue;

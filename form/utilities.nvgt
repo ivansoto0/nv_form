@@ -138,7 +138,9 @@ class nv_search_for : nv_utility_form {
 		this.f_text.enable_go_line = false;
 		this.f_text.enable_search = false;
 		@f_next = this.f.add_button("find next", "next", true);
+		@f_next.shortcut = nv_shortcut(KEY_N, alt = true);
 		@f_prev = this.f.add_button("find previous", "prev");
+		@f_prev.shortcut = nv_shortcut(KEY_P, alt = true);
 		@f_cancel = this.f.add_button("cancel", "cancel", false, true);
 		this.f.focus_control(f_text, false, false);
 		@parent.nv_utility_form = this;

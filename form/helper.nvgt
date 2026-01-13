@@ -11,13 +11,13 @@ shared int nv_string_contains(const string& in str, const string& in search, int
 	}
 	return c == occurance ? pos : -1;
 }
-string nv_get_readable_key(const string &in symbol) {
+string nv_get_readable_key(const string &in symbol, bool strict = false) {
 	string[][] map = {
 		{";", "Semicolon"},
 		{":", "Colon"},
 		{",", "Comma"},
 		{".", "Period"},
-		{"!", "Exclamation"},
+		{"!", "Bang"},
 		{"?", "Question"},
 		{"'", "Apostrophe"},
 		{"\"", "Quote"},
@@ -27,8 +27,8 @@ string nv_get_readable_key(const string &in symbol) {
 		{"]", "Right Bracket"},
 		{"{", "Left Brace"},
 		{"}", "Right Brace"},
-		{"<", "Less Than"},
-		{">", "Greater Than"},
+		{"<", "Less"},
+		{">", "Greater"},
 		{"/", "Slash"},
 		{"\\", "Backslash"},
 		{"|", "Bar"},
@@ -36,7 +36,7 @@ string nv_get_readable_key(const string &in symbol) {
 		{"_", "Underscore"},
 		{"+", "Plus"},
 		{"=", "Equals"},
-		{"*", "Asterisk"},
+		{"*", "Star"},
 		{"&", "Ampersand"},
 		{"^", "Caret"},
 		{"%", "Percent"},
@@ -50,7 +50,7 @@ string nv_get_readable_key(const string &in symbol) {
 		if (map[i][0] == symbol)
 			return map[i][1];
 	}
-	return symbol;
+	return (strict ? "" : symbol);
 }
 string nv_read_shortcut(string shortcut) {
 	string f = shortcut;

@@ -1,6 +1,6 @@
 class nv_form_input: nv_form_control {
 	string text;
-	string __default_text__;
+	private string __default_text__;
 	string password_mask;
 	string highlight_select_speech_text = "selected", highlight_unselect_speech_text = "unselected", delete_speech_text = "";
 	int cursor = 0;
@@ -279,76 +279,8 @@ class nv_form_input: nv_form_control {
 			return "Space";
 		if (character == "\n")
 			return "Blank";
-		if (character == "-")
-			return "Dash";
-		if (character == ".")
-			return "Dot";
-		if (character == ",")
-			return "Comma";
-		if (character == "@")
-			return "At";
-		if (character == ">")
-			return "Greater";
-		if (character == ";")
-			return "Semicolon";
-		if (character == ":")
-			return "Colon";
-		if (character == "\t")
-			return "Tab";
-		if (character == "'")
-			return "Apostrophe";
-		if (character == "<")
-			return "Less";
-		if (character == "_")
-			return "Underline";
-		if (character == "+")
-			return "Plus";
-		if (character == "=")
-			return "Equals";
-		if (character == "!")
-			return "Exclamation Mark";
-		if (character == "\"")
-			return "Quote";
-		if (character == "\\")
-			return "Backslash";
-		if (character == "/")
-			return "Slash";
-		if (character == "£")
-			return "Pounds";
-		if (character == "$")
-			return "Dollar";
-		if (character == "%")
-			return "Percent";
-		if (character == "^")
-			return "Carret";
-		if (character == "&")
-			return "And";
-		if (character == "*")
-			return "Star";
-		if (character == "(")
-			return "Left Parenthesis";
-		if (character == ")")
-			return "Right Parenthesis";
-		if (character == "[")
-			return "Left Bracket";
-		if (character == "]")
-			return "Right Bracket";
-		if (character == "{")
-			return "Left Brace";
-		if (character == "}")
-			return "Right Brace";
-		if (character == "|")
-			return "Bar";
-		if (character == "?")
-			return "Question Mark";
-		if (character == "`")
-			return "Grave";
-		if (character == "¬")
-			return "Not";
-		if (character == "#")
-			return "Number";
-		if (character == "~")
-			return "Tilda";
+		string oc = nv_get_readable_key(character, true);
+		if (oc != "") return oc;
 		if ((echo_flag == textflag_entry_none) && (ignore_echo_flag == false))
 			return "";
 		if (character.is_alphanumeric()) {
