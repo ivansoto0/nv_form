@@ -31,54 +31,56 @@ class nv_form_spin: nv_form_input {
 		}
 	}
 	bool handle_input() {
-		if (key_repeating(KEY_UP)) {
-			double t = parse_float(this.text) + this.step;
-			if (this.text == "") t = this.min;
-			if (t > this.max) t = this.max;
-			this.unselect(true);
-			this.text = t;
-			this.cursor = 0;
-			this.previous_line();
-			return true;
-		} else if (key_repeating(KEY_DOWN)) {
-			double t = parse_float(this.text) - this.step;
-			if (this.text == "") t = this.min;
-			if (t < this.min) t = this.min;
-			this.unselect(true);
-			this.text = t;
-			this.cursor = 0;
-			this.next_line();
-			return true;
-		} else if (key_repeating(KEY_PAGEUP)) {
-			double t = parse_float(this.text) + this.page;
-			if (this.text == "") t = this.min;
-			if (t > this.max) t = this.max;
-			this.unselect(true);
-			this.text = t;
-			this.cursor = 0;
-			this.previous_line();
-			return true;
-		} else if (key_repeating(KEY_PAGEDOWN)) {
-			double t = parse_float(this.text) - this.page;
-			if (this.text == "") t = this.min;
-			if (t < this.min) t = this.min;
-			this.unselect(true);
-			this.text = t;
-			this.cursor = 0;
-			this.next_line();
-			return true;
-		} else if (keyboard_modifiers & KEYMOD_CTRL != 0 && key_pressed(KEY_HOME)) {
-			this.unselect(true);
-			this.text = this.min;
-			this.cursor = 0;
-			this.previous_line();
-			return true;
-		} else if (keyboard_modifiers & KEYMOD_CTRL != 0 && key_pressed(KEY_END)) {
-			this.unselect(true);
-			this.text = this.max;
-			this.cursor = 0;
-			this.next_line();
-			return true;
+		if (!this.read_only) {
+			if (key_repeating(KEY_UP)) {
+				double t = parse_float(this.text) + this.step;
+				if (this.text == "") t = this.min;
+				if (t > this.max) t = this.max;
+				this.unselect(true);
+				this.text = t;
+				this.cursor = 0;
+				this.previous_line();
+				return true;
+			} else if (key_repeating(KEY_DOWN)) {
+				double t = parse_float(this.text) - this.step;
+				if (this.text == "") t = this.min;
+				if (t < this.min) t = this.min;
+				this.unselect(true);
+				this.text = t;
+				this.cursor = 0;
+				this.next_line();
+				return true;
+			} else if (key_repeating(KEY_PAGEUP)) {
+				double t = parse_float(this.text) + this.page;
+				if (this.text == "") t = this.min;
+				if (t > this.max) t = this.max;
+				this.unselect(true);
+				this.text = t;
+				this.cursor = 0;
+				this.previous_line();
+				return true;
+			} else if (key_repeating(KEY_PAGEDOWN)) {
+				double t = parse_float(this.text) - this.page;
+				if (this.text == "") t = this.min;
+				if (t < this.min) t = this.min;
+				this.unselect(true);
+				this.text = t;
+				this.cursor = 0;
+				this.next_line();
+				return true;
+			} else if (keyboard_modifiers & KEYMOD_CTRL != 0 && key_pressed(KEY_HOME)) {
+				this.unselect(true);
+				this.text = this.min;
+				this.cursor = 0;
+				this.previous_line();
+				return true;
+			} else if (keyboard_modifiers & KEYMOD_CTRL != 0 && key_pressed(KEY_END)) {
+				this.unselect(true);
+				this.text = this.max;
+				this.cursor = 0;
+				this.next_line();
+				return true;
+			}
 		}
 		return nv_form_input::handle_input();
 	}

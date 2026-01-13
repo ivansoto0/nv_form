@@ -28,6 +28,7 @@ void main() {
 	f.add_control(inp2);
 	nv_form_spin@ spin = nv_form_spin(f, "Milliseconds for a double press", "msdp");
 	f.add_control(spin);
+	nv_form_checkbox@ rvd = f.add_checkbox("Reverb's dry field is enabled", "rvd", true);
 	nv_form_spin@ spin2 = nv_form_spin(f, "Reverb's dry value", "rvd");
 	spin2.step = 0.25;
 	spin2.min = 0.0;
@@ -75,11 +76,11 @@ void main() {
 	nv_form_link@ link = f.add_link("Open NVGT Website", "https://nvgt.gg", "nvgtweb");
 	f.controls[1].focus(false, false);
 	while (true) {
-		wait(5);
 		if (!f.monitor()) {
 			alert("ok", "time to exit this application");
 			break;
 		}
+		spin2.read_only = !rvd.state;
 		nv_form_control@ ctrl = f.current_control;
 		if (@ctrl != null && ctrl.id == "kbd") keyboard_loop();
 		nv_form_switch_item@ enabled = f.get_switch_focus(enable);
@@ -108,6 +109,7 @@ void main() {
 			if (!btne.enabled) speak("Unavailable");
 			else speak("Subscribed");
 		}
+		wait(5);
 	}
 }
 bool on_x_click(nv_form_control@ctrl) {
