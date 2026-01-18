@@ -366,7 +366,7 @@ class nv_form {
 		string t2 = ctrl.fixed_type_first;
 		if (t != "") f += " " + t;
 		if (t2 != "") f.insert(0, t2 + " ");
-		return f;
+		return f.trim_whitespace();
 	}
 	bool speak_current_control(bool interrupt = true) {
 		if (this.control_index == -1) return false;
@@ -376,7 +376,8 @@ class nv_form {
 		if (!ctrl.enabled) texts.insert_last(" unavailable");
 		if (@ctrl.shortcut != null && ctrl.speak_shortcut) texts.insert_last(ctrl.shortcut.name);
 		if (!this.speak_control_attributes_separately) {
-			texts.insert_last("  " + ctrl.get_control_info());
+			string v = ctrl.get_control_info();
+			if (v != "") texts.insert_last(v);
 			return speak(join(texts, "  "), interrupt);
 		} else {
 			speak(join(texts, "  "), interrupt);
