@@ -40,6 +40,7 @@ abstract class nv_form_control {
 		this.on_fire();
 	}
 	void on_fire() { }
+	void on_focus_gained_immediate() { }
 	void on_focus_gained() { }
 	string get_control_info() {
 		return "";
@@ -59,5 +60,15 @@ abstract class nv_form_control {
 	}
 	bool focus(bool quiet = false, bool interrupt_previous_speech = true) {
 		return this.parent.focus_control(this, quiet, interrupt_previous_speech);
+	}
+	string get_str() property {
+		string[] texts = {this.caption, this.parent.get_fixed_type(this)};
+		if (!this.enabled) texts.insert_last(" unavailable");
+		if (@this.shortcut != null && this.speak_shortcut) texts.insert_last(this.shortcut.name);
+		if (!this.parent.speak_control_attributes_separately) {
+			string v = this.get_control_info();
+			if (v != "") texts.insert_last(v);
+		}
+		return join(texts, "  ");
 	}
 }

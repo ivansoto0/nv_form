@@ -68,16 +68,18 @@ class nv_form {
 		return null;
 	}
 	nv_form_control@get_current_control() const property {
-		if (this.controls.length() <= 0 or this.control_index < 0) return null;
+		if (this.controls.length() <= 0 or this.control_index < 0 or this.control_index >= this.controls.length()) return null;
 		return @this.controls[this.control_index];
 	}
-	nv_form_control@find_next_control(bool next = true) {
+	nv_form_control@find_next_control(bool next = true, bool wrap = true) {
 		if (this.controls.length() == 0) return null;
 		int index = this.control_index;
 		while (true) {
 			index += (next ? 1 : -1);
-			if (index < 0 or index >= this.controls.length())
+			if (index < 0 or index >= this.controls.length()) {
+				if (!wrap) return null;
 				index = (index >= this.controls.length() ? 0 : this.controls.length() - 1);
+			}
 			if (@this.controls[index] != null and !this.controls[index].hidden)
 				return this.controls[index];
 		}
@@ -126,9 +128,16 @@ class nv_form {
 	void handle_input() {
 		nv_form_control@ ctrl = this.current_control;
 		nv_form_control@ pctrl = this.primary_control;
+		if (@pctrl != null && pctrl.type != nv_form_ct_keyboard_area && ((@ctrl != null && ctrl.type != nv_form_ct_keyboard_area && !ctrl.handle_input()) || @ctrl == null)) {
+			if(key_pressed(KEY_RETURN) || key_pressed(KEY_NUMPAD_ENTER))
+				pctrl.fire();
+		}
+		if(@this.cancel_control != null) {
+			if(key_pressed(KEY_ESCAPE)) {
+				this.cancel_control.fire();
+			}
+		}
 		if (@ctrl != null) ctrl.handle_input();
-		if (@pctrl != null && pctrl.type != nv_form_ct_keyboard_area && ((@ctrl != null && ctrl.type != nv_form_ct_keyboard_area && !ctrl.handle_input()) || @ctrl == null) && (key_pressed(KEY_RETURN) || key_pressed(KEY_NUMPAD_ENTER))) pctrl.fire();
-		if (key_pressed(KEY_ESCAPE) and @this.cancel_control != null) this.cancel_control.fire();
 		if (key_repeating(KEY_TAB)) {
 			bool next_control = true;
 			if (key_down(KEY_LSHIFT) or key_down(KEY_RSHIFT)) next_control = false;
@@ -351,6 +360,7 @@ class nv_form {
 		}
 		this.control_index = control_index;
 		this.current_control.event.fire(nv_form_event(this.current_control, nv_form_event_focus_gained));
+		this.current_control.on_focus_gained_immediate();
 		bool result;
 		if (!quiet) result = this.speak_current_control(interrupt_previous_speech);
 		else result = true;
@@ -372,18 +382,14 @@ class nv_form {
 		if (this.control_index == -1) return false;
 		nv_form_control@ctrl = this.controls[this.control_index];
 		if (@ctrl == null) return false;
-		string[] texts = {ctrl.caption, this.get_fixed_type(ctrl)};
-		if (!ctrl.enabled) texts.insert_last(" unavailable");
-		if (@ctrl.shortcut != null && ctrl.speak_shortcut) texts.insert_last(ctrl.shortcut.name);
-		if (!this.speak_control_attributes_separately) {
-			string v = ctrl.get_control_info();
-			if (v != "") texts.insert_last(v);
-			return speak(join(texts, "  "), interrupt);
-		} else {
-			speak(join(texts, "  "), interrupt);
+		string ct = ctrl.str;
+		if (ct != "" && !this.speak_control_attributes_separately) return speak(ct, interrupt);
+		else if (ct != "" && this.speak_control_attributes_separately) {
+			speak(ct, interrupt);
 			speak(ctrl.get_control_info(), false);
 			return true;
 		}
+		return false;
 	}
 	bool search(nv_form_control@ ctrl, const string& in text, int dir = 1, bool silent = false) {
 		nv_form_input@ ctrl_input = cast < nv_form_input@ > (ctrl);
@@ -395,4 +401,17 @@ class nv_form {
 	// Below lines are intended for this class and should not be modified in subsequence scripts.
 	nv_utility_form@ nv_utility_form = null;
 	dictionary nv_utility_form_data;
+	bool get_is_first_control() property {
+		int x = this.control_index;
+		if (x <= 0) return true;
+		nv_form_control@ c = this.find_next_control(false, false);
+		return @c == null;
+	}
+	bool get_is_last_control() property {
+		int x = this.control_index;
+		if (x < 0) return false;
+		if (x >= this.controls.length() - 1) return true;
+		nv_form_control@ c = this.find_next_control(true, false);
+		return @c == null;
+	}
 }

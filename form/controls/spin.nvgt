@@ -118,7 +118,7 @@ class nv_form_spin: nv_form_input {
 		e.character = character;
 		this.event.fire(e);
 		double t = parse_float(this.text);
-		if (t < this.min || t > this.max){
+		if (t < this.min || t > this.max) {
 			t = clamp(t, this.min, this.max);
 			this.text = t;
 			this.cursor = this.text.length();
