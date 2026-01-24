@@ -342,9 +342,9 @@ class nv_form {
 		if (cancel) @this.cancel_control = @ctrl;
 		return true;
 	}
-	bool navigate_form(bool next = true) {
+	bool navigate_form(bool next = true, bool quiet = false, bool interrupt_previous_speech = true) {
 		nv_form_control@ctrl = this.find_next_control(next);
-		return this.focus_control(ctrl);
+		return this.focus_control(ctrl, quiet, interrupt_previous_speech);
 	}
 	bool focus_control(nv_form_control@ctrl, bool quiet = false, bool interrupt_previous_speech = true) {
 		if (@ctrl == null) return false;
