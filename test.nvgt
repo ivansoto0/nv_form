@@ -135,7 +135,7 @@ void keyboard_loop() {
 }
 void selectinput(nv_form_event@ e) {
 	if (e.type != nv_form_event_focus_gained) return;
-	nv_form_input@ c = cast<nv_form_input@>(e.ctrl);
+	nv_form_input@ c = cast < nv_form_input@ > (e.ctrl);
 	if (@c == null) return; // Invalid
 	c.select(0);
 }

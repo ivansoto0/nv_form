@@ -6,7 +6,7 @@ class nv_form_tab_control: nv_form_control {
 	}
 	void ready_index(bool shift_is_down) {
 		if (tab_page_index < 0 || tab_page_index >= tab_pages.length()) return;
-		if (shift_is_down)
+		if (shift_is_down && tab_pages[tab_page_index].controls_count > 0)
 			tab_pages[tab_page_index].control_index = tab_pages[tab_page_index].controls.length();
 		else
 			tab_pages[tab_page_index].control_index = -1;
@@ -28,8 +28,31 @@ class nv_form_tab_control: nv_form_control {
 				return true;
 			}
 		}
+		if (key_down(KEY_LCTRL) || key_down(KEY_RCTRL)) {
+			if (tab_page_index > -1 && tab_page_index < tab_pages.length()) {
+				if (key_repeating(KEY_TAB)) {
+					bool next = true;
+					if (key_down(KEY_LSHIFT) || key_down(KEY_RSHIFT))
+						next = false;
+					bool first_control = tab_pages[tab_page_index].control_index > -1;
+					tab_pages[tab_page_index].control_index = -1;
+					tab_page_index += (next ? 1 : -1);
+					if (tab_page_index >= tab_pages.length())
+						tab_page_index = 0;
+					else if (tab_page_index < 0)
+						tab_page_index = tab_pages.length() - 1;
+					tab_pages[tab_page_index].control_index = -1;
+					if (first_control && tab_pages[tab_page_index].controls_count > 0) {
+						speak(tab_pages[tab_page_index].name + "  property page");
+						tab_pages[tab_page_index].navigate_form(interrupt_previous_speech = false);
+					} else
+						speak(tab_pages[tab_page_index].name + " tab selected");
+					return true;
+				}
+			}
+		}
 		if (tab_page_index > -1 && tab_page_index < tab_pages.length()) {
-			if (tab_pages[tab_page_index].is_last_control && key_up(KEY_LSHIFT) && key_up(KEY_RSHIFT) && key_repeating(KEY_TAB)) {
+			if ((tab_pages[tab_page_index].is_last_control || tab_pages[tab_page_index].controls_count == 0) && key_up(KEY_LSHIFT) && key_up(KEY_RSHIFT) && key_repeating(KEY_TAB)) {
 				tab_pages[tab_page_index].control_index = -1;
 				this.parent.navigate_form();
 				return true;
@@ -41,7 +64,7 @@ class nv_form_tab_control: nv_form_control {
 				this.parent.navigate_form(false);
 				return true;
 			} else if (tab_pages[tab_page_index].control_index == -1 && (key_up(KEY_LSHIFT) && key_up(KEY_RSHIFT)) && key_repeating(KEY_TAB)) {
-				speak(tab_pages[tab_page_index].name + "  property page ");
+				speak(tab_pages[tab_page_index].name + "  property page");
 				tab_pages[tab_page_index].navigate_form(interrupt_previous_speech = false);
 				return true;
 			}
@@ -55,11 +78,16 @@ class nv_form_tab_control: nv_form_control {
 	}
 	void on_focus_gained() {
 		if (tab_page_index > -1 && tab_page_index < tab_pages.length()) {
-			if ((key_down(KEY_RSHIFT) || key_down(KEY_LSHIFT)) && tab_pages[tab_page_index].controls.length() > 0) {
+			if ((key_down(KEY_RSHIFT) || key_down(KEY_LSHIFT)) && tab_pages[tab_page_index].controls_count > 0) {
 				nv_form_control@ ctrl = tab_pages[tab_page_index].find_next_control(false);
 				tab_pages[tab_page_index].focus_control(ctrl, false, false);
 			}
 		}
+	}
+	bool monitor() {
+		if (@this.parent.current_control != @this) return false;
+		//if(tab_page_index>-1 && tab_page_index<tab_pages.length()) return tab_pages[tab_page_index].monitor();
+		return false;
 	}
 	string get_control_info() {
 		if (tab_page_index > -1 && tab_page_index < tab_pages.length()) {
@@ -74,13 +102,14 @@ class nv_form_tab_control: nv_form_control {
 		if (tab_page_index > -1 && tab_page_index < tab_pages.length() && tab_pages[tab_page_index].control_index != -1) return this.get_control_info();
 		else return nv_form_control::get_str();
 	}
+	string get_fixed_type_last() property { return ": "; }
 	nv_form_tab_page@ add_tab_page(string caption) {
 		nv_form_tab_page tp(caption);
-		this.add_tab_page(tp);
+		add_tab_page(tp);
 		return tp;
 	}
 	void add_tab_page(nv_form_tab_page@ tp) {
-		this.tab_pages.insert_last(tp);
+		tab_pages.insert_last(tp);
 	}
 }
 class nv_form_tab_page: nv_form {
@@ -88,6 +117,6 @@ class nv_form_tab_page: nv_form {
 	nv_form_tab_page(string name) {
 		this.name = name;
 		super();
-		this.active = true;
+		active = true;
 	}
 }

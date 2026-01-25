@@ -130,9 +130,8 @@ class nv_search_for : nv_utility_form {
 		if (this.parent.nv_utility_form_data.exists("last_search")) this.parent.nv_utility_form_data.get("last_search", current);
 		string wmsg = "Search for text";
 		string lnmsg = "Text to search";
-		if (@ctrl_list != null) {
+		if (@ctrl_list != null)
 			wmsg = "Search for item";
-		}
 		this.f.create_window(wmsg, false, true);
 		@f_text = this.f.add_input(lnmsg, "ln", current, "", 256);
 		this.f_text.select(0);

@@ -54,7 +54,7 @@ class nv_form {
 		this.__keyboard_echo = echo;
 		if (update) {
 			foreach (nv_form_control@ l: this.controls) {
-				nv_form_input@ ca = cast<nv_form_input@>(l);
+				nv_form_input@ ca = cast < nv_form_input@ > (l);
 				if (@ca == null) continue;
 				ca.echo_flag = echo;
 			}
@@ -129,13 +129,12 @@ class nv_form {
 		nv_form_control@ ctrl = this.current_control;
 		nv_form_control@ pctrl = this.primary_control;
 		if (@pctrl != null && pctrl.type != nv_form_ct_keyboard_area && ((@ctrl != null && ctrl.type != nv_form_ct_keyboard_area && !ctrl.handle_input()) || @ctrl == null)) {
-			if(key_pressed(KEY_RETURN) || key_pressed(KEY_NUMPAD_ENTER))
+			if (key_pressed(KEY_RETURN) || key_pressed(KEY_NUMPAD_ENTER))
 				pctrl.fire();
 		}
-		if(@this.cancel_control != null) {
-			if(key_pressed(KEY_ESCAPE)) {
+		if (@this.cancel_control != null) {
+			if (key_pressed(KEY_ESCAPE))
 				this.cancel_control.fire();
-			}
 		}
 		if (@ctrl != null) ctrl.handle_input();
 		if (key_repeating(KEY_TAB)) {
@@ -182,8 +181,7 @@ class nv_form {
 		if (@btn == null && @link == null) {
 			this.error(nv_form_error_invalid_control);
 			return false;
-		}
-		else if (@btn != null) return this.is_pressed(btn);
+		} else if (@btn != null) return this.is_pressed(btn);
 		else if (@link != null) return this.is_pressed(link);
 		return false;
 	}
@@ -355,9 +353,8 @@ class nv_form {
 	private bool set_focus(int control_index, bool quiet = false, bool interrupt_previous_speech = true) {
 		if (control_index<0 or control_index >= this.controls.length()) return false;
 		nv_form_control@ current = this.current_control;
-		if (@current != null) {
+		if (@current != null)
 			current.event.fire(nv_form_event(current, nv_form_event_focus_lost));
-		}
 		this.control_index = control_index;
 		this.current_control.event.fire(nv_form_event(this.current_control, nv_form_event_focus_gained));
 		this.current_control.on_focus_gained_immediate();
@@ -413,5 +410,13 @@ class nv_form {
 		if (x >= this.controls.length() - 1) return true;
 		nv_form_control@ c = this.find_next_control(true, false);
 		return @c == null;
+	}
+	uint get_controls_count() const property {
+		uint total = 0;
+		for (uint i = 0; i < controls.length(); i++) {
+			if (@this.controls[i] == null or this.controls[i].hidden) continue;
+			total += 1;
+		}
+		return total;
 	}
 }
