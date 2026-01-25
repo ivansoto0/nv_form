@@ -102,7 +102,6 @@ class nv_form_tab_control: nv_form_control {
 		if (tab_page_index > -1 && tab_page_index < tab_pages.length() && tab_pages[tab_page_index].control_index != -1) return this.get_control_info();
 		else return nv_form_control::get_str();
 	}
-	string get_fixed_type_last() property { return ": "; }
 	nv_form_tab_page@ add_tab_page(string caption) {
 		nv_form_tab_page tp(caption);
 		add_tab_page(tp);
