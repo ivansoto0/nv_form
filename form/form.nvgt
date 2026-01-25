@@ -132,13 +132,13 @@ class nv_form {
 			if (key_pressed(KEY_RETURN) || key_pressed(KEY_NUMPAD_ENTER))
 				pctrl.fire();
 		}
+		if (@ctrl != null) ctrl.handle_input();
 		if (@this.cancel_control != null) {
 			if (key_pressed(KEY_ESCAPE)) {
 				nv_form_tab_control@ tab = cast<nv_form_tab_control@>(ctrl);
 				if (@tab == null || !tab.is_waiting_form) this.cancel_control.fire();
 			}
 		}
-		if (@ctrl != null) ctrl.handle_input();
 		if (key_repeating(KEY_TAB)) {
 			bool next_control = true;
 			if (key_down(KEY_LSHIFT) or key_down(KEY_RSHIFT)) next_control = false;
