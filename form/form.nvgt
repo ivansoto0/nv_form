@@ -133,8 +133,10 @@ class nv_form {
 				pctrl.fire();
 		}
 		if (@this.cancel_control != null) {
-			if (key_pressed(KEY_ESCAPE))
-				this.cancel_control.fire();
+			if (key_pressed(KEY_ESCAPE)) {
+				nv_form_tab_control@ tab = cast<nv_form_tab_control@>(ctrl);
+				if (@tab == null || !tab.is_waiting_form) this.cancel_control.fire();
+			}
 		}
 		if (@ctrl != null) ctrl.handle_input();
 		if (key_repeating(KEY_TAB)) {

@@ -11,6 +11,10 @@ class nv_form_tab_control: nv_form_control {
 		else
 			tab_pages[tab_page_index].control_index = -1;
 	}
+	bool get_is_waiting_form() const property {
+		if (tab_page_index < 0 || tab_page_index >= tab_pages.length()) return false;
+		return @tab_pages[tab_page_index].nv_utility_form != null;
+	}
 	bool handle_input() {
 		if (@this.parent.current_control != @this) return false;
 		if (tab_page_index > -1 && tab_page_index < tab_pages.length() && tab_pages[tab_page_index].control_index == -1) {
@@ -52,6 +56,10 @@ class nv_form_tab_control: nv_form_control {
 			}
 		}
 		if (tab_page_index > -1 && tab_page_index < tab_pages.length()) {
+			if (this.is_waiting_form) {
+				tab_pages[tab_page_index].nv_utility_form.monitor();
+				return true;
+			}
 			if ((tab_pages[tab_page_index].is_last_control || tab_pages[tab_page_index].controls_count == 0) && key_up(KEY_LSHIFT) && key_up(KEY_RSHIFT) && key_repeating(KEY_TAB)) {
 				tab_pages[tab_page_index].control_index = -1;
 				this.parent.navigate_form();
