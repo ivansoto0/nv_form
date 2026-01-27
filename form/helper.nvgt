@@ -94,7 +94,7 @@ class nv_shortcut {
 		if (this.key != KEY_UNKNOWN) f.insert_last(get_key_name(this.key));
 		return nv_read_shortcut(join(f, "+"));
 	}
-	bool get_pressed() const property {
+	bool get_pressed() property {
 		if (!this.ctrl && (key_down(KEY_LCTRL) || key_down(KEY_RCTRL))) return false;
 		else if (!this.shift && (key_down(KEY_LSHIFT) || key_down(KEY_RSHIFT))) return false;
 		else if (!this.alt && (key_down(KEY_LALT) || key_down(KEY_RALT))) return false;
