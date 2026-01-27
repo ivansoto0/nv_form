@@ -52,7 +52,7 @@ string nv_get_readable_key(const string &in symbol, bool strict = false) {
 	}
 	return (strict ? "" : symbol);
 }
-string nv_read_shortcut(string shortcut) {
+string nv_read_shortcut(const string&in shortcut) {
 	string f = shortcut;
 	int r = shortcut.rfind("+");
 	if (r > -1) {
@@ -79,13 +79,14 @@ shared string nvform_keyboard_echo_string(int keyboard_echo) {
 class nv_shortcut {
 	int key;
 	bool ctrl, shift, alt;
+	string custom_name = "";
 	nv_shortcut(int k, bool ctrl = false, bool shift = false, bool alt = false) {
 		this.key = k;
 		this.ctrl = ctrl;
 		this.shift = shift;
 		this.alt = alt;
 	}
-	string get_name() property {
+	string get_name() const property {
 		string[] f;
 		if (this.ctrl) f.insert_last("Ctrl");
 		if (this.shift) f.insert_last("Shift");
@@ -93,7 +94,7 @@ class nv_shortcut {
 		if (this.key != KEY_UNKNOWN) f.insert_last(get_key_name(this.key));
 		return nv_read_shortcut(join(f, "+"));
 	}
-	bool get_pressed() property {
+	bool get_pressed() const property {
 		if (!this.ctrl && (key_down(KEY_LCTRL) || key_down(KEY_RCTRL))) return false;
 		else if (!this.shift && (key_down(KEY_LSHIFT) || key_down(KEY_RSHIFT))) return false;
 		else if (!this.alt && (key_down(KEY_LALT) || key_down(KEY_RALT))) return false;
@@ -103,7 +104,7 @@ class nv_shortcut {
 		return key_pressed(this.key);
 	}
 }
-nv_shortcut@ parse_nv_shortcut(string value) {
+nv_shortcut@ parse_nv_shortcut(const string&in value) {
 	string[] lines = value.lower().split("+");
 	if (lines.length() < 1) return null;
 	string f = value;
