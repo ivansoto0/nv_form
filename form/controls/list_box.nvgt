@@ -7,7 +7,7 @@ class nv_form_list_box: nv_form_control {
 	bool multinav = true;
 	timer multinavtime;
 	string multichar;
-	nv_form_list_box(nv_form@parent, string caption, string id = "", bool allow_multiselect = false, nv_form_list_item@[] items = {}, int max_items = -1, bool speak_position = false) {
+	nv_form_list_box(nv_form@parent, const string&in caption, const string&in id = "", bool allow_multiselect = false, nv_form_list_item@[] items = {}, int max_items = -1, bool speak_position = false) {
 		super(caption, id, nv_form_ct_list, @parent);
 		this.multiselect = allow_multiselect;
 		this.speak_position = speak_position;
@@ -165,7 +165,7 @@ class nv_form_list_box: nv_form_control {
 		}
 		return true;
 	}
-	bool add(string item, string id = "", bool selected = false) {
+	bool add(const string&in item, const string&in id = "", bool selected = false) {
 		if (this.max_items > 0 and this.items.length() >= this.max_items) {
 			this.parent.error(nv_form_error_list_full);
 			return false;
@@ -173,8 +173,8 @@ class nv_form_list_box: nv_form_control {
 		this.items.insert_last(nv_form_list_item(item, id, selected));
 		return true;
 	}
-	void add_items(string[]@items) {
-		if (items.length() <= 0) return;
+	void add_items(const string[]@ items) {
+		if (@items == null || items.length() <= 0) return;
 		for (uint i = 0; i < items.length(); i += 1) this.add(items[i], items[i]);
 	}
 	bool delete (const string&in id) {
@@ -211,7 +211,7 @@ class nv_form_list_box: nv_form_control {
 		}
 		return res;
 	}
-	nv_form_list_item@[] get_selections() property {
+	nv_form_list_item@[] get_selections() const property {
 		nv_form_list_item@[] cs(0);
 		foreach (nv_form_list_item@ l: this.items) {
 			if (@l == null || !l.selected) continue;
@@ -265,7 +265,7 @@ class nv_form_list_box: nv_form_control {
 class nv_form_list_item {
 	bool selected;
 	string text, id;
-	nv_form_list_item(string text, string id, bool selected = false) {
+	nv_form_list_item(const string&in text, const string&in id, bool selected = false) {
 		this.text = text;
 		this.id = id;
 		this.selected = selected;

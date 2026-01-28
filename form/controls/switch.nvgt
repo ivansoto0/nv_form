@@ -1,7 +1,7 @@
 class nv_form_switch: nv_form_control {
 	nv_form_switch_item@[]items;
 	int index = -1;
-	nv_form_switch(nv_form@parent, string caption, string id = "", nv_form_switch_item@[] items = {}) {
+	nv_form_switch(nv_form@parent, const string&in caption, const string&in id = "", nv_form_switch_item@[] items = {}) {
 		super(caption, id, nv_form_ct_switch, @parent);
 		if (items.length() > 0) this.items.extend(items);
 	}
@@ -43,12 +43,12 @@ class nv_form_switch: nv_form_control {
 		if (@item == null) return "";
 		return item.text;
 	}
-	bool add(string item, string id = "") {
+	bool add(const string&in item, const string&in id = "") {
 		this.items.insert_last(nv_form_switch_item(item, id));
 		return true;
 	}
-	void add_items(string[]@items) {
-		if (items.length() <= 0) return;
+	void add_items(const string[]@ items) {
+		if (@items == null || items.length() <= 0) return;
 		for (uint i = 0; i < items.length(); i += 1) this.add(items[i], items[i]);
 	}
 	bool delete (const string&in id) {
@@ -75,10 +75,9 @@ class nv_form_switch: nv_form_control {
 		return -1;
 	}
 }
-
 class nv_form_switch_item {
 	string text, id;
-	nv_form_switch_item(string text, string id) {
+	nv_form_switch_item(const string&in text, const string&in id) {
 		this.text = text;
 		this.id = id;
 	}

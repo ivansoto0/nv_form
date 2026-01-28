@@ -1,6 +1,6 @@
 class nv_form_checkbox: nv_form_control {
 	bool state = false;
-	nv_form_checkbox(nv_form@parent, string caption, string id = "", bool initial_state = false) {
+	nv_form_checkbox(nv_form@parent, const string&in caption, const string&in id = "", bool initial_state = false) {
 		super(caption, id, nv_form_ct_checkbox, @parent);
 		this.state = initial_state;
 	}

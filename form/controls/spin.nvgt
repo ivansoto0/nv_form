@@ -1,6 +1,6 @@
 class nv_form_spin: nv_form_input {
 	double __min = 0, __max = 100, step = 1, page = 10;
-	nv_form_spin(nv_form@parent, string caption, string id = "") {
+	nv_form_spin(nv_form@parent, const string&in caption, const string&in id = "") {
 		super(@parent, caption, id);
 		this.type = nv_form_ct_spin;
 		this.set_chars();
@@ -13,7 +13,7 @@ class nv_form_spin: nv_form_input {
 		this.set_disallowed_chars(chars, true);
 	}
 	double min {
-		get {
+		get const {
 			return this.__min;
 		}
 		set {
@@ -22,7 +22,7 @@ class nv_form_spin: nv_form_input {
 		}
 	}
 	double max {
-		get {
+		get const {
 			return this.__max;
 		}
 		set {
@@ -84,7 +84,7 @@ class nv_form_spin: nv_form_input {
 		}
 		return nv_form_input::handle_input();
 	}
-	bool add(string character, bool silent = false) {
+	bool add(const string&in character, bool silent = false) {
 		string new_text = text;
 		bool prevselect = false;
 		if (sel_start > -1 && sel_end > -1) {
@@ -125,7 +125,7 @@ class nv_form_spin: nv_form_input {
 		}
 		return true;
 	}
-	double get_output() property {
-		return parse_float(this.text);
+	double get_output() const property {
+		return parse_double(this.text);
 	}
 }

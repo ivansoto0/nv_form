@@ -17,7 +17,7 @@ class nv_form_input: nv_form_control {
 	string[] disallowed_chars;
 	bool use_only_disallowed_chars = false;
 	string char_disallowed_description = "";
-	nv_form_input(nv_form@parent, string caption, string id = "") {
+	nv_form_input(nv_form@parent, const string&in caption, const string&in id = "") {
 		super(caption, id, nv_form_ct_input, @parent);
 		this.echo_flag = this.parent.keyboard_echo;
 	}
@@ -214,7 +214,7 @@ class nv_form_input: nv_form_control {
 		start_text_input(); // Especially for Android keyboard.
 		get_characters(); // Cleanup any characters that might have been accumulated.
 	}
-	bool add(string character, bool silent = false) {
+	bool add(const string&in character, bool silent = false) {
 		string new_text = text;
 		bool prevselect = false;
 		if (sel_start > -1 && sel_end > -1) {
@@ -249,7 +249,7 @@ class nv_form_input: nv_form_control {
 		this.event.fire(e);
 		return true;
 	}
-	bool edit(string character) {
+	bool edit(const string&in character) {
 		if ((max_length > 0) && (text.length() > max_length))
 			return false;
 		if (text.length() == 0)
@@ -271,10 +271,10 @@ class nv_form_input: nv_form_control {
 		this.event.fire(e);
 		return true;
 	}
-	string input_box_speak(string character) {
+	string input_box_speak(const string&in character) {
 		return input_box_speak(character, false);
 	}
-	string input_box_speak(string character, bool ignore_echo_flag) {
+	string input_box_speak(const string&in character, bool ignore_echo_flag) {
 		if (character == " ")
 			return "Space";
 		if (character == "\n")
@@ -878,7 +878,7 @@ class nv_form_input: nv_form_control {
 		if (!silent) speak(read_line(current_line_start_position()), false);
 		return true;
 	}
-	string get_default_text() property {
+	string get_default_text() const property {
 		return this.__default_text__;
 	}
 	void set_default_text(string v) property {
@@ -912,7 +912,7 @@ class nv_form_input: nv_form_control {
 		}
 		return true;
 	}
-	bool set_disallowed_chars(string chars, bool use_only_disallowed_chars = false, string char_disallowed_description = "") {
+	bool set_disallowed_chars(const string&in chars, bool use_only_disallowed_chars = false, const string&in char_disallowed_description = "") {
 		if (chars.length() < 1)
 			this.disallowed_chars.resize(0);
 		else {
@@ -923,7 +923,7 @@ class nv_form_input: nv_form_control {
 		this.char_disallowed_description = char_disallowed_description;
 		return true;
 	}
-	bool is_disallowed_char(string char, bool search_all = true) {
+	bool is_disallowed_char(const string&in char, bool search_all = true) {
 		if (char.length() < 1)
 			return false;
 		if (search_all) {

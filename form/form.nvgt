@@ -46,7 +46,7 @@ class nv_form {
 		@this.cancel_control = null;
 		@this.nv_utility_form = null;
 	}
-	int get_keyboard_echo() property {
+	int get_keyboard_echo() const property {
 		if (this.rely_on_nvform_echo) return nvform_keyboard_echo;
 		return this.__keyboard_echo;
 	}
@@ -85,7 +85,7 @@ class nv_form {
 		}
 		return null;
 	}
-	bool create_window(string title, bool change_screen_title = true, bool say_dialog = true, bool silent = false) {
+	bool create_window(const string&in title, bool change_screen_title = true, bool say_dialog = true, bool silent = false) {
 		if (this.active) {
 			this.error(nv_form_error_already_active);
 			return false;
@@ -175,7 +175,7 @@ class nv_form {
 		return this.errors[this.errors.length() - 1];
 	}
 	//helper functions.
-	bool is_pressed(string control_id) {
+	bool is_pressed(const string&in control_id) {
 		nv_form_control@ctrl = this.get_control_by_id(control_id);
 		if (@ctrl == null || (ctrl.type != nv_form_ct_button && ctrl.type != nv_form_ct_link)) {
 			this.error(nv_form_error_invalid_control);
@@ -208,7 +208,7 @@ class nv_form {
 		if (result) link.pressed = false;
 		return result;
 	}
-	bool is_checked(string control_id) {
+	bool is_checked(const string&in control_id) {
 		nv_form_checkbox@box = cast < nv_form_checkbox@ > (this.get_control_by_id(control_id));
 		if (@box == null) {
 			this.error(nv_form_error_invalid_control);
@@ -223,7 +223,7 @@ class nv_form {
 		}
 		return box.state;
 	}
-	nv_form_list_item@get_list_focus(string control_id) {
+	nv_form_list_item@get_list_focus(const string&in control_id) {
 		return this.get_list_focus(cast < nv_form_list_box@ > (this.get_control_by_id(control_id)));
 	}
 	nv_form_list_item@get_list_focus(nv_form_list_box@lst) {
@@ -233,7 +233,7 @@ class nv_form {
 		}
 		return lst.focused_item;
 	}
-	nv_form_switch_item@get_switch_focus(string control_id) {
+	nv_form_switch_item@get_switch_focus(const string&in control_id) {
 		return this.get_switch_focus(cast < nv_form_switch@ > (this.get_control_by_id(control_id)));
 	}
 	nv_form_switch_item@get_switch_focus(nv_form_switch@lst) {
@@ -243,7 +243,7 @@ class nv_form {
 		}
 		return lst.focused_item;
 	}
-	double get_slider_value(string control_id, double def = 0) {
+	double get_slider_value(const string&in control_id, double def = 0) {
 		return this.get_slider_value(cast < nv_form_slider@ > (this.get_control_by_id(control_id)), def);
 	}
 	double get_slider_value(nv_form_slider@slider, double def = 0) {
@@ -253,19 +253,19 @@ class nv_form {
 		}
 		return slider.value;
 	}
-	nv_form_button@add_button(string caption, string id = "", bool primary = false, bool cancel = false, int position = -1, nv_form_control_callback@callback = null) {
+	nv_form_button@add_button(const string&in caption, const string&in id = "", bool primary = false, bool cancel = false, int position = -1, nv_form_control_callback@callback = null) {
 		nv_form_button@btn = nv_form_button(this, caption, id);
 		bool added = this.add_control(btn, primary, cancel, position, @callback);
 		if (added) return btn;
 		return null;
 	}
-	nv_form_link@add_link(string caption, string url, string id = "", bool primary = false, bool cancel = false, int position = -1, nv_form_control_callback@callback = null) {
+	nv_form_link@add_link(const string&in caption, const string&in url, const string&in id = "", bool primary = false, bool cancel = false, int position = -1, nv_form_control_callback@callback = null) {
 		nv_form_link@link = nv_form_link(this, caption, url, id);
 		bool added = this.add_control(link, primary, cancel, position, @callback);
 		if (added) return link;
 		return null;
 	}
-	nv_form_input@add_input(string caption, string id = "", string default_text = "", string password_mask = "", int max_length = 0, bool read_only = false, bool multiline = false, int position = -1, nv_form_control_callback@callback = null) {
+	nv_form_input@add_input(const string&in caption, const string&in id = "", const string&in default_text = "", const string&in password_mask = "", int max_length = 0, bool read_only = false, bool multiline = false, int position = -1, nv_form_control_callback@callback = null) {
 		nv_form_input@inp = nv_form_input(this, caption, id);
 		inp.password_mask = password_mask;
 		inp.max_length = max_length;
@@ -276,7 +276,7 @@ class nv_form {
 		if (added) return inp;
 		return null;
 	}
-	nv_form_spin@add_spin(string caption, string id = "", string default_text = "", double min = 0, double max = 100, bool read_only = false, double step = 1, double page = 0, int position = -1, nv_form_control_callback@callback = null) {
+	nv_form_spin@add_spin(const string&in caption, const string&in id = "", const string&in default_text = "", double min = 0, double max = 100, bool read_only = false, double step = 1, double page = 0, int position = -1, nv_form_control_callback@callback = null) {
 		nv_form_spin@inp = nv_form_spin(this, caption, id);
 		inp.default_text = default_text;
 		inp.read_only = read_only;
@@ -289,37 +289,37 @@ class nv_form {
 		if (added) return inp;
 		return null;
 	}
-	nv_form_checkbox@add_checkbox(string caption, string id = "", bool selected = false, int position = -1) {
+	nv_form_checkbox@add_checkbox(const string&in caption, const string&in id = "", bool selected = false, int position = -1) {
 		nv_form_checkbox@checkbox = nv_form_checkbox(this, caption, id, selected);
 		bool added = this.add_control(checkbox, position = position);
 		if (added) return checkbox;
 		return null;
 	}
-	nv_form_list_box@add_list(string caption, string id = "", bool multiselect = false, nv_form_list_item@[] items = {}, int max_items = 0, int position = -1, bool speak_position = false) {
+	nv_form_list_box@add_list(const string&in caption, const string&in id = "", bool multiselect = false, nv_form_list_item@[] items = {}, int max_items = 0, int position = -1, bool speak_position = false) {
 		nv_form_list_box@lst = nv_form_list_box(this, caption, id, multiselect, items, max_items, speak_position);
 		bool added = this.add_control(lst, position = position);
 		if (added) return lst;
 		return null;
 	}
-	nv_form_switch@add_switch(string caption, string id = "", nv_form_switch_item@[] items = {}, int position = -1) {
+	nv_form_switch@add_switch(const string&in caption, const string&in id = "", nv_form_switch_item@[] items = {}, int position = -1) {
 		nv_form_switch@ lst = nv_form_switch(this, caption, id, items);
 		bool added = this.add_control(lst, position = position);
 		if (added) return lst;
 		return null;
 	}
-	nv_form_slider@add_slider(string caption, string id = "", double min_value = 0, double max_value = 100, double step_size = 1, double initial_value = 0, double page_size = 0, int position = -1) {
+	nv_form_slider@add_slider(const string&in caption, const string&in id = "", double min_value = 0, double max_value = 100, double step_size = 1, double initial_value = 0, double page_size = 0, int position = -1) {
 		nv_form_slider slide(this, caption, id, min_value, max_value, step_size, initial_value, page_size);
 		bool added = this.add_control(@slide, position = position);
 		if (added) return slide;
 		return null;
 	}
-	nv_form_progress_bar@add_progress_bar(string caption, string id = "", double min = 0, double max = 100, double initial = 0.0, int position = -1) {
+	nv_form_progress_bar@add_progress_bar(const string&in caption, const string&in id = "", double min = 0, double max = 100, double initial = 0.0, int position = -1) {
 		nv_form_progress_bar@bar = nv_form_progress_bar(@this, caption, id, min, max, initial);
 		bool added = this.add_control(@bar, position = position);
 		if (added) return bar;
 		return null;
 	}
-	nv_form_keyboard_area@add_keyboard_area(string caption, string id = "", int position = -1) {
+	nv_form_keyboard_area@add_keyboard_area(const string&in caption, const string&in id = "", int position = -1) {
 		nv_form_keyboard_area area(@this, caption, id);
 		bool added = this.add_control(@area, position = position);
 		if (added) return area;

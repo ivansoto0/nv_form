@@ -1,7 +1,7 @@
 class nv_form_tab_control: nv_form_control {
 	private nv_form_tab_page@[] tab_pages(0);
 	private int tab_page_index = 0;
-	nv_form_tab_control(nv_form@parent, string caption, string id = "") {
+	nv_form_tab_control(nv_form@parent, const string&in caption, const string&in id = "") {
 		super(caption, id, nv_form_ct_tab_control, @parent);
 	}
 	void ready_index(bool shift_is_down) {
@@ -92,11 +92,6 @@ class nv_form_tab_control: nv_form_control {
 			}
 		}
 	}
-	bool monitor() {
-		if (@this.parent.current_control != @this) return false;
-		//if(tab_page_index>-1 && tab_page_index<tab_pages.length()) return tab_pages[tab_page_index].monitor();
-		return false;
-	}
 	string get_control_info() {
 		if (tab_page_index > -1 && tab_page_index < tab_pages.length()) {
 			if (tab_pages[tab_page_index].control_index == -1)
@@ -110,7 +105,7 @@ class nv_form_tab_control: nv_form_control {
 		if (tab_page_index > -1 && tab_page_index < tab_pages.length() && tab_pages[tab_page_index].control_index != -1) return this.get_control_info();
 		else return nv_form_control::get_str();
 	}
-	nv_form_tab_page@ add_tab_page(string caption) {
+	nv_form_tab_page@ add_tab_page(const string&in caption) {
 		nv_form_tab_page tp(caption);
 		add_tab_page(tp);
 		return tp;
@@ -121,7 +116,7 @@ class nv_form_tab_control: nv_form_control {
 }
 class nv_form_tab_page: nv_form {
 	string name;
-	nv_form_tab_page(string name) {
+	nv_form_tab_page(const string&in name) {
 		this.name = name;
 		super();
 		active = true;
