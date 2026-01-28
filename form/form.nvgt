@@ -123,6 +123,9 @@ class nv_form {
 		nv_form_control@ctrl;
 		bool result = this.check_controls(ctrl);
 		if (result and @ctrl != null and (@this.cancel_control != null and @ctrl == this.cancel_control)) return false;
+		if (@this.background_callback != null) {
+			if (!this.background_callback(this, null)) return false;
+		}
 		return true;
 	}
 	void handle_input() {
