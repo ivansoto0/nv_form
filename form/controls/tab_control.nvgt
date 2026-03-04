@@ -120,5 +120,6 @@ class nv_form_tab_page: nv_form {
 		this.name = name;
 		super();
 		active = true;
+		@this.shortcut = nv_shortcut_manager();
 	}
 }
