@@ -133,7 +133,7 @@ class nv_shortcut_manager : engine_key_event_listener {
 	int last_key = -1;
 	uint tap_count = 0;
 	timer tap_timer;
-	int tap_timeout = 100;
+	int tap_timeout = 200;
 	// Captured modifier state at time of press
 	bool last_ctrl, last_shift, last_alt;
 	bool force_resolved = false;
