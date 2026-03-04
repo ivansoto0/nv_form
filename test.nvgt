@@ -11,11 +11,11 @@ void main() {
 	int profile = question("profiler", "Would you like to run the profile during this test?");
 	if (profile == 1) start_profiling();
 	nv_form f;
+	f.create_window("Test", say_dialog = true);
+	wait(250);
 	custom_button my_button(f);
 	@my_button.shortcut = nv_shortcut(KEY_P, alt = true);
 	my_button.autoactivate = true;
-	f.create_window("Test", say_dialog = true);
-	wait(250);
 	f.add_control(my_button);
 	nv_form_input@ inp = nv_form_input(f, "Type text", "type1");
 	inp.multiline = true;

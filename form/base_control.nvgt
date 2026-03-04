@@ -3,7 +3,7 @@ abstract class nv_form_control {
 	string custom_type = "";
 	string caption;
 	string id;
-	nv_shortcut@ shortcut = null;
+	protected nv_shortcut@ __shortcut = null;
 	nv_form@parent;
 	bool speak_shortcut = true, autoactivate = false;
 	bool hidden = false, enabled = true;
@@ -15,6 +15,27 @@ abstract class nv_form_control {
 		this.type = type;
 		this.id = id;
 		@this.parent = parent;
+	}
+	~nv_form_control() {
+		this.rm_shortcut();
+	}
+	nv_shortcut@ shortcut {
+		get const {
+			return this.__shortcut;
+		} set {
+			this.rm_shortcut();
+			@this.__shortcut = value;
+			if (@this.parent.shortcut != null && @value != null) this.parent.shortcut.add(value);
+		}
+	}
+	bool rm_shortcut() {
+		if (@this.parent != null && @this.parent.shortcut != null) {
+			int x = this.parent.shortcut.shortcuts.find_by_ref(this.shortcut);
+			if (x < 0) return false;
+			this.parent.shortcut.shortcuts.remove_at(x);
+			return true;
+		}
+		return false;
 	}
 	bool hide() {
 		if (this.hidden) return false;
@@ -49,7 +70,7 @@ abstract class nv_form_control {
 	string get_fixed_type_last() property { return ""; }
 	bool check_shortcut() {
 		if (@this.shortcut == null) return false;
-		return this.shortcut.pressed;
+		return this.parent.shortcut.is_pressed(this.shortcut);
 	}
 	bool shortcut_focus() {
 		if (this.autoactivate) {

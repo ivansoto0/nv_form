@@ -35,6 +35,7 @@ class nv_form {
 	private nv_form_errorcode[] errors;
 	nv_form_control@primary_control = null, cancel_control = null;
 	nv_form_callback@background_callback = null;
+	nv_shortcut_manager@ shortcut;
 	nv_form() {
 		this.reset();
 	}
@@ -45,6 +46,7 @@ class nv_form {
 		@this.primary_control = null;
 		@this.cancel_control = null;
 		@this.nv_utility_form = null;
+		@this.shortcut = null;
 	}
 	int get_keyboard_echo() const property {
 		if (this.rely_on_nvform_echo) return nvform_keyboard_echo;
@@ -96,6 +98,7 @@ class nv_form {
 		this.window_title = title;
 		get_characters();
 		this.active = true;
+		@this.shortcut = nv_shortcut_manager();
 		if (change_screen_title) show_window(this.window_title);
 		if (!silent)
 			speak(window_title + (say_dialog ? "  dialog" : ""), false);
@@ -154,6 +157,7 @@ class nv_form {
 			if (this.controls[i].check_shortcut()) {
 				found_shortcut = true;
 				this.controls[i].shortcut_focus();
+				this.shortcut.consume();
 				break;
 			}
 		}
@@ -162,6 +166,7 @@ class nv_form {
 				if (@l == null || @l.shortcut == null) continue;
 				if (l.check_shortcut()) {
 					l.shortcut_focus();
+					this.shortcut.consume();
 					break;
 				}
 			}
