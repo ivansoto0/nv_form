@@ -48,7 +48,7 @@ void main() {
 	enable.set_pos(enable.get_item_index("1"));
 	@enable.shortcut = parse_nv_shortcut("Alt+S");
 	nv_form_button@ btne = f.add_button("Subscribe", "sub");
-	@btne.shortcut = nv_shortcut(KEY_S, alt = true);
+	@btne.shortcut = nv_shortcut(KEY_S, alt = true, tap = 2);
 	//now we create a basic button with a callback registered to it.
 	nv_form_button@btn = f.add_button("Press this other button here", "testbtn", cancel = true, callback = on_x_click);
 	btn.hide();

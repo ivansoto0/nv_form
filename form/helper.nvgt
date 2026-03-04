@@ -11,6 +11,19 @@ shared int nv_string_contains(const string& in str, const string& in search, int
 	}
 	return c == occurance ? pos : -1;
 }
+//Wrapper functions for keyboard echo changing.
+shared uint nvform_change_keyboard_echo(int keyboard_echo, int dir = 1) {
+	keyboard_echo += dir;
+	if (keyboard_echo < textflag_entry_none) keyboard_echo = textflag_entry_characters_words;
+	else if (keyboard_echo > textflag_entry_characters_words) keyboard_echo = textflag_entry_none;
+	return keyboard_echo;
+}
+shared string nvform_keyboard_echo_string(int keyboard_echo) {
+	if (keyboard_echo == textflag_entry_characters) return "characters";
+	else if (keyboard_echo == textflag_entry_words) return "words";
+	else if (keyboard_echo == textflag_entry_characters_words) return "characters and words";
+	else return "none";
+}
 string nv_get_readable_key(const string &in symbol, bool strict = false) {
 	string[][] map = {
 		{";", "Semicolon"},
@@ -63,28 +76,21 @@ string nv_read_shortcut(const string&in shortcut) {
 	} else f = nv_get_readable_key(f);
 	return f;
 }
-//Wrapper functions for keyboard echo changing.
-shared uint nvform_change_keyboard_echo(int keyboard_echo, int dir = 1) {
-	keyboard_echo += dir;
-	if (keyboard_echo < textflag_entry_none) keyboard_echo = textflag_entry_characters_words;
-	else if (keyboard_echo > textflag_entry_characters_words) keyboard_echo = textflag_entry_none;
-	return keyboard_echo;
-}
-shared string nvform_keyboard_echo_string(int keyboard_echo) {
-	if (keyboard_echo == textflag_entry_characters) return "characters";
-	else if (keyboard_echo == textflag_entry_words) return "words";
-	else if (keyboard_echo == textflag_entry_characters_words) return "characters and words";
-	else return "none";
-}
 class nv_shortcut {
 	int key;
 	bool ctrl, shift, alt;
+	uint tap;
+	uint current_taps = 0;
+	timer tap_timer;
+	int tap_timeout = 300;
 	string custom_name = "";
-	nv_shortcut(int k, bool ctrl = false, bool shift = false, bool alt = false) {
+	nv_shortcut(int k, bool ctrl = false, bool shift = false, bool alt = false, uint tap = 1) {
 		this.key = k;
 		this.ctrl = ctrl;
 		this.shift = shift;
 		this.alt = alt;
+		this.tap = tap;
+		tap_timer.restart();
 	}
 	string get_name() const property {
 		string[] f;
@@ -92,26 +98,48 @@ class nv_shortcut {
 		if (this.shift) f.insert_last("Shift");
 		if (this.alt) f.insert_last("Alt");
 		if (this.key != KEY_UNKNOWN) f.insert_last(get_key_name(this.key));
-		return nv_read_shortcut(join(f, "+"));
+		string result = nv_read_shortcut(join(f, "+")).trim_whitespace();
+		string ex = this.tapname.trim_whitespace();
+		if (ex != "") result.insert(0, ex + " ");
+		return result;
+	}
+	string get_tapname() const property {
+		if (this.tap <= 1) return "";
+		string[] taps = {"Double tap", "Tripple tap"};
+		int pos = this.tap - 2;
+		if (pos >= 0 && pos < taps.length()) return taps[pos];
+		return this.tap + " taps";
 	}
 	bool get_pressed() property {
+		if (this.ctrl && !key_down(KEY_LCTRL) && !key_down(KEY_RCTRL)) return false;
+		if (this.shift && !key_down(KEY_LSHIFT) && !key_down(KEY_RSHIFT)) return false;
+		if (this.alt && !key_down(KEY_LALT) && !key_down(KEY_RALT)) return false;
 		if (!this.ctrl && (key_down(KEY_LCTRL) || key_down(KEY_RCTRL))) return false;
-		else if (!this.shift && (key_down(KEY_LSHIFT) || key_down(KEY_RSHIFT))) return false;
-		else if (!this.alt && (key_down(KEY_LALT) || key_down(KEY_RALT))) return false;
-		else if (this.ctrl && (!key_down(KEY_LCTRL) && !key_down(KEY_RCTRL))) return false;
-		else if (this.shift && (!key_down(KEY_LSHIFT) && !key_down(KEY_RSHIFT))) return false;
-		else if (this.alt && (!key_down(KEY_LALT) && !key_down(KEY_RALT))) return false;
-		return key_pressed(this.key);
+		if (!this.shift && (key_down(KEY_LSHIFT) || key_down(KEY_RSHIFT))) return false;
+		if (!this.alt && (key_down(KEY_LALT) || key_down(KEY_RALT))) return false;
+		if (key_pressed(this.key)) {
+			if (tap_timer.elapsed > tap_timeout) current_taps = 0;
+			current_taps++;
+			tap_timer.restart();
+			if (current_taps >= tap) {
+				current_taps = 0;
+				return true;
+			}
+		}
+		return false;
 	}
 }
 nv_shortcut@ parse_nv_shortcut(const string&in value) {
 	string[] lines = value.lower().split("+");
 	if (lines.length() < 1) return null;
-	string f = value;
-	int r = value.rfind("+");
-	if (r > -1)
-		f = value.substr(r + 1);
+	uint taps = 1;
+	string f = lines[lines.length() - 1];
+	string[] tap_split = f.split("*");
+	if (tap_split.length() == 2) {
+		f = tap_split[0];
+		taps = parse_int(tap_split[1]);
+	}
 	bool ctrl = lines.find("ctrl") > -1, shift = lines.find("shift") > -1, alt = lines.find("alt") > -1;
 	int k = get_key_code(f);
-	return nv_shortcut(k, ctrl, shift, alt);
+	return nv_shortcut(k, ctrl, shift, alt, taps);
 }
