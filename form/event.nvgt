@@ -1,11 +1,11 @@
 class nv_form_event_dispatcher {
 	nv_form_event_handler@ v;
 	void add(nv_form_event_handler@ cb) {
-		@this.v = @cb;
+		@v = @cb;
 	}
 	void fire(nv_form_event@ event) {
-		if (@this.v == null) return;
-		this.v(event);
+		if (@v == null) return;
+		v(event);
 	}
 }
 class nv_form_event {

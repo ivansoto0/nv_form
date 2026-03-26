@@ -4,7 +4,7 @@ class custom_button: nv_form_button {
 		super(@parent, "press this now", "click");
 	}
 	void on_fire() {
-		alert("ok", "it works: " + this.pressed);
+		alert("ok", "it works: " + pressed);
 	}
 }
 void main() {

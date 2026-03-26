@@ -1,32 +1,32 @@
 class nv_form_checkbox: nv_form_control {
 	bool state = false;
-	nv_form_checkbox(nv_form@parent, const string&in caption, const string&in id = "", bool initial_state = false) {
+	nv_form_checkbox(nv_form@parent, const string &in caption, const string &in id = "", bool initial_state = false) {
 		super(caption, id, nv_form_ct_checkbox, @parent);
 		this.state = initial_state;
 	}
 	void fire() {
-		this.toggle();
+		toggle();
 		nv_form_control::fire();
 	}
 	string get_fixed_type_last() property {
-		return (this.state ? "checked" : "not check");
+		return (state ? "checked" : "not check");
 	}
 	void toggle() {
-		this.state = (this.state ? false : true);
+		state = !state;
 	}
 	bool check() {
-		if (this.state) return false;
-		this.state = true;
+		if (state) return false;
+		state = true;
 		return true;
 	}
 	bool uncheck() {
-		if (!this.state) return false;
-		this.state = false;
+		if (!state) return false;
+		state = false;
 		return true;
 	}
 	bool handle_input() {
 		if (key_pressed(KEY_SPACE)) {
-			this.fire();
+			fire();
 			return true;
 		}
 		return false;

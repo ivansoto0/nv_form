@@ -16,7 +16,7 @@ string get_nv_form_control_type_string(nv_form_control_type ct) {
 		default: return "unknown";
 	}
 }
-//utility_form interface used for search and goto dialogs.
+// utility_form interface used for search and goto dialogs.
 interface nv_utility_form {
 	void monitor();
 }

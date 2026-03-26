@@ -1,7 +1,7 @@
 class nv_form_tab_control: nv_form_control {
 	private nv_form_tab_page@[] tab_pages(0);
 	private int tab_page_index = 0;
-	nv_form_tab_control(nv_form@parent, const string&in caption, const string&in id = "") {
+	nv_form_tab_control(nv_form@parent, const string &in caption, const string &in id = "") {
 		super(caption, id, nv_form_ct_tab_control, @parent);
 	}
 	void ready_index(bool shift_is_down) {
@@ -16,7 +16,7 @@ class nv_form_tab_control: nv_form_control {
 		return @tab_pages[tab_page_index].nv_utility_form != null;
 	}
 	bool handle_input() {
-		if (@this.parent.current_control != @this) return false;
+		if (@parent.current_control != @this) return false;
 		if (tab_page_index > -1 && tab_page_index < tab_pages.length() && tab_pages[tab_page_index].control_index == -1) {
 			if (key_repeating(KEY_RIGHT) && tab_page_index < tab_pages.length() - 1) {
 				if (tab_page_index > -1 && tab_page_index < tab_pages.length())
@@ -56,20 +56,20 @@ class nv_form_tab_control: nv_form_control {
 			}
 		}
 		if (tab_page_index > -1 && tab_page_index < tab_pages.length()) {
-			if (this.is_waiting_form) {
+			if (is_waiting_form) {
 				tab_pages[tab_page_index].nv_utility_form.monitor();
 				return true;
 			}
 			if ((tab_pages[tab_page_index].is_last_control || tab_pages[tab_page_index].controls_count == 0) && key_up(KEY_LSHIFT) && key_up(KEY_RSHIFT) && key_repeating(KEY_TAB)) {
 				tab_pages[tab_page_index].control_index = -1;
-				this.parent.navigate_form();
+				parent.navigate_form();
 				return true;
 			} else if (tab_pages[tab_page_index].control_index > -1 && tab_pages[tab_page_index].is_first_control && (key_down(KEY_LSHIFT) || key_down(KEY_RSHIFT)) && key_repeating(KEY_TAB)) {
 				tab_pages[tab_page_index].control_index = -1;
-				this.parent.speak_current_control();
+				parent.speak_current_control();
 				return true;
 			} else if (tab_pages[tab_page_index].control_index == -1 && (key_down(KEY_LSHIFT) || key_down(KEY_RSHIFT)) && key_repeating(KEY_TAB)) {
-				this.parent.navigate_form(false);
+				parent.navigate_form(false);
 				return true;
 			} else if (tab_pages[tab_page_index].control_index == -1 && (key_up(KEY_LSHIFT) && key_up(KEY_RSHIFT)) && key_repeating(KEY_TAB)) {
 				speak(tab_pages[tab_page_index].name + "  property page");
@@ -82,7 +82,7 @@ class nv_form_tab_control: nv_form_control {
 		return false;
 	}
 	void on_focus_gained_immediate() {
-		this.ready_index(key_down(KEY_LSHIFT) || key_down(KEY_RSHIFT));
+		ready_index(key_down(KEY_LSHIFT) || key_down(KEY_RSHIFT));
 	}
 	void on_focus_gained() {
 		if (tab_page_index > -1 && tab_page_index < tab_pages.length()) {
@@ -102,10 +102,10 @@ class nv_form_tab_control: nv_form_control {
 		return "";
 	}
 	string get_str() property {
-		if (tab_page_index > -1 && tab_page_index < tab_pages.length() && tab_pages[tab_page_index].control_index != -1) return this.get_control_info();
+		if (tab_page_index > -1 && tab_page_index < tab_pages.length() && tab_pages[tab_page_index].control_index != -1) return get_control_info();
 		else return nv_form_control::get_str();
 	}
-	nv_form_tab_page@ add_tab_page(const string&in caption) {
+	nv_form_tab_page@ add_tab_page(const string &in caption) {
 		nv_form_tab_page tp(caption);
 		add_tab_page(tp);
 		return tp;
@@ -116,10 +116,10 @@ class nv_form_tab_control: nv_form_control {
 }
 class nv_form_tab_page: nv_form {
 	string name;
-	nv_form_tab_page(const string&in name) {
+	nv_form_tab_page(const string &in name) {
 		this.name = name;
 		super();
 		active = true;
-		@this.shortcut = nv_shortcut_manager();
+		@shortcut = nv_shortcut_manager();
 	}
 }

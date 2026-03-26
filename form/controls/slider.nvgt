@@ -1,56 +1,56 @@
 class nv_form_slider: nv_form_control {
 	double min_value, max_value, step, page, value;
-	nv_form_slider(nv_form@parent, const string&in caption, const string&in id = "", double min_value = 0, double max_value = 100, double step = 1, double initial_value = 0, double page = 0) {
+	nv_form_slider(nv_form@parent, const string &in caption, const string &in id = "", double min_value = 0, double max_value = 100, double step = 1, double initial_value = 0, double page = 0) {
 		super(caption, id, nv_form_ct_slider, @parent);
 		this.min_value = min_value;
 		this.max_value = max_value;
 		this.step = step;
 		this.page = page;
-		this.value = initial_value;
+		value = initial_value;
 		if (this.page <= 0) this.page = this.step * 10;
-		this.clamp_value();
+		clamp_value();
 	}
 	void clamp_value() {
-		this.value = clamp(this.value, this.min_value, this.max_value);
+		value = clamp(value, min_value, max_value);
 	}
 	bool handle_input() {
 		if (key_repeating(KEY_DOWN)) {
-			this.value -= this.step;
-			this.clamp_value();
-			speak(this.value);
+			value -= step;
+			clamp_value();
+			speak(value);
 			return true;
 		}
 		if (key_repeating(KEY_UP)) {
-			this.value += this.step;
-			this.clamp_value();
-			speak(this.value);
+			value += step;
+			clamp_value();
+			speak(value);
 			return true;
 		}
 		if (key_repeating(KEY_PAGEUP)) {
-			this.value += this.page;
-			this.clamp_value();
-			speak(this.value);
+			value += page;
+			clamp_value();
+			speak(value);
 			return true;
 		}
 		if (key_repeating(KEY_PAGEDOWN)) {
-			this.value -= this.page;
-			this.clamp_value();
-			speak(this.value);
+			value -= page;
+			clamp_value();
+			speak(value);
 			return true;
 		}
 		if (key_repeating(KEY_HOME)) {
-			this.value = this.min_value;
-			speak(this.value);
+			value = min_value;
+			speak(value);
 			return true;
 		}
 		if (key_repeating(KEY_END)) {
-			this.value = this.max_value;
-			speak(this.value);
+			value = max_value;
+			speak(value);
 			return true;
 		}
 		return false;
 	}
 	string get_control_info() {
-		return this.value;
+		return value;
 	}
 }

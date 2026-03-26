@@ -1,90 +1,90 @@
 class nv_form_spin: nv_form_input {
 	double __min = 0, __max = 100, step = 1, page = 10;
-	nv_form_spin(nv_form@parent, const string&in caption, const string&in id = "") {
+	nv_form_spin(nv_form@parent, const string &in caption, const string &in id = "") {
 		super(@parent, caption, id);
-		this.type = nv_form_ct_spin;
-		this.set_chars();
+		type = nv_form_ct_spin;
+		set_chars();
 		if (this.page <= 0) this.page = this.step * 10;
 	}
 	void set_chars() {
 		string chars = "0123456789";
-		if (this.min < 0) chars += "-";
-		if (string(this.step).find(".") > -1) chars += ".";
-		this.set_disallowed_chars(chars, true);
+		if (min < 0) chars += "-";
+		if (string(step).find(".") > -1) chars += ".";
+		set_disallowed_chars(chars, true);
 	}
 	double min {
 		get const {
-			return this.__min;
+			return __min;
 		}
 		set {
-			this.__min = value;
-			this.set_chars();
+			__min = value;
+			set_chars();
 		}
 	}
 	double max {
 		get const {
-			return this.__max;
+			return __max;
 		}
 		set {
-			this.__max = value;
-			this.set_chars();
+			__max = value;
+			set_chars();
 		}
 	}
 	bool handle_input() {
-		if (!this.read_only) {
+		if (!read_only) {
 			if (key_repeating(KEY_UP)) {
-				double t = parse_float(this.text) + this.step;
-				if (this.text == "") t = this.min;
-				if (t > this.max) t = this.max;
-				this.unselect(true);
-				this.text = t;
-				this.cursor = 0;
-				this.previous_line();
+				double t = parse_float(text) + this.step;
+				if (text == "") t = min;
+				if (t > max) t = max;
+				unselect(true);
+				text = t;
+				cursor = 0;
+				previous_line();
 				return true;
 			} else if (key_repeating(KEY_DOWN)) {
-				double t = parse_float(this.text) - this.step;
-				if (this.text == "") t = this.min;
-				if (t < this.min) t = this.min;
-				this.unselect(true);
-				this.text = t;
-				this.cursor = 0;
-				this.next_line();
+				double t = parse_float(text) - step;
+				if (text == "") t = min;
+				if (t < min) t = min;
+				unselect(true);
+				text = t;
+				cursor = 0;
+				next_line();
 				return true;
 			} else if (key_repeating(KEY_PAGEUP)) {
-				double t = parse_float(this.text) + this.page;
-				if (this.text == "") t = this.min;
-				if (t > this.max) t = this.max;
-				this.unselect(true);
-				this.text = t;
-				this.cursor = 0;
-				this.previous_line();
+				double t = parse_float(text) + page;
+				if (text == "") t = min;
+				if (t > max) t = max;
+				unselect(true);
+				text = t;
+				cursor = 0;
+				previous_line();
 				return true;
 			} else if (key_repeating(KEY_PAGEDOWN)) {
-				double t = parse_float(this.text) - this.page;
-				if (this.text == "") t = this.min;
-				if (t < this.min) t = this.min;
-				this.unselect(true);
-				this.text = t;
-				this.cursor = 0;
-				this.next_line();
+				double t = parse_float(text) - page;
+				if (text == "") t = min;
+				if (t < min) t = min;
+				unselect(true);
+				text = t;
+				cursor = 0;
+				next_line();
 				return true;
 			} else if (keyboard_modifiers & KEYMOD_CTRL != 0 && key_pressed(KEY_HOME)) {
-				this.unselect(true);
-				this.text = this.min;
-				this.cursor = 0;
-				this.previous_line();
+				unselect(true);
+				text = min;
+				cursor = 0;
+				previous_line();
 				return true;
 			} else if (keyboard_modifiers & KEYMOD_CTRL != 0 && key_pressed(KEY_END)) {
-				this.unselect(true);
-				this.text = this.max;
-				this.cursor = 0;
-				this.next_line();
+				unselect(true);
+				text = max;
+				cursor = 0;
+				next_line();
 				return true;
 			}
 		}
 		return nv_form_input::handle_input();
 	}
-	bool add(const string&in character, bool silent = false) {
+	bool add(const string &in character, bool silent = false) {
 		string new_text = text;
 		bool prevselect = false;
 		if (sel_start > -1 && sel_end > -1) {
@@ -93,7 +93,7 @@ class nv_form_spin: nv_form_input {
 			sel_start = -1;
 			sel_end = -1;
 			prevselect = true;
-			if (!silent) speak(this.highlight_unselect_speech_text);
+			if (!silent) speak(highlight_unselect_speech_text);
 		}
 		if ((max_length > 0) && (new_text.length() >= max_length))
 			return false;
@@ -116,16 +116,16 @@ class nv_form_spin: nv_form_input {
 		}
 		nv_form_input_event e(this);
 		e.character = character;
-		this.event.fire(e);
-		double t = parse_float(this.text);
-		if (t < this.min || t > this.max) {
-			t = clamp(t, this.min, this.max);
-			this.text = t;
-			this.cursor = this.text.length();
+		event.fire(e);
+		double t = parse_float(text);
+		if (t < min || t > max) {
+			t = clamp(t, min, max);
+			text = t;
+			cursor = this.text.length();
 		}
 		return true;
 	}
 	double get_output() const property {
-		return parse_double(this.text);
+		return parse_double(text);
 	}
 }

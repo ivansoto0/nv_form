@@ -7,53 +7,53 @@ class nv_form_list_box: nv_form_control {
 	bool multinav = true;
 	timer multinavtime;
 	string multichar;
-	nv_form_list_box(nv_form@parent, const string&in caption, const string&in id = "", bool allow_multiselect = false, nv_form_list_item@[] items = {}, int max_items = -1, bool speak_position = false) {
+	nv_form_list_box(nv_form@parent, const string &in caption, const string &in id = "", bool allow_multiselect = false, nv_form_list_item@[] items = {}, int max_items = -1, bool speak_position = false) {
 		super(caption, id, nv_form_ct_list, @parent);
-		this.multiselect = allow_multiselect;
+		multiselect = allow_multiselect;
 		this.speak_position = speak_position;
 		this.max_items = max_items;
 		if (items.length() > 0) this.items.extend(items);
 	}
 	nv_form_list_item@get_focused_item() const property {
-		if (this.items.length() <= 0 or this.list_position < 0) return null;
-		return this.items[this.list_position];
+		if (items.length() <= 0 || list_position < 0) return null;
+		return items[list_position];
 	}
 	string get_focused_item_id() const property {
-		return (@this.focused_item != null ? this.focused_item.id : "");
+		return (@focused_item != null ? focused_item.id : "");
 	}
 	bool navigate(bool next = true) {
-		if (this.items.length() <= 0) {
-			this.parent.error(nv_form_error_list_empty);
+		if (items.length() <= 0) {
+			parent.error(nv_form_error_list_empty);
 			return false;
 		}
-		int index = this.list_position;
+		int index = list_position;
 		if (next) index += 1;
 		else index -= 1;
-		return this.set_pos(index);
+		return set_pos(index);
 	}
 	bool set_pos(int index, bool autobound = true) {
-		if (this.items.length() <= 0) {
-			this.parent.error(nv_form_error_list_empty);
+		if (items.length() <= 0) {
+			parent.error(nv_form_error_list_empty);
 			return false;
 		}
 		if (autobound) {
 			if (index < 0) index = 0;
-			if (index >= this.items.length()) index = this.items.length() - 1;
+			if (index >= items.length()) index = items.length() - 1;
 		}
-		if (index < 0 || index > this.items.length() - 1) return false;
-		this.list_position = index;
+		if (index < 0 || index > items.length() - 1) return false;
+		list_position = index;
 		return true;
 	}
 	string speak_list_item(nv_form_list_item@ value) {
 		if (@value == null) return "";
 		string[] f;
 		f.insert_last(value.text);
-		if (this.multiselect && value.selected) f.insert_last("checked");
-		if (this.speak_position) f.insert_last((this.list_position + 1) + " of " + this.items.length());
+		if (multiselect && value.selected) f.insert_last("checked");
+		if (speak_position) f.insert_last((list_position + 1) + " of " + items.length());
 		return join(f, "  ");
 	}
 	bool handle_input() {
-		if (this.multinav) {
+		if (multinav) {
 			string test;
 			if (multinavtime.elapsed > 1000 and multichar != "")
 				multichar = "";
@@ -65,21 +65,18 @@ class nv_form_list_box: nv_form_control {
 			if (multichar != "" and c != "") {
 				multichar = multichar.lower();
 				bool found = false;
-				for (uint i = this.list_position; i < items.length(); i++) {
+				for (uint i = list_position; i < items.length(); i++) {
 					if (i < 0 || i >= items.length()) continue;
-					if (i == this.list_position) continue;
-					test = this.items[i].text;
+					if (i == list_position) continue;
+					test = items[i].text;
 					test = test.lower();
 					if (test.substr(0, multichar.length()) == multichar) {
-						if (this.items[this.list_position].text.lower().substr(0, multichar.length()) == multichar and multichar.length() > 1) {
+						if (items[list_position].text.lower().substr(0, multichar.length()) == multichar and multichar.length() > 1) {
 							found = true;
 							break;
 						}
-						if (this.list_position < i)
-							this.list_position = i;
-						else if (this.list_position > i)
-							this.list_position = i;
-						if (this.list_position >= 0 && this.list_position < items.length() && @this.items[this.list_position] != null) speak(this.speak_list_item(this.items[this.list_position]));
+						list_position = i;
+						if (list_position >= 0 && list_position < items.length() && @items[list_position] != null) speak(speak_list_item(items[list_position]));
 						found = true;
 						break;
 					}
@@ -87,18 +84,15 @@ class nv_form_list_box: nv_form_control {
 				if (found == false) {
 					multichar = multichar.lower();
 					for (uint i = 0; i < items.length(); i++) {
-						test = this.items[i].text;
+						test = items[i].text;
 						test = test.lower();
 						if (test.substr(0, multichar.length()) == multichar) {
-							if ((this.list_position >= 0 && this.list_position < items.length()) && this.items[this.list_position].text.lower().substr(0, multichar.length()) == multichar and multichar.length() > 1) {
+							if ((list_position >= 0 && list_position < items.length()) && items[list_position].text.lower().substr(0, multichar.length()) == multichar and multichar.length() > 1) {
 								found = true;
 								break;
 							}
-							if (this.list_position < i)
-								this.list_position = i;
-							else if (this.list_position > i)
-								this.list_position = i;
-							if (this.list_position >= 0 && this.list_position < items.length() && @this.items[this.list_position] != null) speak(this.speak_list_item(this.items[this.list_position]));
+							list_position = i;
+							if (list_position >= 0 && list_position < items.length() && @items[list_position] != null) speak(speak_list_item(items[list_position]));
 							found = true;
 							break;
 						}
@@ -108,35 +102,35 @@ class nv_form_list_box: nv_form_control {
 			}
 		}
 		if (key_repeating(KEY_UP)) {
-			bool nav = this.navigate(false);
-			if (nav && @this.focused_item != null) speak(this.speak_list_item(this.focused_item));
+			bool nav = navigate(false);
+			if (nav && @focused_item != null) speak(speak_list_item(focused_item));
 			return true;
 		}
 		if (key_repeating(KEY_DOWN)) {
-			bool nav = this.navigate();
-			if (nav && @this.focused_item != null) speak(this.speak_list_item(this.focused_item));
+			bool nav = navigate();
+			if (nav && @focused_item != null) speak(speak_list_item(focused_item));
 			return true;
 		}
 		if (key_repeating(KEY_HOME)) {
-			bool nav = this.set_pos(0);
-			if (nav && @this.focused_item != null) speak(this.speak_list_item(this.focused_item));
+			bool nav = set_pos(0);
+			if (nav && @focused_item != null) speak(speak_list_item(focused_item));
 			return true;
 		}
 		if (key_repeating(KEY_END)) {
-			bool nav = this.set_pos(this.items.length() - 1);
-			if (nav && @this.focused_item != null) speak(this.speak_list_item(this.focused_item));
+			bool nav = set_pos(items.length() - 1);
+			if (nav && @focused_item != null) speak(speak_list_item(focused_item));
 			return true;
 		}
-		if (this.multiselect) {
+		if (multiselect) {
 			if ((key_down(KEY_LCTRL) || key_down(KEY_RCTRL)) && key_pressed(KEY_A)) {
-				for (uint i = 0; i < this.items.length(); i++)
-					this.items[i].selected = true;
-				speak(this.items.length() + " items selected");
+				for (uint i = 0; i < items.length(); i++)
+					items[i].selected = true;
+				speak(items.length() + " items selected");
 				return true;
 			}
-			if (key_pressed(KEY_SPACE) && @this.focused_item != null) {
-				this.focused_item.selected = (this.focused_item.selected ? false : true);
-				speak((this.focused_item.selected ? "Checked" : "Not checked"));
+			if (key_pressed(KEY_SPACE) && @focused_item != null) {
+				focused_item.selected = !focused_item.selected;
+				speak((focused_item.selected ? "Checked" : "Not checked"));
 				return true;
 			}
 		}
@@ -144,106 +138,106 @@ class nv_form_list_box: nv_form_control {
 		return false;
 	}
 	bool set_item_selected_state(int item_index, bool selected) {
-		if (this.items.length() <= 0 or (item_index<0 or item_index >= this.items.length())) {
-			this.parent.error(nv_form_error_invalid_list_index);
+		if (items.length() <= 0 || (item_index<0 || item_index >= items.length())) {
+			parent.error(nv_form_error_invalid_list_index);
 			return false;
 		}
-		if (!this.multiselect and selected == true)
-			this.clear_list_selections();
-		this.items[item_index].selected = selected;
+		if (!multiselect and selected == true)
+			clear_list_selections();
+		items[item_index].selected = selected;
 		return true;
 	}
 	bool clear_list_selections() {
-		int[]@sel = this.get_list_selections();
+		int[]@sel = get_list_selections();
 		if (sel.length() <= 0) {
-			this.parent.error(nv_form_error_no_selections);
+			parent.error(nv_form_error_no_selections);
 			return false;
 		}
 		for (uint i = 0; i < sel.length(); i += 1) {
 			int ind = sel[i];
-			this.items[ind].selected = false;
+			items[ind].selected = false;
 		}
 		return true;
 	}
-	bool add(const string&in item, const string&in id = "", bool selected = false) {
-		if (this.max_items > 0 and this.items.length() >= this.max_items) {
-			this.parent.error(nv_form_error_list_full);
+	bool add(const string &in item, const string &in id = "", bool selected = false) {
+		if (max_items > 0 and items.length() >= max_items) {
+			parent.error(nv_form_error_list_full);
 			return false;
 		}
-		this.items.insert_last(nv_form_list_item(item, id, selected));
+		items.insert_last(nv_form_list_item(item, id, selected));
 		return true;
 	}
 	void add_items(const string[]@ items) {
 		if (@items == null || items.length() <= 0) return;
-		for (uint i = 0; i < items.length(); i += 1) this.add(items[i], items[i]);
+		for (uint i = 0; i < items.length(); i += 1) add(items[i], items[i]);
 	}
-	bool delete (const string&in id) {
-		if (this.items.length() <= 0) {
-			this.parent.error(nv_form_error_list_empty);
+	bool delete (const string &in id) {
+		if (items.length() <= 0) {
+			parent.error(nv_form_error_list_empty);
 			return false;
 		}
-		int item_index = this.get_item_index(id);
+		int item_index = get_item_index(id);
 		if (item_index == -1) {
-			this.parent.error(nv_form_error_invalid_value);
+			parent.error(nv_form_error_invalid_value);
 			return false;
 		}
-		@this.items[item_index] = null;
-		this.items.remove_at(item_index);
+		@items[item_index] = null;
+		items.remove_at(item_index);
 		return true;
 	}
-	int get_item_index(const string&in id) {
+	int get_item_index(const string &in id) {
 		if (id.empty()) return -1;
-		for (uint i = 0; i < this.items.length(); i += 1) {
-			if (this.items[i].id.empty()) continue;
-			if (this.items[i].id == id)
+		for (uint i = 0; i < items.length(); i += 1) {
+			if (items[i].id.empty()) continue;
+			if (items[i].id == id)
 				return i;
 		}
 		return -1;
 	}
 	int[]@get_list_selections() {
 		int[] res;
-		if (this.items.length() <= 0) return res;
+		if (items.length() <= 0) return res;
 		for (uint i = 0; i < this.items.length(); i += 1) {
-			if (this.items[i].selected) {
+			if (items[i].selected) {
 				res.insert_last(i);
-				if (!this.multiselect) break;
+				if (!multiselect) break;
 			}
 		}
 		return res;
 	}
 	nv_form_list_item@[] get_selections() const property {
 		nv_form_list_item@[] cs(0);
-		foreach (nv_form_list_item@ l: this.items) {
+		foreach (nv_form_list_item@ l: items) {
 			if (@l == null || !l.selected) continue;
 			cs.insert_last(l);
-			if (!this.multiselect) break;
+			if (!multiselect) break;
 		}
 		return cs;
 	}
-	bool search(const string& in text, int dir = 1, bool silent = false) {
-		if (this.items.length() < 1) return false;
+	bool search(const string &in text, int dir = 1, bool silent = false) {
+		if (items.length() < 1) return false;
 		string[] nav_items(this.items.length());
 		for (uint i = 0; i < this.items.length(); i++)
-			nav_items[i] = this.items[i].text;
+			nav_items[i] = items[i].text;
 		bool already_on_result = false;
-		if (this.list_position > -1) already_on_result = nav_items[this.list_position].find(text) > -1;
+		if (list_position > -1) already_on_result = nav_items[list_position].find(text) > -1;
 		string wrapped = "";
 		int pos = list_position;
 		if (pos < 0) pos = 0;
 		for (int i = pos + dir; i != pos; i += dir) {
 			if (i < 0) {
-				i = this.items.length() - 1;
+				i = items.length() - 1;
 				wrapped = "wrapped to bottom";
-			} else if (i >= this.items.length()) {
+			} else if (i >= items.length()) {
 				i = 0;
 				wrapped = "wrapped to top";
 			}
 			if (i == pos) break;
 			if (nav_items[i].find(text) < 0) continue;
-			if (this.set_pos(i, false)) {
+			if (set_pos(i, false)) {
 				if (!silent) {
 					if (wrapped != "") speak(wrapped);
-					if (@this.focused_item != null) speak(this.speak_list_item(this.focused_item), wrapped == "");
+					if (@focused_item != null) speak(speak_list_item(focused_item), wrapped == "");
 				}
 				return true;
 			}
@@ -253,9 +247,9 @@ class nv_form_list_box: nv_form_control {
 		return false;
 	}
 	string get_fixed_type_last() property {
-		nv_form_list_item@item = this.focused_item;
+		nv_form_list_item@item = focused_item;
 		if (@item == null) return "";
-		return this.speak_list_item(item);
+		return speak_list_item(item);
 	}
 	void on_focus_gained() {
 		start_text_input(); // Especially for Android keyboard.
@@ -265,7 +259,7 @@ class nv_form_list_box: nv_form_control {
 class nv_form_list_item {
 	bool selected;
 	string text, id;
-	nv_form_list_item(const string&in text, const string&in id, bool selected = false) {
+	nv_form_list_item(const string &in text, const string &in id, bool selected = false) {
 		this.text = text;
 		this.id = id;
 		this.selected = selected;

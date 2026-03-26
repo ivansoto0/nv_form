@@ -7,5 +7,5 @@ Set or retrieve the background callback of the form.
 Background is declared as the following:
 
 ```
-funcdef bool nv_form_callback(nv_form@f, nv_form_control@ctrl = null, dictionary@args = null);
+funcdef bool nv_form_callback(nv_form@f, dictionary@args = null);
 ```
