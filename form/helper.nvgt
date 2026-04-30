@@ -1,5 +1,5 @@
 // Other miscellaneous functions and classes.
-shared int nv_string_contains(const string& in str, const string& in search, int occurance = 1) {
+shared int nv_string_contains(const string &in str, const string &in search, int occurance = 1) {
 	uint c = 0;
 	int pos = -1;
 	while (c < occurance) {

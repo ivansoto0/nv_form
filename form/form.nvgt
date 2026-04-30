@@ -73,7 +73,7 @@ class nv_form {
 		if (controls.length() <= 0 || control_index < 0 || control_index >= controls.length()) return null;
 		return @controls[control_index];
 	}
-	nv_form_control@find_next_control(bool next = true, bool wrap = true) {
+	nv_form_control@find_next_control(bool next = true, bool wrap = true) const {
 		if (controls.length() == 0) return null;
 		int index = control_index;
 		while (true) {
@@ -408,13 +408,13 @@ class nv_form {
 	// Below lines are intended for this class and should not be modified in subsequence scripts.
 	nv_utility_form@ nv_utility_form = null;
 	dictionary nv_utility_form_data;
-	bool get_is_first_control() property {
+	bool get_is_first_control() const property {
 		int x = control_index;
 		if (x <= 0) return true;
 		nv_form_control@ c = find_next_control(false, false);
 		return @c == null;
 	}
-	bool get_is_last_control() property {
+	bool get_is_last_control() const property {
 		int x = control_index;
 		if (x < 0) return false;
 		if (x >= controls.length() - 1) return true;

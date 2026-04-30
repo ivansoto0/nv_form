@@ -28,7 +28,7 @@ class nv_go_to_index : nv_utility_form {
 	nv_form_button@ f_ok, f_cancel;
 	nv_go_to_index(nv_form@ parent, nv_form_control@ control) {
 		@this.parent = @parent;
-		@this.ctrl = @control;
+		@ctrl = @control;
 		nv_form_input@ ctrl_input = cast < nv_form_input@ > (ctrl);
 		nv_form_list_box@ ctrl_list = cast < nv_form_list_box@ > (ctrl);
 		if (@ctrl_list == null && @ctrl_input == null) return;
@@ -39,48 +39,49 @@ class nv_go_to_index : nv_utility_form {
 		if (@ctrl_input != null) current = ctrl_input.get_line_number();
 		else if (@ctrl_list != null) {
 			current = ctrl_list.list_position + 1;
-			wmsg = "Go to item";
+			wmsg = "Go to index";
 			lnmsg = "Item number";
 		}
 		f.create_window(wmsg, false, true);
-		@this.f_index = nv_form_input(f, lnmsg, "ln");
-		this.f_index.default_text = current;
-		this.f_index.select(0);
-		this.f_index.enable_go_line = false;
-		this.f_index.enable_search = false;
-		this.f.add_control(this.f_index);
+		@f_index = nv_form_input(f, lnmsg, "ln");
+		f_index.default_text = current;
+		f_index.select(0);
+		f_index.enable_go_line = false;
+		f_index.enable_search = false;
+		f.add_control(f_index);
 		nv_form_control@ index_to_focus = f_index;
 		if (@ctrl_input != null) {
-			@this.f_col = nv_form_input(f, "Line column", "lc");
-			this.f_col.default_text = ctrl_input.get_line_column();
-			this.f_col.select(0);
-			this.f_col.enable_go_line = false;
-			this.f_col.enable_search = false;
-			this.f.add_control(this.f_col);
+			@f_col = nv_form_input(f, "Line column", "lc");
+			f_col.default_text = ctrl_input.get_line_column();
+			f_col.select(0);
+			f_col.enable_go_line = false;
+			f_col.enable_search = false;
+			f.add_control(f_col);
 			if (!ctrl_input.multiline) {
 				@index_to_focus = f_col;
-				this.f_index.hide(); // Disable line number
+				f_index.hide(); // Disable line number
 			}
 		}
-		@this.f_ok = f.add_button("Ok", "ok", true);
-		@this.f_cancel = f.add_button("Cancel", "cancel", false, true);
+		@f_ok = f.add_button("Ok", "ok", true);
+		@f_cancel = f.add_button("Cancel", "cancel", false, true);
+		@f.background_callback = parent.background_callback;
 		f.focus_control(index_to_focus, false, false);
 		@parent.nv_utility_form = this;
 	}
 	void monitor() {
 		if (!f.monitor()) {
-			parent.focus_control(this.ctrl);
+			parent.focus_control(ctrl);
 			@parent.nv_utility_form = null;
 			return;
 		}
-		nv_form_input@ ctrl_input = cast < nv_form_input@ > (this.ctrl);
+		nv_form_input@ ctrl_input = cast < nv_form_input@ > (ctrl);
 		nv_form_list_box@ ctrl_list = cast < nv_form_list_box@ > (ctrl);
 		if (f.is_pressed(f_cancel)) {
-			parent.focus_control(this.ctrl);
+			parent.focus_control(ctrl);
 			@parent.nv_utility_form = null;
 			return;
 		} else if (f.is_pressed(f_ok)) {
-			string idx = this.f_index.text;
+			string idx = f_index.text;
 			if (!idx.is_digits() or idx.substr(0, 1) == "0") {
 				speak("enter a positive number");
 				f.focus_control(f_index, false, false);
@@ -93,10 +94,10 @@ class nv_go_to_index : nv_utility_form {
 					return;
 				}
 				@parent.nv_utility_form = null;
-				parent.focus_control(this.ctrl);
+				parent.focus_control(ctrl);
 				return;
 			}
-			string col = this.f_col.text;
+			string col = f_col.text;
 			if (!col.is_digits()) {
 				speak("enter a positive number");
 				f.focus_control(f_col, false, false);
@@ -107,7 +108,7 @@ class nv_go_to_index : nv_utility_form {
 				f.focus_control(f_index, false, false);
 			} else {
 				@parent.nv_utility_form = null;
-				parent.focus_control(this.ctrl);
+				parent.focus_control(ctrl);
 			}
 		}
 		return ;
@@ -121,51 +122,52 @@ class nv_search_for : nv_utility_form {
 	nv_form_button@ f_next, f_prev, f_cancel;
 	nv_search_for(nv_form@ parent, nv_form_control@ control) {
 		@this.parent = @parent;
-		@this.ctrl = @control;
-		nv_form_input@ ctrl_input = cast < nv_form_input@ > (this.ctrl);
-		nv_form_list_box@ ctrl_list = cast < nv_form_list_box@ > (this.ctrl);
+		@ctrl = @control;
+		nv_form_input@ ctrl_input = cast < nv_form_input@ > (ctrl);
+		nv_form_list_box@ ctrl_list = cast < nv_form_list_box@ > (ctrl);
 		if (@ctrl_list == null && @ctrl_input == null) return;
 		else if ((@ctrl_input != null && ctrl_input.text == "") || (@ctrl_list != null && ctrl_list.items.length() < 1)) return;
 		string current = "";
-		if (this.parent.nv_utility_form_data.exists("last_search")) this.parent.nv_utility_form_data.get("last_search", current);
+		if (parent.nv_utility_form_data.exists("last_search")) parent.nv_utility_form_data.get("last_search", current);
 		string wmsg = "Search for text";
 		string lnmsg = "Text to search";
 		if (@ctrl_list != null)
 			wmsg = "Search for item";
-		this.f.create_window(wmsg, false, true);
-		@f_text = this.f.add_input(lnmsg, "ln", current, "", 256);
-		this.f_text.select(0);
-		this.f_text.enable_go_line = false;
-		this.f_text.enable_search = false;
-		@f_next = this.f.add_button("find next", "next", true);
+		f.create_window(wmsg, false, true);
+		@f_text = f.add_input(lnmsg, "ln", current, "", 256);
+		f_text.select(0);
+		f_text.enable_go_line = false;
+		f_text.enable_search = false;
+		@f_next = f.add_button("find next", "next", true);
 		@f_next.shortcut = nv_shortcut(KEY_N, alt = true);
-		@f_prev = this.f.add_button("find previous", "prev");
+		@f_prev = f.add_button("find previous", "prev");
 		@f_prev.shortcut = nv_shortcut(KEY_P, alt = true);
-		@f_cancel = this.f.add_button("cancel", "cancel", false, true);
-		this.f.focus_control(f_text, false, false);
+		@f_cancel = f.add_button("cancel", "cancel", false, true);
+		@f.background_callback = parent.background_callback;
+		f.focus_control(f_text, false, false);
 		@parent.nv_utility_form = this;
 	}
 	void monitor() {
 		if (!f.monitor()) {
-			parent.focus_control(this.ctrl);
+			parent.focus_control(ctrl);
 			@parent.nv_utility_form = null;
 			return;
 		}
-		nv_form_input@ ctrl_input = cast < nv_form_input@ > (this.ctrl);
+		nv_form_input@ ctrl_input = cast < nv_form_input@ > (ctrl);
 		nv_form_list_box@ ctrl_list = cast < nv_form_list_box@ > (ctrl);
 		bool nv_search_forward = f.is_pressed(f_next);
 		if (f.is_pressed(f_cancel)) {
-			parent.focus_control(this.ctrl);
+			parent.focus_control(ctrl);
 			@parent.nv_utility_form = null;
 			return;
 		} else if (nv_search_forward or f.is_pressed(f_prev)) {
-			string text = this.f_text.text;
+			string text = f_text.text;
 			if (text == "") {
 				speak("enter some text to search for");
 				f.focus_control(f_text, false, false);
 				return;
 			}
-			if (!parent.search(this.ctrl, text, nv_search_forward ? 1 : -1)) {
+			if (!parent.search(ctrl, text, nv_search_forward ? 1 : -1)) {
 				speak("nothing found");
 				f.focus_control(f_text, false, false);
 			} else {
@@ -177,7 +179,7 @@ class nv_search_for : nv_utility_form {
 	}
 }
 bool handle_nv_utils(nv_form_control@ ctrl) {
-	// This handles utilities, specially go to index and search, to make it not having to add the key presses over and over.
+	// This handles utilities, especially go to index and search, to make it not having to add the key presses over and over.
 	if (@ctrl == null) return false;
 	int[] supported_types = {nv_form_ct_list, nv_form_ct_input};
 	if (supported_types.find(ctrl.type) < 0) return false;

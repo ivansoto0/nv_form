@@ -25,7 +25,7 @@ class nv_form_input: nv_form_control {
 		string f;
 		if (password_mask != "") {
 			if (text.length() > 0)
-				f = text.length() + " characters";
+				f = utf8length(text) + " characters";
 			else
 				f = "Blank";
 		}
@@ -212,7 +212,7 @@ class nv_form_input: nv_form_control {
 	}
 	void on_focus_gained() {
 		start_text_input(); // Especially for Android keyboard.
-		get_characters(); // Cleanup any characters that might have been accumulated.
+		get_characters(); // Clean up any characters that might have been accumulated.
 	}
 	bool add(const string &in character, bool silent = false) {
 		string new_text = text;
@@ -724,7 +724,7 @@ class nv_form_input: nv_form_control {
 	}
 	protected void speak_selected(const string &in selection) {
 		if (selection.length() >= 1024 || password_mask != "")
-			speak(selection.length() + " characters " + highlight_select_speech_text);
+			speak(utf8length(selection) + " characters " + highlight_select_speech_text);
 		else
 			speak(selection + " " + highlight_select_speech_text, true);
 	}
@@ -934,5 +934,12 @@ class nv_form_input: nv_form_control {
 			return false;
 		}
 		return (disallowed_chars.find(char) > -1 && !use_only_disallowed_chars) || (disallowed_chars.find(char) < 0 && use_only_disallowed_chars);
+	}
+	private uint utf8length(const string &in txt) const {
+		if (txt.empty()) return 0;
+		uint length = txt.length(), count = 0;
+		for (uint cursor = 0; length > cursor; count ++)
+		cursor = utf8next(txt, cursor);
+		return count;
 	}
 }

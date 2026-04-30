@@ -5,6 +5,7 @@ class nv_form_spin: nv_form_input {
 		type = nv_form_ct_spin;
 		set_chars();
 		if (this.page <= 0) this.page = this.step * 10;
+		default_text = min;
 	}
 	void set_chars() {
 		string chars = "0123456789";
