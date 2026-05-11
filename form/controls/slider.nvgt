@@ -1,0 +1,56 @@
+class nv_form_slider: nv_form_control {
+	double min_value, max_value, step, page, value;
+	nv_form_slider(nv_form@parent, const string &in caption, const string &in id = "", double min_value = 0, double max_value = 100, double step = 1, double initial_value = 0, double page = 0) {
+		super(caption, id, nv_form_ct_slider, @parent);
+		this.min_value = min_value;
+		this.max_value = max_value;
+		this.step = step;
+		this.page = page;
+		value = initial_value;
+		if (this.page <= 0) this.page = this.step * 10;
+		clamp_value();
+	}
+	void clamp_value() {
+		value = clamp(value, min_value, max_value);
+	}
+	bool handle_input() {
+		if (key_repeating(KEY_DOWN)) {
+			value -= step;
+			clamp_value();
+			speak(value);
+			return true;
+		}
+		if (key_repeating(KEY_UP)) {
+			value += step;
+			clamp_value();
+			speak(value);
+			return true;
+		}
+		if (key_repeating(KEY_PAGEUP)) {
+			value += page;
+			clamp_value();
+			speak(value);
+			return true;
+		}
+		if (key_repeating(KEY_PAGEDOWN)) {
+			value -= page;
+			clamp_value();
+			speak(value);
+			return true;
+		}
+		if (key_repeating(KEY_HOME)) {
+			value = min_value;
+			speak(value);
+			return true;
+		}
+		if (key_repeating(KEY_END)) {
+			value = max_value;
+			speak(value);
+			return true;
+		}
+		return false;
+	}
+	string get_control_info() {
+		return value;
+	}
+}

@@ -8,11 +8,13 @@ shared enum nv_form_control_type {
 	nv_form_ct_slider,
 	nv_form_ct_form,
 	nv_form_ct_keyboard_area,
-	nv_form_ct_link
+	nv_form_ct_link,
+	nv_form_ct_switch,
+	nv_form_ct_spin,
+	nv_form_ct_tab_control
 }
 
-shared enum nv_form_clipboard_flags
-	{
+shared enum nv_form_clipboard_flags {
 	nv_clipboard_flag_copy = 1 << 0,
 	nv_clipboard_flag_cut = 1 << 1,
 	nv_clipboard_flag_paste = 1 << 2
@@ -33,7 +35,8 @@ shared enum nv_form_errorcode {
 	nv_form_error_invalid_list_index,
 	nv_form_error_control_invisible,
 	nv_form_error_no_controls_visible,
-	nv_form_error_already_active
+	nv_form_error_already_active,
+	nv_form_error_switch_empty
 }
 //text entry speech flags
 shared enum nv_form_text_entry_speech_flags {
@@ -47,14 +50,4 @@ shared enum nv_form_text_edit_mode_constants {
 	nv_form_edit_mode_replace = 0,
 	nv_form_edit_mode_trim_to_length,
 	nv_form_edit_mode_append_to_end
-}
-//types of update events that can be received by controls
-shared enum nv_control_event_type {
-	nv_event_none = 0,
-	nv_event_focus,
-	nv_event_list_cursor,
-	nv_event_text_cursor,
-	nv_event_button,
-	nv_event_checkbox,
-	nv_event_slider
 }
