@@ -31,6 +31,7 @@ class nv_form {
 	bool rely_on_nvform_echo = true;
 	string window_title;
 	bool speak_control_attributes_separately = false;
+	private int __tap_timeout__ = 200;
 	bool active = false;
 	private nv_form_errorcode[] errors;
 	nv_form_control@primary_control = null, cancel_control = null;
@@ -60,6 +61,14 @@ class nv_form {
 				if (@ca == null) continue;
 				ca.echo_flag = echo;
 			}
+		}
+	}
+	int tap_timeout {
+		get const {
+			return __tap_timeout__;
+		} set {
+			__tap_timeout__ = value;
+			if (@shortcut != null) shortcut.tap_timeout = __tap_timeout__;
 		}
 	}
 	nv_form_control@get_control_by_id(const string &in id) const {
@@ -99,6 +108,7 @@ class nv_form {
 		get_characters();
 		active = true;
 		@shortcut = nv_shortcut_manager();
+		shortcut.tap_timeout = tap_timeout;
 		if (change_screen_title) show_window(window_title);
 		if (!silent)
 			speak(window_title + (say_dialog ? "  dialog" : ""), false);
