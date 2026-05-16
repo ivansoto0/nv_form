@@ -1,4 +1,4 @@
-# control_types
+# nv_form_control_type
 This is a complete list of all control types available in the NV Form, as well as a brief description of what they do.
 - `nv_form_ct_button`: A normal, pressable button.
 - `nv_form_ct_input`: Any form of text box.

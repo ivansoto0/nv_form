@@ -1,4 +1,4 @@
-#include"form/form.nvgt"
+#include "form/form.nvgt"
 class custom_button: nv_form_button {
 	custom_button(nv_form@parent) {
 		super(@parent, "press this now", "click");
@@ -8,11 +8,11 @@ class custom_button: nv_form_button {
 	}
 }
 void main() {
-	int profile = question("profiler", "Would you like to run the profile during this test?");
+	int profile = question("Profiler", "Would you like to run the profile during this test?");
 	if (profile == 1) start_profiling();
 	nv_form f;
 	f.create_window("Test", say_dialog = true);
-	wait(250);
+	wait(150);
 	custom_button my_button(f);
 	@my_button.shortcut = nv_shortcut(KEY_P, alt = true);
 	my_button.autoactivate = true;
@@ -117,7 +117,7 @@ bool on_x_click(nv_form_control@ctrl) {
 	string r = generate_profile();
 	if (!r.empty()) {
 		file f;
-		f.open("profile.log", "wb");
+		f.open("profile.log", "w");
 		f.write(r);
 		f.close();
 	}
