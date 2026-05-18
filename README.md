@@ -6,8 +6,17 @@ You can run [test.nvgt](test.nvgt) to get to know all the features. Usually ever
 ## Notes
 - This module is a new and redesigned module, but some parts may have copied from the original auditory form.
 - Controls, events, and shortcut handlers, are now completely different from the ones that you use in the legacy auditory form. Therefore, if you cannot find a specific function, enum value, or constant, it may not actually be a bug.
-- Shortcuts in the caption (label) with an ampersand (`&`) is no longer supported. Your form can now utilize `Ctrl`, `Shift`, and `Alt` all together rather than a limited `Alt` key alone in the legacy auditory form, as well as multitap shortcuts.
-- Functionalities should be backwards compatible with the legacy form, but please note that this is not the main intent of this module. If we believe that if a specific functionality is deemed unworthy, it may be removed, modified, or replaced with an equivalent functionality.
+- Shortcuts in the caption (label) with an ampersand (`&`) is no longer supported. Your form can now utilize `Ctrl`, `Shift`, and `Alt` all together rather than a limited `Alt` key alone in the legacy auditory form, as well as multitap shortcuts. Tip: If you want to use the old behavior, the only possible action is to create custom instance of `nv_form` as a child class, and modify and extend the `add_control` method.
+- Functionalities should be backwards compatible with the legacy form, but please note that this is not the main intent of this module. If we believe that if a specific functionality is deemed unworthy, or having performance issues, it may be removed, modified, or replaced with an equivalent functionality.
 
 ## Documentation Status
 [Documentation](docs) for the form has been written, but this does not mean that it is complete. We appreciate any contributions regarding the documentation.
+
+## Features
+NV Form module advertises the following features:
+- Ease of Use: NV Form is easy to integrate, use, and make changes.
+- Form Controls: NV Form supports many controls out of the box, including buttons, check boxes, text fields, lists, sliders, progress bars, switches, and more. Please see a list of [available control types](docs/Enums/nv_form_control_type.md) in the documentation.
+- Custom Controls: Add to or modify any control as you wish if it does not meet your requirements. Add custom controls by directly making child classes of specific controls you want, as well as extend and modify existing controls by directly making a child class of them. See [nv_form_control Documentation](docs/Classes/nv_form_control).
+- Events: Make your projects more integrated by using events dispatched by the form without having to modify controls, i.e. adding keyboard / navigation sounds.
+- Extensive Shortcuts: Utilize advanced shortcut combinations, key modifiers, multitap keys, all from just one shortcut manager.
+- Forms in the Form: Make your project more clean and categorized by utilizing tab controls, known as child forms.
