@@ -1,4 +1,4 @@
-string get_nv_form_control_type_string(nv_form_control_type ct) {
+string get_nv_form_control_type_string(int ct) {
 	switch (ct) {
 		case nv_form_ct_button: return "button";
 		case nv_form_ct_input: return "edit";
@@ -11,10 +11,10 @@ string get_nv_form_control_type_string(nv_form_control_type ct) {
 		case nv_form_ct_link: return "link";
 		case nv_form_ct_switch: return "switch";
 		case nv_form_ct_tab_control: return "Tab control";
-		default: return "unknown";
+		default: return "";
 	}
 }
-// utility_form interface used for search and goto dialogs.
+// utility_form interface used for search and go-to dialogs.
 interface nv_utility_form {
 	void monitor();
 }
@@ -177,7 +177,7 @@ class nv_search_for : nv_utility_form {
 	}
 }
 bool handle_nv_utils(nv_form_control@ ctrl) {
-	// This handles utilities, especially go to index and search, to make it not having to add the key presses over and over.
+	// This handles utilities, especially go-to index and search, to make it not having to add the key presses over and over.
 	if (@ctrl == null) return false;
 	int[] supported_types = {nv_form_ct_list, nv_form_ct_input};
 	if (supported_types.find(ctrl.type) < 0) return false;

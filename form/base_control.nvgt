@@ -1,5 +1,5 @@
 abstract class nv_form_control {
-	nv_form_control_type type;
+	int type;
 	string custom_type = "";
 	string caption;
 	string id;
@@ -10,7 +10,7 @@ abstract class nv_form_control {
 	bool enable_go_line = true, enable_search = true;
 	nv_form_control_callback@callback = null;
 	nv_form_event_dispatcher event;
-	nv_form_control(const string &in caption, const string &in id, nv_form_control_type type, nv_form@parent) {
+	nv_form_control(const string &in caption, const string &in id, int type, nv_form@parent) {
 		this.caption = caption;
 		this.type = type;
 		this.id = id;
