@@ -3,14 +3,14 @@ class nv_form_tree_node {
 	string id;
 	int level;
 	bool expanded;
-	nv_form_tree_node@ parent_node;
+	nv_form_tree_node@ parent;
 	nv_form_tree_node@[] nodes;
-	nv_form_tree_node(const string &in text, const string &in id = "", int level = 0, nv_form_tree_node@ parent_node = null) {
+	nv_form_tree_node(const string &in text, const string &in id = "", int level = 0, nv_form_tree_node@ parent = null) {
 		this.text = text;
 		this.id = id;
 		this.level = level;
 		expanded = false;
-		@this.parent_node = parent_node;
+		@this.parent = parent;
 	}
 	nv_form_tree_node@ add(const string &in text, const string &in id = "") {
 		nv_form_tree_node child(text, id, this.level + 1, @this);
@@ -33,6 +33,15 @@ class nv_form_tree_node {
 	}
 	bool get_has_nodes() const property {
 		return nodes.length() > 0;
+	}
+	string[] get_ids() const property {
+		string[] f;
+		if (id != "") f.insert_last(id);
+		if (@parent != null) f.insert(0, parent.ids);
+		return f;
+	}
+	string full_id(const string &in sep) const {
+		return join(ids, sep);
 	}
 }
 class nv_form_treeview : nv_form_control {
@@ -143,8 +152,8 @@ class nv_form_treeview : nv_form_control {
 				rebuild();
 				speak("collapsed");
 				return true;
-			} else if (@node.parent_node != null) {
-				nv_form_tree_node@ p = node.parent_node;
+			} else if (@node.parent != null) {
+				nv_form_tree_node@ p = node.parent;
 				for (uint i = 0; i < visible_nodes.length(); i++) {
 					if (visible_nodes[i].id == p.id) {
 						pos = i;

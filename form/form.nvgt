@@ -343,6 +343,14 @@ class nv_form {
 		if (added) return area;
 		return null;
 	}
+	nv_form_treeview@add_treeview(const string &in caption, const string &in id = "", nv_form_tree_node@[] nodes = {}, int position = -1) {
+		nv_form_treeview@tv = nv_form_treeview(this, caption, id);
+		tv.nodes = nodes;
+		tv.rebuild();
+		bool added = add_control(tv, position = position);
+		if (added) return tv;
+		return null;
+	}
 	bool add_control(nv_form_control@ctrl, bool primary = false, bool cancel = false, int position = -1, nv_form_control_callback@callback = null) {
 		if (!active) {
 			error(nv_form_error_no_window);

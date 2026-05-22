@@ -17,4 +17,7 @@ void main() {
 	while (f.monitor()) {
 		wait(5);
 	}
+	if (@a.focused_node == null) alert("Information", "You did not select any directory");
+	//else alert("The selected directory is", (@a.focused_node.parent != null ? a.focused_node.parent.id + "/" : "") + a.focused_node_id);
+	else alert("The selected directory is", a.focused_node.full_id("/"));
 }

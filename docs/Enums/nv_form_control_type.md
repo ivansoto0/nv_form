@@ -11,3 +11,4 @@ This is a complete list of all control types available in the NV Form, as well a
 - `nv_form_ct_switch`: Toggle switches, on/off, yes/no, or many options similar to list.
 - `nv_form_ct_spin`: Spin box, adjustable numbers by arrows or typing.
 - `nv_form_ct_tab_control`: Tab control, formerly known as child forms.
+- `nv_form_ct_treeview`: Tree view, a list of items and their children, expandable.
