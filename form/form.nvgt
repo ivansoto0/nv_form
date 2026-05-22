@@ -23,11 +23,12 @@
 
 string nvform_word_separators = "_ .,!\\\"/[{()}]=\n:|";
 int nvform_keyboard_echo = textflag_characters;
+nv_form_event_handler@ default_nv_form_event_handler = null;
 class nv_form {
 	nv_form_control@[]controls;
 	int max_controls = 0;
 	int control_index = -1;
-	int __keyboard_echo = nvform_keyboard_echo;
+	protected int __keyboard_echo__ = nvform_keyboard_echo;
 	bool rely_on_nvform_echo = true;
 	string window_title;
 	bool speak_control_attributes_separately = false;
@@ -37,6 +38,7 @@ class nv_form {
 	nv_form_control@primary_control = null, cancel_control = null;
 	nv_form_callback@background_callback = null;
 	nv_shortcut_manager@ shortcut;
+	nv_form_event_handler@ default_event_handler = null;
 	nv_form() {
 		reset();
 	}
@@ -48,13 +50,14 @@ class nv_form {
 		@cancel_control = null;
 		@nv_utility_form = null;
 		@shortcut = null;
+		@default_event_handler = default_nv_form_event_handler;
 	}
 	int get_keyboard_echo() const property {
 		if (rely_on_nvform_echo) return nvform_keyboard_echo;
-		return __keyboard_echo;
+		return __keyboard_echo__;
 	}
 	void set_keyboard_echo(int echo, bool update = true) {
-		__keyboard_echo = echo;
+		__keyboard_echo__ = echo;
 		if (update) {
 			foreach (nv_form_control@ l: controls) {
 				nv_form_input@ ca = cast < nv_form_input@ > (l);
