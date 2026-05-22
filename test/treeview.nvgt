@@ -1,0 +1,20 @@
+#pragma include ".."
+#include "form/form.nvgt"
+void main() {
+	nv_form f;
+	f.create_window("Input Event Test");
+	nv_form_treeview@ a = nv_form_treeview(f, "Directories", "dir");
+	nv_form_tree_node@ b = a.add_root("C:", "C:");
+	string[] list = {"Program files", "Program files (x86)", "Users", "Windows"};
+	for (uint i = 0; i < list.length(); i++) b.add(list[i], list[i]);
+	nv_form_tree_node@ c = a.add_root("D:", "D:");
+	list = {"Audio", "Documents", "Downloads", "Music"};
+	for (uint i = 0; i < list.length(); i++) c.add(list[i], list[i]);
+	list = {"Home", "Desktop", "Network"};
+	for (uint i = 0; i < list.length(); i++) a.add_root(list[i], list[i]);
+	f.add_control(a);
+	nv_form_button@ can = f.add_button("Close", "close", false, true);
+	while (f.monitor()) {
+		wait(5);
+	}
+}

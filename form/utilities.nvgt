@@ -11,6 +11,7 @@ string get_nv_form_control_type_string(int ct) {
 		case nv_form_ct_link: return "link";
 		case nv_form_ct_switch: return "switch";
 		case nv_form_ct_tab_control: return "Tab control";
+		case nv_form_ct_treeview: return "tree view";
 		default: return "";
 	}
 }
