@@ -65,7 +65,7 @@ class nv_form_treeview : nv_form_control {
 		}
 		return -1;
 	}
-	nv_form_tree_node@ add_root(const string &in text, const string &in id = "") {
+	nv_form_tree_node@ add(const string &in text, const string &in id = "") {
 		nv_form_tree_node node(text, id, 0, null);
 		nodes.insert_last(node);
 		rebuild();
