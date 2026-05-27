@@ -2,7 +2,7 @@
 #include "form/form.nvgt"
 void main() {
 	nv_form f;
-	f.create_window("Input Event Test");
+	f.create_window("Treeview Test");
 	nv_form_treeview@ a = nv_form_treeview(f, "Directories", "dir");
 	nv_form_tree_node@ b = a.add("C:", "C:");
 	string[] list = {"Program files", "Program files (x86)", "Users", "Windows"};
@@ -10,6 +10,9 @@ void main() {
 	nv_form_tree_node@ c = a.add("D:", "D:");
 	list = {"Audio", "Documents", "Downloads", "Music"};
 	for (uint i = 0; i < list.length(); i++) c.add(list[i], list[i]);
+	nv_form_tree_node@ cc = c.add("Tools", "tools");
+	cc.add("Android", "android");
+	cc.add("PC", "PC");
 	list = {"Home", "Desktop", "Network"};
 	for (uint i = 0; i < list.length(); i++) a.add(list[i], list[i]);
 	f.add_control(a);

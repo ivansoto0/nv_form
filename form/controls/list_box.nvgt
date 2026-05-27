@@ -41,7 +41,11 @@ class nv_form_list_box: nv_form_control {
 			if (index >= items.length()) index = items.length() - 1;
 		}
 		if (index < 0 || index > items.length() - 1) return false;
+		int opos = list_position;
 		list_position = index;
+		nv_form_list_event l(this);
+		l.old_pos = opos;
+		event.fire(l);
 		return true;
 	}
 	string speak_list_item(nv_form_list_item@ value) {
@@ -75,7 +79,7 @@ class nv_form_list_box: nv_form_control {
 							found = true;
 							break;
 						}
-						list_position = i;
+						set_pos(i);
 						if (list_position >= 0 && list_position < items.length() && @items[list_position] != null) speak(speak_list_item(items[list_position]));
 						found = true;
 						break;
@@ -91,7 +95,7 @@ class nv_form_list_box: nv_form_control {
 								found = true;
 								break;
 							}
-							list_position = i;
+							set_pos(i);
 							if (list_position >= 0 && list_position < items.length() && @items[list_position] != null) speak(speak_list_item(items[list_position]));
 							found = true;
 							break;
