@@ -29,9 +29,9 @@ class nv_form_list_box: nv_form_control {
 		int index = list_position;
 		if (next) index += 1;
 		else index -= 1;
-		return set_pos(index);
+		return set_pos(index, fire_event = true);
 	}
-	bool set_pos(int index, bool autobound = true) {
+	bool set_pos(int index, bool autobound = true, bool fire_event = false) {
 		if (items.length() <= 0) {
 			parent.error(nv_form_error_list_empty);
 			return false;
@@ -43,10 +43,18 @@ class nv_form_list_box: nv_form_control {
 		if (index < 0 || index > items.length() - 1) return false;
 		int opos = list_position;
 		list_position = index;
-		nv_form_list_event l(this);
-		l.old_pos = opos;
-		event.fire(l);
+		if (fire_event) {
+			dictionary a;
+			a.set("old_pos", opos);
+			fire_item_change_event(a);
+		}
 		return true;
+	}
+	void fire_item_change_event(dictionary@ args) {
+		nv_form_list_event l(this);
+		int oldpos;
+		if (args.get("old_pos", oldpos)) l.old_pos = oldpos;
+		event.fire(l);
 	}
 	string speak_list_item(nv_form_list_item@ value) {
 		if (@value == null) return "";
@@ -79,7 +87,7 @@ class nv_form_list_box: nv_form_control {
 							found = true;
 							break;
 						}
-						set_pos(i);
+						set_pos(i, fire_event = true);
 						if (list_position >= 0 && list_position < items.length() && @items[list_position] != null) speak(speak_list_item(items[list_position]));
 						found = true;
 						break;
@@ -95,7 +103,7 @@ class nv_form_list_box: nv_form_control {
 								found = true;
 								break;
 							}
-							set_pos(i);
+							set_pos(i, fire_event = true);
 							if (list_position >= 0 && list_position < items.length() && @items[list_position] != null) speak(speak_list_item(items[list_position]));
 							found = true;
 							break;
@@ -116,12 +124,12 @@ class nv_form_list_box: nv_form_control {
 			return true;
 		}
 		if (key_repeating(KEY_HOME)) {
-			bool nav = set_pos(0);
+			bool nav = set_pos(0, fire_event = true);
 			if (nav && @focused_item != null) speak(speak_list_item(focused_item));
 			return true;
 		}
 		if (key_repeating(KEY_END)) {
-			bool nav = set_pos(items.length() - 1);
+			bool nav = set_pos(items.length() - 1, fire_event = true);
 			if (nav && @focused_item != null) speak(speak_list_item(focused_item));
 			return true;
 		}
@@ -238,7 +246,7 @@ class nv_form_list_box: nv_form_control {
 			}
 			if (i == pos) break;
 			if (nav_items[i].find(text) < 0) continue;
-			if (set_pos(i, false)) {
+			if (set_pos(i, false, fire_event = true)) {
 				if (!silent) {
 					if (wrapped != "") speak(wrapped);
 					if (@focused_item != null) speak(speak_list_item(focused_item), wrapped == "");
