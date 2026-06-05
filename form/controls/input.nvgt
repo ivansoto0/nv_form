@@ -277,8 +277,9 @@ class nv_form_input: nv_form_control {
 	string input_box_speak(const string &in character, bool ignore_echo_flag) {
 		if (character == " ")
 			return "Space";
-		if (character == "\n")
-			return "Blank";
+		else if (character == "\n")
+			return "line feed";
+		else if (character == "blank") return character;
 		string oc = nv_get_readable_key(character, true);
 		if (oc != "") return oc;
 		if ((echo_flag == textflag_entry_none) && (ignore_echo_flag == false))
@@ -828,7 +829,7 @@ class nv_form_input: nv_form_control {
 			e.deleted = true;
 			event.fire(e);
 		} else if (from_start == 1) {
-			string del_char = "Blank";
+			string del_char = "";
 			if (cursor < text.length())
 				del_char = text.substr(cursor, 4);
 			text = text.substr(0, cursor) + text.substr(cursor + utf8size(text.substr(cursor, 1)));
