@@ -28,8 +28,7 @@ class nv_form_input: nv_form_control {
 				f = utf8length(text) + " characters";
 			else
 				f = "blank";
-		}
-		if (password_mask == "") {
+		} else {
 			if (text.length() > 0) {
 				if (sel_start >= 0) {
 					if (sel_end - sel_start >= 1024)
