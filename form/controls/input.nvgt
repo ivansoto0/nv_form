@@ -279,6 +279,7 @@ class nv_form_input: nv_form_control {
 		else if (character == "\n")
 			return "line feed";
 		else if (character == "blank") return character;
+		else if (character == "\t") return "tab";
 		string oc = nv_get_readable_key(character, true);
 		if (oc != "") return oc;
 		if ((echo_flag == textflag_entry_none) && (ignore_echo_flag == false))

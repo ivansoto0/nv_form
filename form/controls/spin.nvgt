@@ -85,48 +85,13 @@ class nv_form_spin: nv_form_input {
 		}
 		return nv_form_input::handle_input();
 	}
-	bool add(const string &in character, bool silent = false) {
-		string new_text = text;
-		bool prevselect = false;
-		if (sel_start > -1 && sel_end > -1) {
-			cursor = sel_start;
-			new_text = text.substr(0, cursor) + text.substr(sel_end + 1);
-			sel_start = -1;
-			sel_end = -1;
-			prevselect = true;
-		}
-		if ((max_length > 0) && (new_text.length() >= max_length))
-			return false;
-		new_text = new_text.substr(0, cursor) + character + new_text.substr(cursor);
-		if (read_only == false) {
-			text = new_text;
-			cursor += character.length();
-		}
-		if (echo_flag == textflag_entry_characters || echo_flag == textflag_entry_characters_words)
-			speak(input_box_speak(find_appropriate_character(character)));
-		if (nvform_word_separators .find(character) > -1 && (echo_flag == textflag_entry_words || echo_flag == textflag_entry_characters_words)) {
-			int temp_position = cursor - 1;
-			while (temp_position > 0 && (temp_position >= text.length() || nvform_word_separators .find(text[temp_position - 1]) < 0 && text[temp_position - 1] != "\n"))
-				temp_position--;
-			string word = read_word_from_position(temp_position);
-			if (password_mask != "") {
-				for (uint i = 0; i < word.length(); i++) word[i] = password_mask;
-			}
-			speak(word, echo_flag != textflag_entry_characters_words);
-		}
-		nv_form_input_event e(this);
-		e.character = character;
-		event.fire(e);
-		double t = parse_float(text);
-		if (t < min || t > max) {
-			t = clamp(t, min, max);
-			text = t;
-			cursor = this.text.length();
-		}
-		if (!silent && prevselect) speak(highlight_unselect_speech_text, false);
-		return true;
-	}
 	double get_output() const property {
-		return parse_double(text);
+		double d = parse_double(text);
+		if (d < min) d = min;
+		if (d > max) d = max;
+		return d;
+	}
+	void on_focus_gained_immediate() {
+		text = output;
 	}
 }
