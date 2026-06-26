@@ -295,14 +295,9 @@ class nv_form {
 		return null;
 	}
 	nv_form_spin@add_spin(const string &in caption, const string &in id = "", const string &in default_text = "", double min = 0, double max = 100, bool read_only = false, double step = 1, double page = 0, int position = -1, nv_form_control_callback@callback = null) {
-		nv_form_spin@inp = nv_form_spin(this, caption, id);
+		nv_form_spin@inp = nv_form_spin(this, caption, id, min, max, step, page);
 		inp.default_text = default_text;
 		inp.read_only = read_only;
-		inp.min = min;
-		inp.max = max;
-		inp.step = step;
-		inp.page = page;
-		if (inp.page <= 0) inp.page = step * 10;
 		bool added = add_control(inp, false, false, position, @callback);
 		if (added) return inp;
 		return null;
