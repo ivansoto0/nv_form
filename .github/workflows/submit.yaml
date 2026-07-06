@@ -1,0 +1,29 @@
+name: Auto-Submit to Community Bucket
+on:
+  push:
+    branches: [main, master]
+    # Triggers dynamically based on source paths
+    paths: ["form.json"]
+  workflow_dispatch:
+
+jobs:
+  submit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Current Repository
+        uses: actions/checkout@v7
+      - name: Install Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.x'
+      - name: Build
+        run: |
+          python zip.py
+      - name: Publish Automated Modules Release
+        uses: softprops/action-gh-release@v3
+        with:
+          files: |
+            *.zip
+          draft: false
+          prerelease: false
+          tag_name: "module"
