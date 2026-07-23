@@ -10,16 +10,16 @@ jobs:
   submit:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Current Repository
-        uses: actions/checkout@v7
+      - uses: actions/checkout@v7
       - name: Install Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: '3.x'
       - name: Build
         run: |
-          python zip.py
+          python ci.py
       - name: Publish Automated Modules Release
+        id: builder
         uses: softprops/action-gh-release@v3
         with:
           files: |
@@ -27,3 +27,4 @@ jobs:
           draft: false
           prerelease: false
           tag_name: "module"
+          body: ${{ steps.builder.outputs.pr_body }}
